@@ -3,40 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
 
-  <title>OT Cybersecurity Software — An Independent Guide for OT Practitioners</title>
-  <meta name="description" content="An independent guide to OT platforms, device management, and data tools for industrial operations teams. Unbiased reviews, comparisons, and guides.">
-  <meta name="robots" content="index, follow">
+  <title>OT Cybersecurity Software — Independent Guide for OT and ICS Security Practitioners</title>
+  <meta name="description" content="An independent guide to OT, ICS, and SCADA cybersecurity software. Vendor-neutral analysis for security practitioners protecting industrial control systems.">
   <link rel="canonical" href="https://otcybersecuritysoftware.com/">
 
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="OT Cybersecurity Software — An Independent Guide">
-  <meta property="og:description" content="Unbiased reviews, comparisons, and guides for OT practitioners.">
+  <meta property="og:title" content="OT Cybersecurity Software — Independent Guide">
+  <meta property="og:description" content="Vendor-neutral analysis of OT and ICS security platforms for practitioners protecting industrial control systems.">
   <meta property="og:url" content="https://otcybersecuritysoftware.com/">
-  <meta property="og:site_name" content="OT Cybersecurity Software">
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "OT Cybersecurity Software",
-    "description": "An independent guide to software for OT practitioners.",
-    "url": "https://otcybersecuritysoftware.com"
-  }
-  </script>
+  <meta property="og:type" content="website">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="/styles.css">
   <script src="/config.js"></script>
 </head>
 <body>
 
   <header class="topbar">
-    <div class="topbar-brand">OT Cybersecurity Software<span>Software</span></div>
+    <div class="topbar-brand" id="topbar-brand">OT Cybersecurity <span>Software</span></div>
     <div class="topbar-divider"></div>
-    <div class="topbar-tagline">an independent guide for OT practitioners</div>
+    <div class="topbar-tagline">an independent guide for OT and ICS security practitioners</div>
     <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
   </header>
 
@@ -49,103 +40,64 @@
       <div class="content">
 
         <span class="page-label">Home</span>
-        <h1>The Independent Guide to OT Cybersecurity Software</h1>
+        <h1>OT Cybersecurity Software: An Independent Guide</h1>
 
-        <p class="lead">
-          The OT software landscape is fragmented, vendor-dominated, and full of enterprise marketing noise. This site cuts through it — mapping the stack, profiling the tools, and giving you honest guidance for real deployment decisions.
-        </p>
+        <p class="lead">The OT security market has matured fast and fragmented badly. This site maps the vendor landscape, separates platform plays from specialist tools, and gives practitioners the analysis they need to build a defensible shortlist — without reading marketing copy.</p>
 
-        <div class="section-intro">
-          <p>No sponsored rankings. No vendor pressure. Written for operations engineers and industrial IT teams who need to make defensible decisions.</p>
-        </div>
+        <h2>What this site covers</h2>
+
+        <p>OT cybersecurity software spans a wide range of functions: asset visibility, threat detection, network segmentation, vulnerability management, and secure remote access. The vendor landscape cuts across pure-play OT specialists, IT security giants extending into industrial environments, and a growing tier of challengers solving specific problems better than any platform vendor bothers to.</p>
+
+        <p>Every section of this site is organized around a practitioner decision, not a product category. The goal is to help you figure out what kind of tool you need before you start making calls.</p>
+
+        <h2>Start here</h2>
 
         <div class="card-grid">
-          <div class="card">
-            <div class="card-label">Categories</div>
-            <div class="card-value">5</div>
-            <div class="card-sub">stack layers covered</div>
-          </div>
-          <div class="card">
-            <div class="card-label">Tools tracked</div>
-            <div class="card-value">30+</div>
-            <div class="card-sub">across all categories</div>
-          </div>
-          <div class="card">
-            <div class="card-label">Price range</div>
-            <div class="card-value">Free–$$$</div>
-            <div class="card-sub">open source to enterprise</div>
-          </div>
-          <div class="card">
-            <div class="card-label">Updated</div>
-            <div class="card-value">2025</div>
-            <div class="card-sub">ongoing</div>
-          </div>
+
+          <a href="/landscape/" class="card">
+            <div class="card-label">Landscape</div>
+            <div class="card-title">OT Security Software Landscape</div>
+            <div class="card-body">How the market is structured, what the major categories are, and how to decide which tier of vendor fits your environment and risk tolerance.</div>
+          </a>
+
+          <a href="/landscape/vendors/" class="card">
+            <div class="card-label">Vendors</div>
+            <div class="card-title">Vendor Index</div>
+            <div class="card-body">Every significant OT and ICS security vendor, categorized by function and deployment model. No rankings. No sponsored placements.</div>
+          </a>
+
+          <a href="/comparisons/" class="card">
+            <div class="card-label">Comparisons</div>
+            <div class="card-title">Platform Comparisons</div>
+            <div class="card-body">Head-to-head analysis of the platforms practitioners evaluate most often, with honest trade-offs and fit guidance.</div>
+          </a>
+
+          <a href="/guides/ot-security-platform-evaluation/" class="card">
+            <div class="card-label">Guide</div>
+            <div class="card-title">OT Security Platform Evaluation Checklist</div>
+            <div class="card-body">A structured framework for evaluating OT security platforms against real operational constraints — before you invite a vendor into a proof of concept.</div>
+          </a>
+
         </div>
 
-        <h2>Start Here</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>If you're…</th>
-              <th>Start with</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>New to OT architecture</td>
-              <td><a href="/guides/ot-stack-101">OT stack 101</a></td>
-            </tr>
-            <tr>
-              <td>Evaluating platforms</td>
-              <td><a href="/guides/choosing-a-platform">Choosing a platform</a></td>
-            </tr>
-            <tr>
-              <td>Deploying on legacy equipment</td>
-              <td><a href="/guides/brownfield-deployment">Brownfield deployment</a></td>
-            </tr>
-            <tr>
-              <td>Comparing specific tools</td>
-              <td><a href="/tools">All tools</a></td>
-            </tr>
-            <tr>
-              <td>Ready for the full picture</td>
-              <td><a href="/landscape">The OT stack overview</a></td>
-            </tr>
-          </tbody>
-        </table>
+        <h2>Why independent</h2>
 
-        <h2>What's Here</h2>
+        <p>Most OT security content is produced by vendors, funded by vendors, or written by analysts whose methodology is opaque. This site has no vendor relationships, no sponsored content, and no affiliate arrangements with the platforms it covers. Analysis is based on publicly available information, practitioner input, and direct product evaluation where possible.</p>
 
-        <h3>Landscape</h3>
-        <p>A map of the OT software stack — from connectivity and device management to analytics platforms and OT/IT security. Five layers, each with distinct tool categories and vendor dynamics.</p>
-
-        <h3>Tools</h3>
-        <p>Profiles of 30+ tools across the stack — what they do, what they cost, who they're for, and honest assessments of their strengths and weaknesses.</p>
-
-        <h3>Comparisons</h3>
-        <p>Head-to-head comparisons of tools that serve similar needs. A clear recommendation at the end of every piece.</p>
-
-        <h3>Guides</h3>
-        <p>Practical guidance for real decisions: how to evaluate a platform, when to move off a historian, how to approach brownfield deployments.</p>
-
-        <div class="newsletter-block">
-          <span class="page-label">Stay current</span>
-          <p>New tools, pricing changes, and honest takes — when there's something worth saying.</p>
-          <div class="newsletter-form">
-            <input type="email" placeholder="your@email.com" aria-label="Email address">
-            <button type="submit">Subscribe</button>
-          </div>
-        </div>
-
-        <div class="page-footer">
-          <span class="page-label">OT Cybersecurity Software</span>
-          <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
-        </div>
+        <p>When this site has an opinion, it says so. When the evidence is thin, it says that too.</p>
 
       </div>
     </main>
   </div>
 
+  <footer>
+    <div class="footer-inner">
+      <span>&copy; 2026 OT Cybersecurity Software. Independent. Not affiliated with any vendor.</span>
+    </div>
+  </footer>
+
   <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
 </body>
 </html>

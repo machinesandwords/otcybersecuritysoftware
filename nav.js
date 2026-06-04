@@ -1,71 +1,47 @@
 (function() {
-  const nav = `
-    <div class="nav-section">
-      <div class="nav-section-label">Why</div>
-      <a href="/why" class="nav-item depth-0">Manifesto</a>
-    </div>
+  var nav = [
+    { label: 'Why',        url: '/why',                   type: 'top' },
 
-    <div class="nav-divider"></div>
+    { label: 'Landscape',  url: '/landscape/',            type: 'top' },
+    { label: 'OT vs ICS vs SCADA', url: '/landscape/ot-ics-scada/', type: 'child-mid' },
+    { label: 'Market overview',    url: '/landscape/market-overview/', type: 'child-mid' },
+    { label: 'Vendor index',       url: '/landscape/vendors/',         type: 'child-mid' },
+    { label: 'Buyer personas',     url: '/landscape/buyer-personas/',  type: 'child-mid' },
+    { label: 'Regulatory map',     url: '/landscape/regulatory-map/',  type: 'child-last' },
 
-    <div class="nav-section">
-      <div class="nav-section-label">Landscape</div>
-      <a href="/landscape" class="nav-item depth-0">Overview</a>
-      <a href="/landscape/connectivity" class="nav-item depth-1">├ Connectivity &amp; protocols</a>
-      <a href="/landscape/device-management" class="nav-item depth-1">├ Device management</a>
-      <a href="/landscape/data-platforms" class="nav-item depth-1">├ Data &amp; analytics platforms</a>
-      <a href="/landscape/integration" class="nav-item depth-1">├ Integration &amp; middleware</a>
-      <a href="/landscape/security" class="nav-item depth-1">└ OT/IT security</a>
-    </div>
+    { label: 'Tools',      url: '/tools/',                type: 'top' },
+    { label: 'OT visibility',      url: '/tools/#visibility',          type: 'child-mid' },
+    { label: 'Threat detection',   url: '/tools/#detection',           type: 'child-mid' },
+    { label: 'Network segmentation', url: '/tools/#segmentation',      type: 'child-mid' },
+    { label: 'Vuln management',    url: '/tools/#vuln',                type: 'child-mid' },
+    { label: 'Remote access',      url: '/tools/#remote-access',       type: 'child-last' },
 
-    <div class="nav-divider"></div>
+    { label: 'Comparisons', url: '/comparisons/',         type: 'top' },
+    { label: 'Platform comparisons', url: '/comparisons/#platforms',   type: 'child-mid' },
+    { label: 'Vendor matchups',    url: '/comparisons/#matchups',      type: 'child-last' },
 
-    <div class="nav-section">
-      <div class="nav-section-label">Tools</div>
-      <a href="/tools" class="nav-item depth-0">All tools</a>
-      <a href="/tools/platforms" class="nav-item depth-1">├ IIoT platforms</a>
-      <a href="/tools/device-management" class="nav-item depth-1">├ Device management</a>
-      <a href="/tools/analytics" class="nav-item depth-1">└ Analytics &amp; visualization</a>
-    </div>
+    { label: 'Guides',     url: '/guides/',               type: 'top' },
+    { label: 'Evaluation checklist', url: '/guides/ot-security-platform-evaluation/', type: 'child-mid' },
+    { label: 'NERC CIP compliance',  url: '/guides/nerc-cip-compliance-software/',    type: 'child-mid' },
+    { label: 'IEC 62443 overview',   url: '/guides/iec-62443-compliance/',            type: 'child-last' },
 
-    <div class="nav-divider"></div>
+    { label: 'Subscribe →', url: '/subscribe',            type: 'subscribe' }
+  ];
 
-    <div class="nav-section">
-      <div class="nav-section-label">Comparisons</div>
-      <a href="/comparisons" class="nav-item depth-0">All comparisons</a>
-      <a href="/comparisons/aws-iot-vs-azure-iot" class="nav-item depth-1">├ AWS IoT vs. Azure IoT</a>
-      <a href="/comparisons/ignition-vs-kepware" class="nav-item depth-1">└ Ignition vs. Kepware</a>
-    </div>
+  var icons = { 'top': '', 'child-mid': '├ ', 'child-last': '└ ', 'subscribe': '' };
 
-    <div class="nav-divider"></div>
+  var html = nav.map(function(item) {
+    var path = window.location.pathname.replace(/\/$/, '') || '/';
+    var href = item.url.replace(/\/$/, '') || '/';
+    var active = path === href ? ' active' : '';
+    var cls = 'nav-' + item.type;
+    var prefix = icons[item.type] || '';
+    if (item.type === 'subscribe') {
+      return '<a href="' + item.url + '" class="nav-subscribe">' + item.label + '</a>';
+    }
+    return '<a href="' + item.url + '" class="nav-item ' + cls + active + '">' + prefix + item.label + '</a>';
+  }).join('\n');
 
-    <div class="nav-section">
-      <div class="nav-section-label">Guides</div>
-      <a href="/guides" class="nav-item depth-0">All guides</a>
-      <a href="/guides/iiot-stack-101" class="nav-item depth-1">├ IIoT stack 101</a>
-      <a href="/guides/choosing-a-platform" class="nav-item depth-1">├ Choosing a platform</a>
-      <a href="/guides/ot-it-convergence" class="nav-item depth-1">├ OT/IT convergence</a>
-      <a href="/guides/brownfield-deployment" class="nav-item depth-1">├ Brownfield deployment</a>
-      <a href="/guides/data-historian-vs-cloud" class="nav-item depth-1">├ Historian vs. cloud</a>
-      <a href="/guides/when-to-upgrade" class="nav-item depth-1">└ When to upgrade your stack</a>
-    </div>
-
-    <div class="nav-divider"></div>
-
-    <div class="nav-section">
-      <a href="/subscribe" class="nav-item depth-0 nav-subscribe">Subscribe →</a>
-    </div>
-  `;
-
-  const container = document.getElementById('sidebar-nav');
-  if (container) {
-    container.innerHTML = nav;
-    const path = window.location.pathname;
-    const links = container.querySelectorAll('a.nav-item');
-    links.forEach(link => {
-      const href = link.getAttribute('href');
-      if (href === path || (href !== '/' && path.startsWith(href))) {
-        link.classList.add('active');
-      }
-    });
-  }
+  var el = document.getElementById('sidebar-nav');
+  if (el) el.innerHTML = html;
 })();
