@@ -359,6 +359,14 @@ footer {
   font-size: 12px;
   color: var(--faint);
 }
+.footer-inner .page-label {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+.footer-inner .page-label::before { content: ''; }
+.footer-inner p { color: var(--faint); margin-bottom: 0; }
+.footer-inner a { color: var(--faint); text-decoration: underline; }
+.footer-inner a:hover { color: var(--mid); }
 
 /* --- Utility --- */
 .section-note {

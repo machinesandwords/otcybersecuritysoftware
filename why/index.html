@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>The Information Problem in OT Security — OT Cybersecurity Software</title>
+  <meta name="description" content="Why an independent guide to OT and ICS security software exists, what independent means in practice, and why the stakes in this market are different from any other software category.">
+  <link rel="canonical" href="https://otcybersecuritysoftware.com/why/">
+
+  <meta property="og:title" content="The Information Problem in OT Security — OT Cybersecurity Software">
+  <meta property="og:description" content="Why an independent guide to OT and ICS security software exists, and what independent means in practice.">
+  <meta property="og:url" content="https://otcybersecuritysoftware.com/why/">
+  <meta property="og:type" content="article">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js"></script>
+
+  <style>
+    .stat-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: var(--hairline);
+      margin: 1.5rem 0;
+    }
+    .stat-cell {
+      background: var(--surface);
+      padding: 1.25rem 1.5rem;
+    }
+    .stat-number {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.1;
+      margin-bottom: 0.25rem;
+    }
+    .stat-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--charcoal);
+      margin-bottom: 0.4rem;
+    }
+    .stat-sub {
+      font-size: 12px;
+      color: var(--mid);
+      line-height: 1.5;
+    }
+    .stat-year {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.1rem 0.4rem;
+      margin-bottom: 0.5rem;
+    }
+    .references {
+      margin-top: 2.5rem;
+      padding-top: 1rem;
+      border-top: var(--hairline);
+      font-size: 11px;
+      color: var(--faint);
+      line-height: 1.7;
+    }
+    .references a {
+      color: var(--faint);
+      text-decoration: underline;
+    }
+    .references a:hover {
+      color: var(--mid);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">OT Cybersecurity <span>Software</span></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for OT and ICS security practitioners</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>Why</span>
+        </div>
+
+        <span class="page-label">Why</span>
+        <h1>The Information Problem in OT Security</h1>
+
+        <p class="lead">Most OT security content is produced by the people selling OT security software. The practitioner trying to build a defensible shortlist for a $500K platform deployment has no neutral ground to stand on. This site is an attempt to fix that.</p>
+
+        <h2>Written for practitioners, not procurement committees</h2>
+
+        <p>In most software categories, a bad purchasing decision costs money and time. When industrial systems fail — whether from a cyberattack, a misconfigured security tool, or a gap in coverage an organization did not know it had — the consequences can extend well beyond accounting ledgers. Workers can be placed at risk, supply chains halted, economies hobbled, and lives imperiled.</p>
+
+        <p>This site is written for the people carrying that responsibility: security architects, CISOs who have inherited OT accountability, OT engineers being asked to evaluate tools, and operations leaders trying to understand what their security teams are recommending and why. The goal is to give you better information about the software market so you can make faster, more defensible decisions.</p>
+
+        <h2>The threat picture, by the numbers</h2>
+
+        <p>These cohorts are under accelerating pressure. Nation-state rivals are running long-term campaigns using credential harvesting and living-off-the-land tactics to infiltrate OT systems for sabotage and espionage, with confirmed attacks in 2024 and 2025 against automotive manufacturing, water infrastructure, and power grids across multiple countries and conflict zones.</p>
+
+        <div class="stat-block">
+          <div class="stat-cell">
+            <div class="stat-year">2024</div>
+            <div class="stat-number">1,015</div>
+            <div class="stat-label">Industrial sites disrupted by cyberattacks</div>
+            <div class="stat-sub">Up 146% from 412 the prior year. Physical consequences: production halts, environmental incidents, hazardous conditions.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-year">2025</div>
+            <div class="stat-number">500+</div>
+            <div class="stat-label">CISA ICS advisories issued in a single year</div>
+            <div class="stat-sub">First time the annual total exceeded 500. 82% of advisories were rated high or critical severity.</div>
+          </div>
+        </div>
+
+        <p>The attack surface has expanded in ways that make traditional OT defense assumptions unreliable. Nearly 90% of attacks that caused physical disruption in 2024 did so indirectly through compromised IT systems or cloud service dependencies. The software decisions organizations make today need to account for the entire converged environment, not the air-gapped architecture most OT security programs were designed around.</p>
+
+        <h2>What independent means on this site</h2>
+
+        <p>Independence is easy to claim. This is what it means here in concrete terms.</p>
+
+        <p>This site has no sponsored content. Vendors cannot pay to appear in rankings, comparisons, or guides. Editorial coverage is not available for purchase.</p>
+
+        <p>This site has no affiliate arrangements with the platforms it covers. There are no referral fees tied to vendor recommendations.</p>
+
+        <p>This site does not accept vendor briefings in exchange for coverage. If a vendor's product appears here, it is because the product is relevant to practitioners evaluating the category — not because the vendor requested it.</p>
+
+        <p>Analysis is based on publicly available information, product documentation, practitioner input, and direct evaluation where possible. When the evidence for a claim is thin, this site says so. When a product's strengths are real, this site says that too, regardless of whether the vendor is a large incumbent or a two-year-old startup.</p>
+
+        <p>When this site has an opinion, it attributes it clearly. Readers should always be able to distinguish between documented fact, practitioner consensus, and editorial judgment.</p>
+
+        <p>The people making OT security decisions are protecting infrastructure and supply chains that cities, industries, and in some cases entire economies depend on. They deserve better information than the market currently provides. That is the only reason this site exists.</p>
+
+        <div class="references">
+          <p>Sources: <a href="https://waterfall-security.com/ot-insights/ot-cyber-threat-report/" target="_blank" rel="noopener">Waterfall Security / ICS STRIVE 2025 OT Cyber Threat Report</a> &nbsp;&middot;&nbsp; <a href="https://www.cisa.gov/topics/industrial-control-systems" target="_blank" rel="noopener">CISA Industrial Control Systems Advisories</a> &nbsp;&middot;&nbsp; <a href="https://www.pwc.com/gx/en/issues/cybersecurity/geopolitical-shifts-amplify-ot-risks.html" target="_blank" rel="noopener">PwC: Geopolitical Shifts Amplify OT Risks (January 2026)</a></p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+ <footer>
+  <div class="footer-inner">
+    <span class="page-label">OT Cybersecurity Software</span>
+    <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
+  </div>
+</footer>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+</body>
+</html>
