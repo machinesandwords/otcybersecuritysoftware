@@ -39,8 +39,9 @@ img { max-width: 100%; display: block; }
   align-items: center;
   gap: 0.75rem;
   padding: 0.65rem 1.5rem;
-  background: var(--charcoal);
-  color: var(--bg);
+  background: var(--surface);
+  color: var(--charcoal);
+  border-bottom: var(--hairline);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -49,13 +50,13 @@ img { max-width: 100%; display: block; }
   top: 0;
   z-index: 100;
 }
-.topbar-brand { color: #fff; white-space: nowrap; }
+.topbar-brand { color: var(--charcoal); white-space: nowrap; }
 .topbar-brand span { color: var(--accent); }
-.topbar-divider { width: 1px; height: 14px; background: var(--faint); flex-shrink: 0; }
-.topbar-tagline { color: var(--faint); font-weight: 400; text-transform: none; letter-spacing: 0; }
+.topbar-divider { width: 1px; height: 14px; background: var(--border); flex-shrink: 0; }
+.topbar-tagline { color: var(--mid); font-weight: 400; text-transform: none; letter-spacing: 0; }
 .topbar-right { margin-left: auto; }
 .topbar-right a { color: var(--accent); font-weight: 700; }
-.topbar-right a:hover { color: #fff; text-decoration: none; }
+.topbar-right a:hover { color: var(--accent-dim); text-decoration: none; }
 
 /* --- Layout --- */
 .layout {
