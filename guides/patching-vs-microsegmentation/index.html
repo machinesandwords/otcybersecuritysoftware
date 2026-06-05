@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>Patching vs. Compensating Controls: An OT Decision Framework | OT Cybersecurity Software</title>
+  <meta name="description" content="A decision framework for OT security teams. When to patch, when to apply a compensating control, how to document the decision, and how to build the review process that keeps findings from accumulating.">
+  <link rel="canonical" href="https://otcybersecuritysoftware.com/guides/patching-vs-microsegmentation/">
+
+  <meta property="og:title" content="Patching vs. Compensating Controls: An OT Decision Framework">
+  <meta property="og:description" content="When to patch, when to apply a compensating control, how to document the decision, and how to build the review process that keeps findings from accumulating.">
+  <meta property="og:url" content="https://otcybersecuritysoftware.com/guides/patching-vs-microsegmentation/">
+  <meta property="og:type" content="article">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js"></script>
+
+  <style>
+    /* ── Decision criteria blocks ───────────────────────────── */
+    .decision-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: var(--hairline);
+      margin-bottom: 24px;
+    }
+    .decision-col {
+      background: var(--surface);
+      padding: 20px 24px;
+    }
+    .decision-col-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      display: block;
+    }
+    .decision-col-label.patch { color: #2e7d32; }
+    .decision-col-label.compensate { color: #b45309; }
+    .decision-col ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .decision-col li {
+      font-size: var(--small);
+      padding: 7px 0;
+      border-bottom: var(--hairline);
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      line-height: 1.5;
+    }
+    .decision-col li:last-child { border-bottom: none; }
+    .decision-col.patch li::before {
+      content: '+';
+      color: #2e7d32;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .decision-col.compensate li::before {
+      content: '+';
+      color: #b45309;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ── Framework steps ────────────────────────────────────── */
+    .framework-step {
+      border: var(--hairline);
+      background: var(--surface);
+      padding: 20px 24px;
+      margin-bottom: 12px;
+    }
+    .framework-step-header {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+    .framework-step-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .framework-step-title {
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+    .framework-step p { font-size: var(--small); margin-bottom: 10px; }
+    .framework-step p:last-child { margin-bottom: 0; }
+    .framework-step ul {
+      padding-left: 18px;
+      margin-bottom: 10px;
+    }
+    .framework-step li { font-size: var(--small); margin-bottom: 4px; }
+
+    /* ── VP capability blocks ───────────────────────────────── */
+    .vp-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: var(--hairline);
+      margin-bottom: 24px;
+    }
+    .vp-col {
+      background: var(--surface);
+      padding: 16px 20px;
+    }
+    .vp-col-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .vp-col-label.does { color: #2e7d32; }
+    .vp-col-label.does-not { color: #a03020; }
+    .vp-col ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .vp-col li {
+      font-size: var(--small);
+      padding: 6px 0;
+      border-bottom: var(--hairline);
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      line-height: 1.5;
+    }
+    .vp-col li:last-child { border-bottom: none; }
+    .vp-col.does li::before { content: '+'; color: #2e7d32; font-weight: 700; flex-shrink: 0; }
+    .vp-col.does-not li::before { content: '-'; color: #a03020; font-weight: 700; flex-shrink: 0; }
+
+    /* ── Tension callout ────────────────────────────────────── */
+    .tension-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: var(--hairline);
+      margin-bottom: 32px;
+    }
+    .tension-item {
+      background: var(--surface);
+      padding: 16px 20px;
+    }
+    .tension-item-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .tension-item p { font-size: var(--small); color: var(--mid); margin-bottom: 0; line-height: 1.6; }
+
+    /* ── Doc checklist ──────────────────────────────────────── */
+    .doc-list {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 16px;
+    }
+    .doc-list li {
+      font-size: var(--small);
+      padding: 8px 0;
+      border-bottom: var(--hairline);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .doc-list li:last-child { border-bottom: none; }
+    .doc-list li::before {
+      content: '—';
+      color: var(--accent);
+      flex-shrink: 0;
+      font-weight: 700;
+    }
+
+    @media (max-width: 600px) {
+      .decision-grid { grid-template-columns: 1fr; }
+      .vp-grid { grid-template-columns: 1fr; }
+      .tension-block { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">OT Cybersecurity <span>Software</span></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for OT and ICS security practitioners</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/guides/">Guides</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>Patching vs. Compensating Controls</span>
+        </div>
+
+        <span class="page-label">Guide</span>
+        <h1>Patching vs. Compensating Controls: An OT Decision Framework</h1>
+
+        <p class="lead">OT patch management fails not because operations teams are obstructionist, but because the assumptions underneath IT patch doctrine do not hold. Patches arrive late or not at all. Applying them requires production downtime. And patching one component does not close the network path that allowed an attacker to reach it. This guide provides a decision framework for making the patch-versus-compensating-control call deliberately, documenting it defensibly, and building the review process that keeps open findings from accumulating indefinitely.</p>
+
+        <!-- TOC -->
+        <div style="background: var(--surface); border: var(--hairline); border-left: 3px solid var(--accent); padding: 16px 20px; margin-bottom: 40px;">
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px;">Contents</div>
+          <ol style="padding-left: 18px; margin: 0;">
+            <li style="font-size: var(--small); margin-bottom: 6px;"><a href="#tension">The core tension</a></li>
+            <li style="font-size: var(--small); margin-bottom: 6px;"><a href="#friction">The friction matrix</a></li>
+            <li style="font-size: var(--small); margin-bottom: 6px;"><a href="#decision">Patch or compensate: the decision criteria</a></li>
+            <li style="font-size: var(--small); margin-bottom: 6px;"><a href="#virtual-patching">Virtual patching</a></li>
+            <li style="font-size: var(--small); margin-bottom: 0;"><a href="#framework">Building the decision framework</a></li>
+          </ol>
+        </div>
+
+        <!-- Section 1 -->
+        <h2 id="tension">The core tension</h2>
+
+        <p>IT patch management assumes you can update software on a defined cycle without asking permission from the plant floor. Three things break that assumption in OT.</p>
+
+        <div class="tension-block">
+          <div class="tension-item">
+            <span class="tension-item-label">Patch availability</span>
+            <p>OT vendors lag disclosed vulnerabilities by months, and end-of-life hardware may never receive a fix. Roughly 30% of OT vulnerabilities have no vendor patch at the time of disclosure.</p>
+          </div>
+          <div class="tension-item">
+            <span class="tension-item-label">Downtime cost</span>
+            <p>Applying a patch may require taking a production line offline. The maintenance window may be months away. A failed OT firmware update can leave equipment in a worse state than the vulnerability it was meant to address.</p>
+          </div>
+          <div class="tension-item">
+            <span class="tension-item-label">The result</span>
+            <p>A backlog of open findings that neither team owns. IT security escalates. Operations refuses. Nothing gets documented. This guide is the framework for getting out of that loop.</p>
+          </div>
+        </div>
+
+        <!-- Section 2 -->
+        <h2 id="friction">The friction matrix</h2>
+
+        <p>The friction matrix is a structured comparison of the true cost of patching versus the true cost of applying a compensating control for a given vulnerability. It forces the decision into the open before the IT team escalates and the operations team digs in.</p>
+
+        <h3>Patching cost components</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Cost element</th><th>What to assess</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Planned downtime</td>
+                <td>Duration of outage required. Whether a maintenance window is available or must be scheduled. Production impact in hours and dollar terms.</td>
+              </tr>
+              <tr>
+                <td>Vendor validation</td>
+                <td>Whether the vendor has tested the patch in your exact hardware/firmware combination. Whether applying an untested patch voids support.</td>
+              </tr>
+              <tr>
+                <td>Labor</td>
+                <td>Internal engineering time to apply, test, and verify. Vendor professional services if required.</td>
+              </tr>
+              <tr>
+                <td>Rollback risk</td>
+                <td>Whether a failed patch can be rolled back, and what the procedure is. Legacy systems often have no rollback path.</td>
+              </tr>
+              <tr>
+                <td>Requalification</td>
+                <td>Whether the patched system requires functional testing or regulatory requalification before returning to service.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Compensating control cost components</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Cost element</th><th>What to assess</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Control effectiveness</td>
+                <td>Does the compensating control actually block the attack path for this vulnerability, or does it reduce exposure without eliminating it?</td>
+              </tr>
+              <tr>
+                <td>Implementation effort</td>
+                <td>Firewall rule changes, microsegmentation policy updates, or virtual patching rule deployment. One-time cost.</td>
+              </tr>
+              <tr>
+                <td>Ongoing maintenance</td>
+                <td>Firewall rules require review. Microsegmentation policies must track network changes. This is a recurring cost.</td>
+              </tr>
+              <tr>
+                <td>Audit defensibility</td>
+                <td>Will an auditor accept this compensating control as equivalent to patching for compliance purposes? For NERC CIP and NIS2, the answer varies by standard and finding.</td>
+              </tr>
+              <tr>
+                <td>Residual risk</td>
+                <td>The compensating control reduces risk but does not eliminate it. What is the residual exposure?</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout">
+          <span class="callout-label">What the matrix is</span>
+          <p>The friction matrix is not a spreadsheet that produces a score. It is a structured conversation that forces IT security, operations, and compliance to agree on what each option actually costs before the decision is made.</p>
+        </div>
+
+        <!-- Section 3 -->
+        <h2 id="decision">Patch or compensate: the decision criteria</h2>
+
+        <div class="decision-grid">
+          <div class="decision-col patch">
+            <span class="decision-col-label patch">Patch when</span>
+            <ul>
+              <li>The patch is vendor-validated for your hardware and firmware version</li>
+              <li>A maintenance window exists or can be scheduled at acceptable production cost</li>
+              <li>The vulnerability has a credible exploitation path in your environment, not just a high CVSS score in the abstract</li>
+              <li>Patching closes the attack path, not just the finding</li>
+            </ul>
+          </div>
+          <div class="decision-col compensate">
+            <span class="decision-col-label compensate">Compensate when</span>
+            <ul>
+              <li>No patch exists or the system is end-of-life</li>
+              <li>Downtime cost is prohibitive relative to the risk for this specific vulnerability</li>
+              <li>The maintenance window is months away and interim risk reduction is needed</li>
+              <li>The system requires regulatory requalification after patching, making the patch cycle more disruptive than the vulnerability itself</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout">
+          <span class="callout-label">Document either decision</span>
+          <p>The documented rationale is what you show the auditor — not just the open finding or the closed ticket. A well-documented compensating control is defensible. An undocumented patching refusal is not.</p>
+        </div>
+
+        <!-- Section 4 -->
+        <h2 id="virtual-patching">Virtual patching</h2>
+
+        <p>Virtual patching is the use of a network-layer control — typically an industrial next-generation firewall or an intrusion prevention system with OT protocol awareness — to block known exploitation of a vulnerability without modifying the vulnerable system itself.</p>
+
+        <p>A virtual patch works by inspecting traffic destined for the vulnerable system and blocking packets that match known exploit patterns for the specific CVE. The underlying vulnerability remains, but the attack path is closed at the network layer.</p>
+
+        <div class="vp-grid">
+          <div class="vp-col does">
+            <span class="vp-col-label does">What virtual patching does well</span>
+            <ul>
+              <li>Provides immediate risk reduction while the patch cycle is scheduled</li>
+              <li>Works on systems where patching is not possible (end-of-life, no patch available)</li>
+              <li>Does not require system downtime or vendor involvement</li>
+              <li>Creates an audit trail — the firewall log documents that the exploitation path was actively blocked</li>
+            </ul>
+          </div>
+          <div class="vp-col does-not">
+            <span class="vp-col-label does-not">What virtual patching does not do</span>
+            <ul>
+              <li>Does not fix the vulnerability. A zero-day or new exploitation technique may not be covered by existing signatures.</li>
+              <li>Does not work against lateral movement within the same network segment</li>
+              <li>Requires the firewall vendor to have released a signature for the specific CVE — coverage varies by vendor and disclosure recency</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>Virtual patching implementation requirements</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Requirement</th><th>Detail</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>OT protocol awareness</td>
+                <td>The firewall must decode industrial protocols to distinguish legitimate traffic from exploit traffic. A standard IT firewall blocking all Modbus traffic is not virtual patching — it is service disruption.</td>
+              </tr>
+              <tr>
+                <td>Passive deployment option</td>
+                <td>The firewall must be configurable in detection-only mode before enforcement is enabled, to verify it does not block legitimate OT traffic.</td>
+              </tr>
+              <tr>
+                <td>Signature currency</td>
+                <td>Vendor must provide timely signature updates for OT-specific CVEs, not just IT vulnerabilities.</td>
+              </tr>
+              <tr>
+                <td>Logging and alerting</td>
+                <td>Blocked exploitation attempts must be logged and must generate alerts. Blocked and silent is not sufficient for audit purposes.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Section 5 -->
+        <h2 id="framework">Building the decision framework</h2>
+
+        <p>The decision framework is the documented process your organization uses to make and record the patch-versus-compensating-control decision for each finding. It exists so the decision is not made informally under pressure, and so the rationale is available when the auditor asks.</p>
+
+        <div class="framework-step">
+          <div class="framework-step-header">
+            <span class="framework-step-num">Step 01</span>
+            <span class="framework-step-title">Vulnerability intake and triage</span>
+          </div>
+          <p>Every OT vulnerability finding enters a triage process before any remediation decision is made. Triage answers three questions:</p>
+          <ul>
+            <li>Does this vulnerability have a credible exploitation path in our environment?</li>
+            <li>What is the operational impact of patching?</li>
+            <li>Is a compensating control available that effectively addresses the attack path?</li>
+          </ul>
+          <p>Triage should involve IT security, OT engineering, and operations. A finding that IT security escalates without OT engineering input will either result in a patch that breaks something, or a refusal with no documented rationale.</p>
+        </div>
+
+        <div class="framework-step">
+          <div class="framework-step-header">
+            <span class="framework-step-num">Step 02</span>
+            <span class="framework-step-title">Risk scoring in environmental context</span>
+          </div>
+          <p>CVSS scores are calculated without reference to your environment. Rescore each finding against your actual exposure:</p>
+          <div class="table-wrap" style="margin-top: 12px;">
+            <table>
+              <thead>
+                <tr><th>Factor</th><th>Questions to answer</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Network reachability</td>
+                  <td>Can an attacker reach this system from the internet, from the IT network, or only from within the OT segment?</td>
+                </tr>
+                <tr>
+                  <td>Authentication requirement</td>
+                  <td>Does exploitation require authenticated access? What is the strength of your access controls?</td>
+                </tr>
+                <tr>
+                  <td>Existing compensating controls</td>
+                  <td>Are there controls already in place that partially mitigate this attack path?</td>
+                </tr>
+                <tr>
+                  <td>Asset criticality</td>
+                  <td>What is the consequence of this asset being compromised or unavailable?</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="framework-step">
+          <div class="framework-step-header">
+            <span class="framework-step-num">Step 03</span>
+            <span class="framework-step-title">Decision documentation</span>
+          </div>
+          <p>For every finding, document:</p>
+          <ul class="doc-list" style="list-style:none; padding:0;">
+            <li style="font-size:var(--small); padding:8px 0; border-bottom:var(--hairline); display:flex; gap:12px; align-items:flex-start;">
+              <span style="color:var(--accent); font-weight:700; flex-shrink:0;">—</span>
+              <span>The vulnerability: CVE, affected system, CVSS score</span>
+            </li>
+            <li style="font-size:var(--small); padding:8px 0; border-bottom:var(--hairline); display:flex; gap:12px; align-items:flex-start;">
+              <span style="color:var(--accent); font-weight:700; flex-shrink:0;">—</span>
+              <span>The environmental risk score and the factors that drove it</span>
+            </li>
+            <li style="font-size:var(--small); padding:8px 0; border-bottom:var(--hairline); display:flex; gap:12px; align-items:flex-start;">
+              <span style="color:var(--accent); font-weight:700; flex-shrink:0;">—</span>
+              <span>The decision: patch, compensating control, or accept risk</span>
+            </li>
+            <li style="font-size:var(--small); padding:8px 0; border-bottom:var(--hairline); display:flex; gap:12px; align-items:flex-start;">
+              <span style="color:var(--accent); font-weight:700; flex-shrink:0;">—</span>
+              <span>If compensating control: what control, who implemented it, when, and what residual risk remains</span>
+            </li>
+            <li style="font-size:var(--small); padding:8px 0; border-bottom:var(--hairline); display:flex; gap:12px; align-items:flex-start;">
+              <span style="color:var(--accent); font-weight:700; flex-shrink:0;">—</span>
+              <span>If accept risk: the business justification and who signed off</span>
+            </li>
+            <li style="font-size:var(--small); padding:8px 0; display:flex; gap:12px; align-items:flex-start;">
+              <span style="color:var(--accent); font-weight:700; flex-shrink:0;">—</span>
+              <span>The review date: when will this decision be revisited?</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="framework-step">
+          <div class="framework-step-header">
+            <span class="framework-step-num">Step 04</span>
+            <span class="framework-step-title">Review cadence</span>
+          </div>
+          <p>Decisions made under the framework are not permanent. Set a review date for every open finding:</p>
+          <ul>
+            <li>Compensating controls are reviewed when the vendor releases a patch, when network topology changes, or on a defined cycle — quarterly for high-severity findings, annually for medium</li>
+            <li>Accepted risk findings are reviewed annually and require re-sign-off</li>
+            <li>Any finding that appears in an active threat campaign moves to immediate triage regardless of its scheduled review date</li>
+          </ul>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="newsletter-block">
+          <span class="page-label">Stay current</span>
+          <p>OT vulnerability guidance, enforcement patterns, and updated field notes delivered when they matter.</p>
+          <div class="newsletter-form">
+            <input type="email" id="nl-email" placeholder="your@email.com" autocomplete="email">
+            <button id="nl-submit" type="button">Subscribe</button>
+          </div>
+          <div id="nl-msg" style="font-size:11px; color:var(--mid); margin-top:8px; min-height:16px;"></div>
+        </div>
+
+        <div class="page-footer">
+          <span class="page-label">Related</span>
+          <p><a href="/guides/nis2-nerc-cip-audit-readiness/">NIS2 and NERC CIP Audit-Readiness Guide</a> — evidence collection, incident reporting timelines, and asset scoping</p>
+          <p><a href="/guides/oem-remote-access/">OEM Remote Access Field Guide</a> — shadow access discovery, JIT access implementation, and break-glass protocols</p>
+          <p><a href="/tools/asset-scoping-tool/">Asset Scoping Decision Tool</a> — classify individual OT assets under NERC CIP or NIS2</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+</body>
+</html>

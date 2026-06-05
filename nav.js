@@ -28,7 +28,8 @@
       <a href="/tools/" class="nav-item depth-0">All tools</a>
       <a href="/tools/vendor-comparison/" class="nav-item depth-1">├ Vendor comparison</a>
       <a href="/tools/rfp-evaluation-kit/" class="nav-item depth-1">├ RFP Evaluation Kit</a>
-      <a href="/tools/asset-scoping-tool/" class="nav-item depth-1">└ Asset scoping tool</a>
+      <a href="/tools/asset-scoping-tool/" class="nav-item depth-1">├ Asset scoping tool</a>
+      <a href="/tools/firewall-vs-diode-tco/" class="nav-item depth-1">└ Firewall vs. diode TCO</a>
     </div>
 
     <div class="nav-divider"></div>
@@ -49,6 +50,8 @@
       <a href="/guides/security-platform-evaluation/" class="nav-item depth-1">├ Platform evaluation</a>
       <a href="/guides/nis2-nerc-cip-audit-readiness/" class="nav-item depth-1">├ NIS2 and NERC CIP</a>
       <a href="/guides/oem-remote-access/" class="nav-item depth-1">├ OEM remote access</a>
+      <a href="/guides/patching-vs-microsegmentation/" class="nav-item depth-1">├ Patching vs. compensating controls</a>
+      <a href="/guides/firewalls-vs-data-diodes/" class="nav-item depth-1">├ Firewalls vs. data diodes</a>
       <a href="/guides/" class="nav-item depth-1">└ More &rarr;</a>
     </div>
 
