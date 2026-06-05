@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>NIS2 and NERC CIP Audit-Readiness Guide | OT Cybersecurity Software</title>
+  <meta name="description" content="A practical audit-readiness guide for OT security teams navigating NERC CIP and NIS2. Covers evidence requirements, incident reporting timelines, asset scoping, and common audit failures.">
+  <link rel="canonical" href="https://otcybersecuritysoftware.com/guides/nis2-nerc-cip-audit-readiness/">
+
+  <meta property="og:title" content="NIS2 and NERC CIP Audit-Readiness Guide">
+  <meta property="og:description" content="A practical audit-readiness guide for OT security teams navigating NERC CIP and NIS2. Evidence requirements, incident reporting timelines, asset scoping, and common audit failures.">
+  <meta property="og:url" content="https://otcybersecuritysoftware.com/guides/nis2-nerc-cip-audit-readiness/">
+  <meta property="og:type" content="article">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js"></script>
+
+  <style>
+    /* ── Framework filter ──────────────────────────────────── */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--surface);
+      border: var(--hairline);
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .filter-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--mid);
+      white-space: nowrap;
+    }
+    .filter-btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--mid);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: none;
+    }
+    .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .filter-btn.active-nerc { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .filter-btn.active-nis2 { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .filter-reset {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--faint);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      text-decoration: underline;
+    }
+    .filter-reset:hover { color: var(--mid); }
+    .filter-legend {
+      font-size: 11px;
+      color: var(--faint);
+      font-style: italic;
+      margin-left: auto;
+    }
+
+    /* ── Framework block treatments ───────────────────────── */
+    .nerc-block,
+    .nis2-block {
+      transition: opacity 0.2s ease;
+    }
+    .nerc-block .block-flag,
+    .nis2-block .block-flag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg);
+      border: var(--hairline);
+      padding: 4px 10px;
+    }
+
+    /* active states */
+    body.filter-nerc .nerc-block {
+      background: var(--accent-pale);
+      border-left: 3px solid var(--accent);
+      padding-left: 16px;
+      margin-left: -16px;
+    }
+    body.filter-nerc .nerc-block .block-flag { color: var(--accent); border-color: var(--accent); background: var(--surface); }
+    body.filter-nerc .nis2-block { opacity: 0.35; }
+
+    body.filter-nis2 .nis2-block {
+      background: var(--accent-pale);
+      border-left: 3px solid var(--accent);
+      padding-left: 16px;
+      margin-left: -16px;
+    }
+    body.filter-nis2 .nis2-block .block-flag { color: var(--accent); border-color: var(--accent); background: var(--surface); }
+    body.filter-nis2 .nerc-block { opacity: 0.35; }
+
+    /* ── Shared block ──────────────────────────────────────── */
+    .shared-block {
+      margin: 24px 0;
+    }
+
+    /* ── Checklist items ───────────────────────────────────── */
+    .checklist {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 24px;
+    }
+    .checklist li {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: var(--hairline);
+      font-size: var(--small);
+      align-items: flex-start;
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      width: 20px;
+      flex-shrink: 0;
+      padding-top: 1px;
+    }
+
+    /* ── Failure modes ─────────────────────────────────────── */
+    .failure-block {
+      border: var(--hairline);
+      background: var(--surface);
+      padding: 16px 20px;
+      margin-bottom: 12px;
+    }
+    .failure-block strong {
+      display: block;
+      font-size: var(--small);
+      margin-bottom: 6px;
+      color: var(--charcoal);
+    }
+    .failure-block p {
+      font-size: var(--small);
+      color: var(--mid);
+      margin-bottom: 0;
+    }
+
+    /* ── Fine callout ──────────────────────────────────────── */
+    .fine-callout {
+      background: var(--surface);
+      border: var(--hairline);
+      border-left: 3px solid var(--accent);
+      padding: 12px 16px;
+      margin-top: 16px;
+      font-size: var(--small);
+      color: var(--mid);
+    }
+    .fine-callout strong { color: var(--charcoal); }
+
+    /* ── Methodology steps ─────────────────────────────────── */
+    .method-steps {
+      list-style: none;
+      padding: 0;
+      margin: 16px 0 24px;
+      counter-reset: method;
+    }
+    .method-steps li {
+      display: flex;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: var(--hairline);
+      font-size: var(--small);
+      align-items: flex-start;
+    }
+    .method-steps li:last-child { border-bottom: none; }
+    .method-steps li::before {
+      counter-increment: method;
+      content: counter(method);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      width: 20px;
+      flex-shrink: 0;
+      padding-top: 1px;
+    }
+    .method-steps li strong { display: block; margin-bottom: 2px; }
+
+    /* ── Miscategorized assets ─────────────────────────────── */
+    .asset-list {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 24px;
+    }
+    .asset-list li {
+      padding: 10px 0;
+      border-bottom: var(--hairline);
+      font-size: var(--small);
+    }
+    .asset-list li:last-child { border-bottom: none; }
+    .asset-list li strong { color: var(--charcoal); }
+
+    /* ── Tool CTA ──────────────────────────────────────────── */
+    .tool-cta {
+      background: var(--surface);
+      border: var(--hairline);
+      border-top: 3px solid var(--accent);
+      padding: 20px 24px;
+      margin: 32px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+    }
+    .tool-cta-body { flex: 1; }
+    .tool-cta-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .tool-cta-title {
+      font-size: var(--h3);
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 6px;
+    }
+    .tool-cta p {
+      font-size: var(--small);
+      color: var(--mid);
+      margin-bottom: 12px;
+    }
+    .tool-cta-link {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+    }
+    .tool-cta-link:hover { background: var(--accent-dim); text-decoration: none; color: #fff; }
+
+    /* ── Bullet lists in framework blocks ──────────────────── */
+    .nerc-block ul,
+    .nis2-block ul,
+    .shared-block ul {
+      padding-left: 18px;
+      margin-bottom: 0;
+    }
+    .nerc-block li,
+    .nis2-block li,
+    .shared-block li {
+      font-size: var(--small);
+      margin-bottom: 6px;
+    }
+
+    /* ── Cadence list ──────────────────────────────────────── */
+    .cadence-list {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 16px;
+    }
+    .cadence-list li {
+      font-size: var(--small);
+      padding: 6px 0;
+      border-bottom: var(--hairline);
+      display: flex;
+      gap: 12px;
+    }
+    .cadence-list li:last-child { border-bottom: none; }
+    .cadence-list li::before {
+      content: '—';
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">OT Cybersecurity <span>Software</span></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for OT and ICS security practitioners</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/guides/">Guides</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>NIS2 and NERC CIP Audit-Readiness</span>
+        </div>
+
+        <span class="page-label">Guide</span>
+        <h1>NIS2 and NERC CIP Audit-Readiness Guide</h1>
+
+        <p class="lead">Most OT security teams know which framework they answer to. What they lack is a clear picture of what an auditor will actually ask for, how much lead time evidence collection requires, and where scoping decisions create liability. This guide covers both NERC CIP and NIS2 in parallel, including evidence requirements, incident reporting workflows, asset categorization, and the failure patterns that show up most often in enforcement actions. Use the framework filter to highlight content relevant to your situation.</p>
+
+        <!-- Table of contents -->
+        <div style="background: var(--surface); border: var(--hairline); border-left: 3px solid var(--accent); padding: 16px 20px; margin-bottom: 32px;">
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px;">Contents</div>
+          <ol style="padding-left: 18px; margin: 0;">
+            <li style="font-size: var(--small); margin-bottom: 6px;"><a href="#scope">Which framework applies to you</a></li>
+            <li style="font-size: var(--small); margin-bottom: 6px;"><a href="#evidence">Evidence collection</a></li>
+            <li style="font-size: var(--small); margin-bottom: 6px;"><a href="#reporting">Incident reporting timelines</a></li>
+            <li style="font-size: var(--small); margin-bottom: 6px;"><a href="#scoping">Asset categorization and scoping</a></li>
+            <li style="font-size: var(--small); margin-bottom: 6px;"><a href="#failures">Common audit failures</a></li>
+            <li style="font-size: var(--small); margin-bottom: 0;"><a href="#maintenance">What to keep current and how often</a></li>
+          </ol>
+        </div>
+
+        <!-- Stat bar -->
+        <div class="card-grid" style="margin-bottom: 32px;">
+          <div class="card">
+            <div class="card-label">NERC CIP-015 effective</div>
+            <div class="card-value">Jul 2026</div>
+            <div class="card-sub">Internal network security monitoring</div>
+          </div>
+          <div class="card">
+            <div class="card-label">NIS2 enforcement</div>
+            <div class="card-value">Oct 2024</div>
+            <div class="card-sub">EU member state transposition deadline</div>
+          </div>
+          <div class="card">
+            <div class="card-label">NIS2 early warning</div>
+            <div class="card-value">24 hrs</div>
+            <div class="card-sub">From awareness of significant incident</div>
+          </div>
+        </div>
+
+        <!-- Framework filter -->
+        <div class="filter-bar">
+          <span class="filter-label">Highlight my framework:</span>
+          <button class="filter-btn" id="btn-nerc" onclick="setFilter('nerc')">🇺🇸 NERC CIP</button>
+          <button class="filter-btn" id="btn-nis2" onclick="setFilter('nis2')">🇪🇺 NIS2</button>
+          <button class="filter-reset" id="btn-reset" onclick="setFilter(null)" style="display:none;">Clear filter</button>
+          <span class="filter-legend">Dimmed content still applies — use the filter for faster scanning</span>
+        </div>
+
+        <!-- Section 1 -->
+        <h2 id="scope">Which framework applies to you</h2>
+
+        <p>Scope assumptions can sink a compliance program before it has even begun. Organizations assume they fall under one framework, build their program around it, and discover the error during registration or, worse, during an enforcement inquiry.</p>
+
+        <div class="nerc-block" style="margin: 24px 0;">
+          <div class="block-flag">🇺🇸 NERC CIP</div>
+          <p>NERC CIP scope applies to owners, operators, and users of the Bulk Electric System as defined by NERC's Statement of Compliance Registry Criteria. Scope is determined by your registration category — Generator Owner, Transmission Owner, Distribution Provider, and similar — and by whether your assets meet the BES Cyber System definition: cyber assets that, if compromised, could impact the reliable operation of the BES within 15 minutes.</p>
+        </div>
+
+        <div class="nis2-block" style="margin: 24px 0;">
+          <div class="block-flag">🇪🇺 NIS2</div>
+          <p>NIS2 scope applies to medium and large organizations operating in sectors the directive classifies as essential or important, including energy, water, transport, manufacturing, and digital infrastructure, among others. Review Annex I and II of the directive to confirm your classification.</p>
+          <p style="margin-top: 12px;">Size thresholds: medium entities have 50 or more employees or annual turnover above EUR 10 million. Large entities have 250 or more employees or turnover above EUR 50 million. Member states may extend scope to smaller organizations in critical sectors.</p>
+        </div>
+
+        <div class="shared-block">
+          <p>Organizations subject to both frameworks exist, including European energy utilities with US operations and multinationals with assets in both jurisdictions. In those cases, the evidence collection and incident reporting requirements do not map cleanly onto each other, and the internal workflows need to be designed with both in mind from the start.</p>
+        </div>
+
+        <!-- Section 2 -->
+        <h2 id="evidence">Evidence collection</h2>
+
+        <p>The underlying methodology is the same regardless of framework: maintain a current, accurate record of what you have, how it is configured, who can access it, and what has happened to it. The difference is in the specific artifacts each framework requires, the formats auditors expect, and the retention periods that apply.</p>
+
+        <h3>The four evidence categories every OT audit requires</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>What it covers</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Asset inventory</td>
+                <td>What is on your OT network, how it is classified, and when the inventory was last validated</td>
+              </tr>
+              <tr>
+                <td>Configuration records</td>
+                <td>Baseline configurations, change history, patch status, and deviation documentation</td>
+              </tr>
+              <tr>
+                <td>Access logs</td>
+                <td>Who has access to what, how access is granted and revoked, and privileged access records</td>
+              </tr>
+              <tr>
+                <td>Incident documentation</td>
+                <td>Detection records, response actions, timeline reconstruction, and post-incident analysis</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="nerc-block" style="margin: 24px 0;">
+          <div class="block-flag">🇺🇸 NERC CIP evidence requirements</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Standard</th>
+                  <th>Evidence item</th>
+                  <th>Format</th>
+                  <th>Retention</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>CIP-002</td>
+                  <td>BES Cyber System inventory with impact ratings</td>
+                  <td>Structured list, approved format</td>
+                  <td>3 years</td>
+                </tr>
+                <tr>
+                  <td>CIP-003</td>
+                  <td>Cybersecurity policies, board or senior manager approval</td>
+                  <td>Signed policy documents</td>
+                  <td>3 years</td>
+                </tr>
+                <tr>
+                  <td>CIP-005</td>
+                  <td>Electronic Security Perimeter documentation, access control lists</td>
+                  <td>Network diagrams + ACL exports</td>
+                  <td>3 years</td>
+                </tr>
+                <tr>
+                  <td>CIP-006</td>
+                  <td>Physical Security Plan, visitor logs, access records</td>
+                  <td>Plan document + logs</td>
+                  <td>3 years</td>
+                </tr>
+                <tr>
+                  <td>CIP-007</td>
+                  <td>Patch management records, port and service documentation</td>
+                  <td>Patch log, system hardening records</td>
+                  <td>3 years</td>
+                </tr>
+                <tr>
+                  <td>CIP-008</td>
+                  <td>Incident response plan, test records, actual incident records</td>
+                  <td>Plan + test documentation</td>
+                  <td>3 years</td>
+                </tr>
+                <tr>
+                  <td>CIP-010</td>
+                  <td>Configuration baselines, change management records, vulnerability assessments</td>
+                  <td>Baseline snapshots + change log</td>
+                  <td>3 years</td>
+                </tr>
+                <tr>
+                  <td>CIP-013</td>
+                  <td>Supply chain risk management plan, vendor risk assessments</td>
+                  <td>Plan + vendor documentation</td>
+                  <td>3 years</td>
+                </tr>
+                <tr>
+                  <td>CIP-015</td>
+                  <td>Internal network security monitoring implementation evidence</td>
+                  <td>Architecture documentation + log records</td>
+                  <td>3 years</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="nis2-block" style="margin: 24px 0;">
+          <div class="block-flag">🇪🇺 NIS2 evidence requirements</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Evidence item</th>
+                  <th>Format</th>
+                  <th>Retention</th>
+                  <th>Audit trigger</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Asset register covering network and information systems</td>
+                  <td>Structured inventory, any format</td>
+                  <td>Duration of classification</td>
+                  <td>Supervisory inspection or incident</td>
+                </tr>
+                <tr>
+                  <td>Risk management measures documentation</td>
+                  <td>Policy + implementation evidence</td>
+                  <td>2 years minimum</td>
+                  <td>Supervisory inspection</td>
+                </tr>
+                <tr>
+                  <td>Supply chain security assessments</td>
+                  <td>Vendor risk records, contractual security clauses</td>
+                  <td>Duration of vendor relationship</td>
+                  <td>Incident involving third party</td>
+                </tr>
+                <tr>
+                  <td>Incident records</td>
+                  <td>Timeline, impact assessment, response log</td>
+                  <td>2 years</td>
+                  <td>Any reported incident</td>
+                </tr>
+                <tr>
+                  <td>Business continuity and crisis management plans</td>
+                  <td>Current approved version + test records</td>
+                  <td>Current version always available</td>
+                  <td>Supervisory inspection</td>
+                </tr>
+                <tr>
+                  <td>Cybersecurity training records</td>
+                  <td>Attendance, content, frequency</td>
+                  <td>2 years</td>
+                  <td>Supervisory inspection</td>
+                </tr>
+                <tr>
+                  <td>Multi-factor authentication evidence</td>
+                  <td>Policy + system configuration evidence</td>
+                  <td>Current configuration always available</td>
+                  <td>Supervisory inspection</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="shared-block">
+          <h3>Building an evidence collection calendar</h3>
+          <p>Evidence gaps discovered during an audit cannot be reconstructed retroactively. The only reliable approach is continuous collection with scheduled validation cycles.</p>
+          <p>Minimum cadence:</p>
+          <ul class="cadence-list">
+            <li>Asset inventory: validated quarterly, full review annually</li>
+            <li>Configuration baselines: updated within 30 days of any change</li>
+            <li>Access reviews: quarterly for privileged access, annually for all other access</li>
+            <li>Policy reviews: annually, with approval documented</li>
+            <li>Incident records: maintained in real time, reviewed 30 days post-incident</li>
+          </ul>
+          <p>Assign ownership. Evidence that belongs to everyone gets collected by no one. Each evidence category needs a named owner, a collection method, and a storage location that auditors can access on request.</p>
+        </div>
+
+        <!-- Section 3 -->
+        <h2 id="reporting">Incident reporting timelines</h2>
+
+        <p>The timelines are tight, the definitions are ambiguous, and the operational pressure during an active incident works against careful documentation. Build the workflow before you need it.</p>
+
+        <div class="nerc-block" style="margin: 24px 0;">
+          <div class="block-flag">🇺🇸 NERC CIP incident reporting workflow</div>
+          <p>NERC CIP incident reporting runs on two parallel tracks: mandatory reporting under CIP-008 to E-ISAC, and Department of Energy reporting via Form OE-417. These are separate obligations with different triggers.</p>
+          <div class="table-wrap" style="margin-top: 16px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Report</th>
+                  <th>Trigger</th>
+                  <th>Deadline</th>
+                  <th>Recipient</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>E-ISAC incident report</td>
+                  <td>Incident affecting or potentially affecting BES reliability</td>
+                  <td>Within 1 hour for imminent threat; as soon as practicable otherwise</td>
+                  <td>E-ISAC</td>
+                </tr>
+                <tr>
+                  <td>DOE OE-417</td>
+                  <td>Physical attack, cyber event, or suspicious activity affecting electric system</td>
+                  <td>Within 6 hours for major interruptions; 24 hours for others</td>
+                  <td>DOE Office of Electricity</td>
+                </tr>
+                <tr>
+                  <td>CIP-008 internal record</td>
+                  <td>Any Cyber Security Incident that activates the incident response plan</td>
+                  <td>Real-time documentation, retained 3 years</td>
+                  <td>Internal, available to auditors</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="margin-top: 12px;">CIP-008 requires a documented incident response plan and evidence that it was activated and followed. The plan must be tested at least once every 15 months. Test records are audit evidence.</p>
+        </div>
+
+        <div class="nis2-block" style="margin: 24px 0;">
+          <div class="block-flag">🇪🇺 NIS2 incident reporting workflow</div>
+          <p>NIS2 requires a three-stage reporting process for significant incidents. A significant incident is one that causes or could cause severe operational disruption or financial loss, or that affects other persons by causing considerable material or non-material damage.</p>
+          <div class="table-wrap" style="margin-top: 16px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Stage</th>
+                  <th>Deadline</th>
+                  <th>Recipient</th>
+                  <th>Content required</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Early warning</td>
+                  <td>24 hours from awareness</td>
+                  <td>National CSIRT or competent authority</td>
+                  <td>Indication that a significant incident has occurred. Whether suspected malicious. Cross-border impact if known.</td>
+                </tr>
+                <tr>
+                  <td>Incident notification</td>
+                  <td>72 hours from awareness</td>
+                  <td>National CSIRT or competent authority</td>
+                  <td>Initial assessment of severity and impact. Indicators of compromise if available. Update on early warning.</td>
+                </tr>
+                <tr>
+                  <td>Final report</td>
+                  <td>1 month from incident notification</td>
+                  <td>National CSIRT or competent authority</td>
+                  <td>Detailed description, severity, impact, root cause, cross-border impact, mitigation measures taken.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="margin-top: 12px;">"Awareness" means the moment a designated person in your organization has reasonable grounds to believe a significant incident has occurred. Document when awareness was established and by whom. This timestamp anchors all three deadlines.</p>
+          <p style="margin-top: 12px;">Operational workflow for the 24-hour window:</p>
+          <ol class="step-list" style="list-style:none; padding:0; margin-top: 8px;">
+            <li style="display:flex; gap:16px; padding:10px 0; border-bottom: var(--hairline); font-size: var(--small); align-items:flex-start;"><span class="step-num">01</span><span>Incident detected and escalated to designated security contact</span></li>
+            <li style="display:flex; gap:16px; padding:10px 0; border-bottom: var(--hairline); font-size: var(--small); align-items:flex-start;"><span class="step-num">02</span><span>Initial severity assessment against significance thresholds</span></li>
+            <li style="display:flex; gap:16px; padding:10px 0; border-bottom: var(--hairline); font-size: var(--small); align-items:flex-start;"><span class="step-num">03</span><span>Decision: significant or not significant, documented with rationale</span></li>
+            <li style="display:flex; gap:16px; padding:10px 0; border-bottom: var(--hairline); font-size: var(--small); align-items:flex-start;"><span class="step-num">04</span><span>If significant: early warning submitted, internal incident record opened</span></li>
+            <li style="display:flex; gap:16px; padding:10px 0; font-size: var(--small); align-items:flex-start;"><span class="step-num">05</span><span>Parallel: legal and communications notified</span></li>
+          </ol>
+          <p style="margin-top: 12px;">The 72-hour notification requires more detail but arrives before your investigation is complete. Submit what you have. Regulators understand that incident investigations take time. What they do not accept is silence.</p>
+        </div>
+
+        <div class="shared-block">
+          <h3>Building the internal escalation workflow</h3>
+          <p>Both frameworks require that the right people are notified quickly and that decisions are documented. The escalation workflow is the operational layer that makes reporting possible under pressure.</p>
+          <p>Minimum workflow elements:</p>
+          <ul>
+            <li>Named incident coordinator with backup designation</li>
+            <li>Severity classification criteria written down in advance</li>
+            <li>Regulatory reporting thresholds defined in plain language, not by reference to the framework text</li>
+            <li>Pre-drafted notification templates for each reporting stage</li>
+            <li>A single incident log that captures timestamps, decisions, and actions in real time</li>
+            <li>Legal and communications on the notification chain from the first escalation</li>
+          </ul>
+          <p style="margin-top: 16px;">The threshold question both frameworks leave ambiguous is what constitutes a "significant" or "reportable" incident. Do not leave this to judgment during an active incident. Write your thresholds down, have legal review them, and document the rationale. When an auditor asks why you did or did not report a specific incident, the answer is your pre-defined threshold criteria, not a post-hoc explanation.</p>
+        </div>
+
+        <!-- Section 4 -->
+        <h2 id="scoping">Asset categorization and scoping</h2>
+
+        <p>Scoping is where audits are won or lost. Over-scope and you apply security controls to assets that do not require them, diverting resources from higher-risk systems. Under-scope and you create compliance gaps that auditors find, or worse, that attackers exploit.</p>
+
+        <div class="shared-block">
+          <h3>The categorization methodology</h3>
+          <p>The approach is the same regardless of framework: work from function to consequence to connectivity.</p>
+          <ol class="method-steps">
+            <li><strong>Function</strong> What does this asset do? Control, monitor, safety, historian, network infrastructure, remote access.</li>
+            <li><strong>Consequence</strong> What happens to the physical process if this asset is compromised or unavailable? What is the blast radius?</li>
+            <li><strong>Connectivity</strong> What can reach this asset, and what can this asset reach? Connectivity determines attack surface and compliance boundary.</li>
+          </ol>
+        </div>
+
+        <div class="nerc-block" style="margin: 24px 0;">
+          <div class="block-flag">🇺🇸 NERC CIP asset scoping</div>
+          <p>NERC CIP uses a defined impact rating methodology. CIP-002 Attachment 1 specifies the criteria for High, Medium, and Low impact ratings.</p>
+          <div class="table-wrap" style="margin-top: 16px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Impact level</th>
+                  <th>General criteria</th>
+                  <th>Implication</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>High</td>
+                  <td>Generation above 1,500 MW, certain transmission facilities, control centers</td>
+                  <td>Full CIP requirements apply across all standards</td>
+                </tr>
+                <tr>
+                  <td>Medium</td>
+                  <td>Generation 300–1,500 MW, certain transmission elements, EMS/SCADA</td>
+                  <td>Most CIP standards apply, some with modified requirements</td>
+                </tr>
+                <tr>
+                  <td>Low</td>
+                  <td>BES Cyber Systems not meeting High or Medium criteria</td>
+                  <td>CIP-003-8 only, plus organizational policy requirements</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="nis2-block" style="margin: 24px 0;">
+          <div class="block-flag">🇪🇺 NIS2 asset scoping</div>
+          <p>NIS2 does not define asset impact tiers the way NERC CIP does. The obligation is to apply appropriate and proportionate security measures based on risk. In practice, your risk assessment methodology defines your scoping, and that methodology becomes audit evidence.</p>
+          <p style="margin-top: 12px;">Essential entity classification carries higher supervisory scrutiny and stricter requirements. Important entities face lighter obligations but are not exempt from enforcement. If your organization is on the boundary between classifications, document the classification decision and the criteria applied.</p>
+          <p style="margin-top: 12px;">Sector-specific scoping notes:</p>
+          <ul style="margin-top: 8px;">
+            <li>Energy sector: OT networks controlling generation, transmission, or distribution assets are in scope. Building management systems that do not connect to operational networks are generally out of scope.</li>
+            <li>Manufacturing: NIS2 scope for manufacturing applies to specific subsectors. Review Annex I and II of the directive against your primary activity code.</li>
+            <li>Supply chain: NIS2 requires security measures for suppliers and service providers. This extends scoping beyond your own perimeter.</li>
+          </ul>
+        </div>
+
+        <div class="shared-block">
+          <h3>Assets that are commonly miscategorized</h3>
+          <ul class="asset-list">
+            <li><strong>Historian servers</strong> Often treated as IT assets. If the historian receives data directly from Level 1/2 control systems and a compromise could affect BES operations, it is likely in scope.</li>
+            <li><strong>Remote access infrastructure</strong> Jump servers, VPN concentrators, and vendor access systems are in scope if they provide electronic access to BES Cyber Systems or OT networks in scope under NIS2.</li>
+            <li><strong>Protective relays</strong> Often overlooked in initial inventories. If they meet the BES Cyber Asset definition, they require full CIP controls.</li>
+            <li><strong>Engineering workstations</strong> Portable or fixed workstations used to configure BES Cyber Systems are Electronic Access Control or Monitoring Systems (EACMS) and carry their own requirements.</li>
+          </ul>
+        </div>
+
+        <div class="tool-cta">
+          <div class="tool-cta-body">
+            <span class="tool-cta-label">Companion tool</span>
+            <div class="tool-cta-title">Asset Scoping Decision Tool</div>
+            <p>Walk through the categorization decision for individual assets. Produces a classification with the criteria applied, ready to include in your audit documentation.</p>
+            <a href="/tools/asset-scoping-tool/" class="tool-cta-link">Open the tool</a>
+          </div>
+        </div>
+
+        <!-- Section 5 -->
+        <h2 id="failures">Common audit failures</h2>
+
+        <p>Three structural failure modes appear across both frameworks regardless of organization size or program maturity.</p>
+
+        <div class="failure-block">
+          <strong>Evidence gaps</strong>
+          <p>The program exists on paper. Controls are in place. But when the auditor asks for evidence that a specific control was operating on a specific date, the records do not exist, cannot be located, or contradict the policy documentation. Evidence collection is an operational discipline, not an annual exercise.</p>
+        </div>
+        <div class="failure-block">
+          <strong>Scope errors</strong>
+          <p>Assets that should be in scope are not. This is discovered either during an audit, when the auditor identifies assets that meet the classification criteria and asks why they are absent from the inventory, or after an incident, when the gap in controls becomes apparent. Scope errors compound over time as new assets are added without a classification process.</p>
+        </div>
+        <div class="failure-block">
+          <strong>Process documentation that does not match practice</strong>
+          <p>The incident response plan says the CISO is notified within one hour. In practice, the CISO finds out the next morning. The patch management policy says critical patches are applied within 35 days. The patch log shows a six-month backlog. Auditors test whether documentation reflects reality. When it does not, the violation is the gap between the two, not the underlying practice.</p>
+        </div>
+
+        <div class="nerc-block" style="margin: 32px 0 24px;">
+          <div class="block-flag">🇺🇸 NERC CIP violation patterns</div>
+          <p>NERC publishes violation data. The standards with the highest sustained violation rates:</p>
+          <div class="table-wrap" style="margin-top: 16px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Standard</th>
+                  <th>Common violation</th>
+                  <th>Why it recurs</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>CIP-007</td>
+                  <td>Ports and services not documented or disabled; patch timelines exceeded</td>
+                  <td>Legacy assets with no patch path; configuration management gaps</td>
+                </tr>
+                <tr>
+                  <td>CIP-010</td>
+                  <td>Configuration baselines not maintained after changes; vulnerability assessments overdue</td>
+                  <td>Change management process not integrated with compliance workflow</td>
+                </tr>
+                <tr>
+                  <td>CIP-005</td>
+                  <td>ESP boundary not accurately documented; access control list not current</td>
+                  <td>Network changes not reflected in compliance documentation</td>
+                </tr>
+                <tr>
+                  <td>CIP-003</td>
+                  <td>Policy not approved at required level; low-impact asset obligations not met</td>
+                  <td>Governance gap; low-impact assets deprioritized</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="fine-callout">
+            Penalties under NERC CIP can reach <strong>USD 1 million per violation per day</strong>. Most penalties are significantly lower, but the exposure is real and the violation record is public.
+          </div>
+        </div>
+
+        <div class="nis2-block" style="margin: 24px 0;">
+          <div class="block-flag">🇪🇺 NIS2 enforcement patterns</div>
+          <p>NIS2 enforcement is in its early stages, but national competent authorities have signaled consistent focus areas:</p>
+          <ul style="margin-top: 8px;">
+            <li>Incomplete risk assessments that do not address supply chain risk</li>
+            <li>Incident reporting failures, particularly the 24-hour early warning window</li>
+            <li>Missing or untested business continuity plans</li>
+            <li>No documented governance structure for cybersecurity at board level</li>
+          </ul>
+          <div class="fine-callout" style="margin-top: 16px;">
+            Maximum fine for essential entities: <strong>EUR 10 million or 2% of global annual turnover</strong>, whichever is higher. For important entities: EUR 7 million or 1.4% of global turnover.
+          </div>
+        </div>
+
+        <div class="shared-block">
+          <h3>Pre-audit gap assessment</h3>
+          <p>Run this before every audit cycle:</p>
+          <ol class="checklist">
+            <li><span class="checklist-num">01</span><span>Pull your current asset inventory. Verify it against a network scan. Reconcile discrepancies before the auditor does.</span></li>
+            <li><span class="checklist-num">02</span><span>For each evidence requirement, confirm the record exists, is current, and matches the relevant policy or control.</span></li>
+            <li><span class="checklist-num">03</span><span>Walk through your incident response plan. Check whether the named contacts, escalation paths, and reporting thresholds reflect current organizational reality.</span></li>
+            <li><span class="checklist-num">04</span><span>Review the most recent NERC violation notices or NIS2 enforcement actions for your sector. Check whether the cited gaps exist in your program.</span></li>
+            <li><span class="checklist-num">05</span><span>Document the gap assessment and what was done to address each finding. The assessment itself is evidence of a functioning compliance program.</span></li>
+          </ol>
+        </div>
+
+        <!-- Section 6 -->
+        <h2 id="maintenance">What to keep current and how often</h2>
+
+        <p>Compliance programs decay as regulations change, organizations change, and evidence collection lapses. The maintenance obligation is ongoing.</p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Artifact</th>
+                <th>Update trigger</th>
+                <th>Minimum frequency</th>
+                <th>Owner role</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Asset inventory</td>
+                <td>Any new asset, decommission, or network change</td>
+                <td>Quarterly validation, annual full review</td>
+                <td>OT security lead</td>
+              </tr>
+              <tr>
+                <td>BES Cyber System / NIS2 asset classification</td>
+                <td>Inventory change, regulatory update</td>
+                <td>With each inventory update</td>
+                <td>Compliance lead</td>
+              </tr>
+              <tr>
+                <td>Configuration baselines</td>
+                <td>Any configuration change</td>
+                <td>Within 30 days of change</td>
+                <td>System owner</td>
+              </tr>
+              <tr>
+                <td>Access control lists</td>
+                <td>Any personnel change, role change, or network change</td>
+                <td>Within 24 hours of change</td>
+                <td>Identity/access owner</td>
+              </tr>
+              <tr>
+                <td>Incident response plan</td>
+                <td>Organizational change, post-incident review, regulatory update</td>
+                <td>Annually, plus after any activation</td>
+                <td>Security operations lead</td>
+              </tr>
+              <tr>
+                <td>Policy documents</td>
+                <td>Regulatory update, organizational change</td>
+                <td>Annually, with documented approval</td>
+                <td>CISO or equivalent</td>
+              </tr>
+              <tr>
+                <td>Vendor / supply chain assessments</td>
+                <td>Contract renewal, vendor security incident, regulatory update</td>
+                <td>Annually per active vendor</td>
+                <td>Procurement / security joint</td>
+              </tr>
+              <tr>
+                <td>Evidence package completeness check</td>
+                <td>Pre-audit, post-incident</td>
+                <td>Quarterly</td>
+                <td>Compliance lead</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="nerc-block" style="margin: 24px 0;">
+          <div class="block-flag">🇺🇸 NERC regulatory watch</div>
+          <p>NERC standards development is public. Monitor:</p>
+          <ul style="margin-top: 8px;">
+            <li>NERC Standards Development activity for standards under revision</li>
+            <li>FERC rulemaking notices that direct NERC to develop new or modified standards</li>
+            <li>NERC's violation notice database for emerging enforcement patterns</li>
+          </ul>
+        </div>
+
+        <div class="nis2-block" style="margin: 24px 0;">
+          <div class="block-flag">🇪🇺 NIS2 regulatory watch</div>
+          <p>NIS2 implementation varies by member state. The directive sets minimum requirements; national law sets the specific obligations, fines, and supervisory authority. Monitor:</p>
+          <ul style="margin-top: 8px;">
+            <li>ENISA for guidance documents and incident reporting templates</li>
+            <li>Your national competent authority for sector-specific guidance</li>
+            <li>EUR-Lex for implementing acts and delegated regulations</li>
+          </ul>
+        </div>
+
+        <div class="shared-block">
+          <p>When your organization crosses a NIS2 size threshold or registers in a new NERC category, the compliance obligations change immediately. Build a trigger into your annual review process that checks whether your registration status or entity classification has changed.</p>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="newsletter-block">
+          <span class="page-label">Stay current</span>
+          <p>Regulatory changes, enforcement actions, and updated guidance delivered when they matter.</p>
+          <div class="newsletter-form">
+            <input type="email" id="nl-email" placeholder="your@email.com" autocomplete="email">
+            <button id="nl-submit" type="button">Subscribe</button>
+          </div>
+          <div id="nl-msg" style="font-size:11px; color:var(--mid); margin-top:8px; min-height:16px;"></div>
+        </div>
+
+        <!-- Related -->
+        <div class="page-footer">
+          <span class="page-label">Related</span>
+          <p><a href="/guides/security-platform-evaluation/">OT Security Platform Evaluation Guide</a> — how to evaluate and select an OT security platform</p>
+          <p><a href="/tools/rfp-evaluation-kit/">OT Security RFP Evaluation Kit</a> — four fillable documents for the full evaluation arc</p>
+          <p><a href="/tools/asset-scoping-tool/">Asset Scoping Decision Tool</a> — interactive companion to the categorization methodology in this guide</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+  <script>
+    // Framework filter
+    function setFilter(fw) {
+      var body = document.body;
+      body.classList.remove('filter-nerc', 'filter-nis2');
+      document.getElementById('btn-nerc').classList.remove('active');
+      document.getElementById('btn-nis2').classList.remove('active');
+      document.getElementById('btn-reset').style.display = 'none';
+
+      if (fw === 'nerc') {
+        body.classList.add('filter-nerc');
+        document.getElementById('btn-nerc').classList.add('active');
+        document.getElementById('btn-reset').style.display = 'inline';
+      } else if (fw === 'nis2') {
+        body.classList.add('filter-nis2');
+        document.getElementById('btn-nis2').classList.add('active');
+        document.getElementById('btn-reset').style.display = 'inline';
+      }
+    }
+  </script>
+
+</body>
+</html>

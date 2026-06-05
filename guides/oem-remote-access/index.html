@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>OEM Remote Access Field Guide | OT Cybersecurity Software</title>
+  <meta name="description" content="A practical field guide for OT security teams. Covers shadow access discovery, jump host architecture, just-in-time access implementation, break-glass protocols, and vendor contract language.">
+  <link rel="canonical" href="https://otcybersecuritysoftware.com/guides/oem-remote-access/">
+
+  <meta property="og:title" content="OEM Remote Access Field Guide">
+  <meta property="og:description" content="Find what is already in your environment, replace uncontrolled access with a governed architecture, and build the operational procedures that keep it that way.">
+  <meta property="og:url" content="https://otcybersecuritysoftware.com/guides/oem-remote-access/">
+  <meta property="og:type" content="article">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js"></script>
+
+  <style>
+    /* ── Option blocks ──────────────────────────────────────── */
+    .option-block {
+      border: var(--hairline);
+      background: var(--surface);
+      padding: 20px 24px;
+      margin-bottom: 12px;
+    }
+    .option-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .option-title {
+      font-size: var(--h3);
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 10px;
+    }
+    .option-block p { font-size: var(--small); margin-bottom: 10px; }
+    .option-block p:last-child { margin-bottom: 0; }
+    .option-limitation {
+      font-size: var(--small);
+      color: var(--mid);
+      border-top: var(--hairline);
+      padding-top: 10px;
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    /* ── Protocol element ───────────────────────────────────── */
+    .protocol-element {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 8px 16px;
+      padding: 10px 0;
+      border-bottom: var(--hairline);
+      font-size: var(--small);
+      align-items: baseline;
+    }
+    .protocol-element:last-child { border-bottom: none; }
+    .protocol-element-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--mid);
+    }
+
+    /* ── Pushback blocks ────────────────────────────────────── */
+    .pushback-block {
+      border: var(--hairline);
+      border-left: 3px solid var(--border);
+      background: var(--surface);
+      padding: 16px 20px;
+      margin-bottom: 12px;
+    }
+    .pushback-quote {
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 8px;
+      font-style: italic;
+    }
+    .pushback-response {
+      font-size: var(--small);
+      color: var(--mid);
+      margin-bottom: 0;
+    }
+
+    /* ── Discovery steps ────────────────────────────────────── */
+    .discovery-step {
+      padding: 20px 0;
+      border-bottom: var(--hairline);
+    }
+    .discovery-step:last-child { border-bottom: none; }
+    .discovery-step-header {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+    .discovery-step-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .discovery-step-title {
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+    .discovery-step p { font-size: var(--small); margin-bottom: 10px; }
+    .discovery-step ul { padding-left: 18px; margin-bottom: 0; }
+    .discovery-step li { font-size: var(--small); margin-bottom: 4px; }
+
+    /* ── Warning callout ────────────────────────────────────── */
+    .warning-callout {
+      border: var(--hairline);
+      border-left: 3px solid #a03020;
+      background: var(--surface);
+      padding: 14px 18px;
+      margin: 20px 0;
+    }
+    .warning-callout-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #a03020;
+      margin-bottom: 6px;
+      display: block;
+    }
+    .warning-callout p {
+      font-size: var(--small);
+      color: var(--mid);
+      margin-bottom: 0;
+    }
+
+    /* ── Tier table annotation ──────────────────────────────── */
+    .tier-high { color: #a03020; font-weight: 700; }
+    .tier-med  { color: #b45309; font-weight: 700; }
+    .tier-low  { color: #2e7d32; font-weight: 700; }
+
+    /* ── Contract table ─────────────────────────────────────── */
+    .contract-table td:first-child {
+      font-weight: 700;
+      white-space: nowrap;
+      width: 160px;
+    }
+    .contract-table td:last-child {
+      font-size: 11px;
+      font-style: italic;
+      color: var(--mid);
+      line-height: 1.7;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">OT Cybersecurity <span>Software</span></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for OT and ICS security practitioners</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/guides/">Guides</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>OEM Remote Access Field Guide</span>
+        </div>
+
+        <span class="page-label">Guide</span>
+        <h1>OEM Remote Access Field Guide</h1>
+
+        <p class="lead">Every OT network has vendor access it did not fully plan for. OEM and third-party automation vendors need remote access to service their equipment, and they have spent decades getting it the easiest way available: cellular modems, dual-homed laptops, always-on VPN tunnels installed during commissioning and never reviewed again. The result is a remote access layer that exists outside your security architecture, outside your change management process, and outside your visibility. This guide covers the full remediation arc: finding what is already in your environment, replacing uncontrolled access with a governed architecture, and building the operational procedures that keep it that way.</p>
+
+        <!-- TOC -->
+        <div style="background: var(--surface); border: var(--hairline); border-left: 3px solid var(--accent); padding: 16px 20px; margin-bottom: 40px;">
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px;">Contents</div>
+          <ol style="padding-left: 18px; margin: 0;">
+            <li style="font-size: var(--small); margin-bottom: 6px;"><a href="#structural-difference">Why OEM remote access is structurally different</a></li>
+            <li style="font-size: var(--small); margin-bottom: 6px;"><a href="#shadow-discovery">Shadow access discovery</a></li>
+            <li style="font-size: var(--small); margin-bottom: 6px;"><a href="#architecture">Architecture options</a></li>
+            <li style="font-size: var(--small); margin-bottom: 6px;"><a href="#jit-implementation">Just-in-time access implementation</a></li>
+            <li style="font-size: var(--small); margin-bottom: 6px;"><a href="#break-glass">The break-glass protocol</a></li>
+            <li style="font-size: var(--small); margin-bottom: 0;"><a href="#contracts">Vendor contract language</a></li>
+          </ol>
+        </div>
+
+        <!-- Section 1 -->
+        <h2 id="structural-difference">Why OEM remote access is structurally different</h2>
+
+        <p>IT remote access is a solved problem. You control the endpoints, you own the identity infrastructure, and you define the access policy. OEM remote access inverts all three.</p>
+
+        <p>The vendor controls the endpoint. Their technician connects from a laptop you have never seen, running software you have not approved, with credentials you did not issue and cannot revoke. Your access policy applies at your perimeter, but the vendor's equipment may have its own path in, such as a cellular modem installed during commissioning, a serial-to-Ethernet converter with a public IP, or a maintenance port that predates your network segmentation by fifteen years.</p>
+
+        <p>The support model compounds the problem. OEM vendors structure their service agreements around access assumptions. Always-on connectivity is often framed as a technical requirement for remote diagnostics, predictive maintenance, or firmware update delivery. In practice, most of this traffic is periodic or triggered, not continuous. The "always-on" requirement is a support model preference rather than an engineering necessity.</p>
+
+        <p>The consequence is a class of access that is simultaneously necessary and uncontrolled. Cutting it off breaks vendor support agreements and leaves equipment without a service path. Leaving it in place creates persistent, unmonitored entry points into your OT network.</p>
+
+        <div class="callout">
+          <span class="callout-label">Where to start</span>
+          <p>The architecture options in Section 3 resolve this. But first you need to know what you have. Start with the shadow access discovery in Section 2 before making any architecture decisions.</p>
+        </div>
+
+        <!-- Section 2 -->
+        <h2 id="shadow-discovery">Shadow access discovery</h2>
+
+        <p>Shadow access is remote access that exists in your OT environment without IT or security team knowledge or approval. It is more common than most organizations expect. This discovery process surfaces it without requiring vendor cooperation.</p>
+
+        <p>Run this as an internal audit before any architecture changes. The goal is a complete inventory of every remote access path into your OT network, sanctioned or not.</p>
+
+        <div class="discovery-step">
+          <div class="discovery-step-header">
+            <span class="discovery-step-num">Step 01</span>
+            <span class="discovery-step-title">Network scanning baseline</span>
+          </div>
+          <p>Run a passive network scan across all OT network segments. You are looking for:</p>
+          <ul>
+            <li>Devices with public IP addresses or cellular connectivity</li>
+            <li>Devices that initiate outbound connections to external IP ranges</li>
+            <li>Unrecognized devices on segments where the asset inventory is supposedly complete</li>
+            <li>Traffic on ports associated with remote access protocols: RDP (3389), VNC (5900), SSH (22), and vendor-specific management ports</li>
+          </ul>
+          <p style="margin-top: 10px;">Document every finding, but do not remediate during discovery. The goal at this stage is solely to create an inventory.</p>
+        </div>
+
+        <div class="discovery-step">
+          <div class="discovery-step-header">
+            <span class="discovery-step-num">Step 02</span>
+            <span class="discovery-step-title">Cellular modem hunt</span>
+          </div>
+          <p>Cellular modems are the hardest shadow access vector to find because they bypass your network entirely. Physical inspection is required.</p>
+          <p>Walk the plant floor and control rooms looking for:</p>
+          <ul>
+            <li>Small devices with antenna leads attached to control panels or relay racks</li>
+            <li>Devices with SIM card slots</li>
+            <li>Unfamiliar networking equipment near PLCs, RTUs, or HMIs</li>
+            <li>Serial-to-cellular converters attached to legacy equipment</li>
+          </ul>
+          <p style="margin-top: 10px;">Cross-reference findings against your asset inventory. Anything not in the inventory is a candidate for further investigation.</p>
+        </div>
+
+        <div class="discovery-step">
+          <div class="discovery-step-header">
+            <span class="discovery-step-num">Step 03</span>
+            <span class="discovery-step-title">Engineering workstation audit</span>
+          </div>
+          <p>Dual-homed laptops — machines with both corporate network and OT network connectivity — are a common shadow access path. Vendors leave them behind after commissioning or connect their own during service visits.</p>
+          <p>Audit every engineering workstation connected to OT segments:</p>
+          <ul>
+            <li>Is it in the asset inventory?</li>
+            <li>Does it have wireless adapters that could connect to external networks?</li>
+            <li>Does it have VPN clients installed?</li>
+            <li>Does it have remote access software installed (TeamViewer, AnyDesk, LogMeIn)?</li>
+          </ul>
+        </div>
+
+        <div class="discovery-step">
+          <div class="discovery-step-header">
+            <span class="discovery-step-num">Step 04</span>
+            <span class="discovery-step-title">Firewall rule review</span>
+          </div>
+          <p>Pull your OT firewall rule sets and look for:</p>
+          <ul>
+            <li>Rules permitting inbound connections from external IP ranges</li>
+            <li>Rules with "any source" or overly broad source definitions</li>
+            <li>Rules that were created during vendor commissioning and never reviewed</li>
+            <li>Expired or unused rules that were never removed</li>
+          </ul>
+          <p style="margin-top: 10px;">Map each permissive rule to a business justification. Rules that cannot be mapped to a current, approved access requirement are candidates for removal.</p>
+        </div>
+
+        <div class="discovery-step">
+          <div class="discovery-step-header">
+            <span class="discovery-step-num">Step 05</span>
+            <span class="discovery-step-title">Vendor contract review</span>
+          </div>
+          <p>Pull every active service and maintenance contract for OT equipment. Note which vendors have contractual access provisions and what those provisions specify. Contracts that require "permanent remote access" or "unrestricted connectivity" without defining the technical parameters are a security problem as well as a negotiation problem.</p>
+        </div>
+
+        <div class="callout">
+          <span class="callout-label">Discovery output</span>
+          <p>The output of the discovery process is a complete shadow access inventory: every remote access path, the vendor or purpose associated with it, whether it is currently active, and its current governance status. This inventory is the baseline for your architecture decisions.</p>
+        </div>
+
+        <!-- Section 3 -->
+        <h2 id="architecture">Architecture options</h2>
+
+        <p>Four architectural patterns address OEM remote access. They are not mutually exclusive. Most mature environments use a combination.</p>
+
+        <div class="option-block">
+          <span class="option-label">Option 01</span>
+          <div class="option-title">Jump host with session recording</div>
+          <p>A jump host (also called a bastion host or jump server) is a hardened, isolated system that vendors connect to before accessing OT equipment. The vendor never has direct network access to OT assets. All traffic flows through the jump host, which is monitored and logged.</p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Element</th><th>Implementation</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Placement</td><td>DMZ between IT/internet and OT network</td></tr>
+                <tr><td>Vendor access</td><td>MFA-required login to jump host only</td></tr>
+                <tr><td>OT access</td><td>Jump host connects to target equipment via approved protocols only</td></tr>
+                <tr><td>Session recording</td><td>Full session capture on jump host</td></tr>
+                <tr><td>Access duration</td><td>Time-limited sessions, manually approved or automatically expired</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Jump hosts are the baseline for any governed OEM access architecture. They do not require vendor equipment changes and work with legacy OT assets.</p>
+          <div class="option-limitation">Limitation: a jump host controls access through a defined path but does not prevent a vendor from bypassing it via cellular modem. Jump host architecture must be paired with cellular modem removal and firewall rules that enforce the jump host as the only ingress.</div>
+        </div>
+
+        <div class="option-block">
+          <span class="option-label">Option 02</span>
+          <div class="option-title">Just-in-time access with approval workflow</div>
+          <p>JIT access means vendor connectivity is off by default. The vendor requests access, the request is approved by a named internal contact, access is enabled for a defined window, and it is automatically revoked when the window closes.</p>
+          <p>JIT access can be implemented on top of a jump host using access management tooling, or with network-layer controls that enable and disable firewall rules on a timed basis. The key elements are:</p>
+          <ul style="margin-bottom: 12px;">
+            <li>A request and approval workflow that creates an audit record</li>
+            <li>Named internal approval authority, not a generic helpdesk queue</li>
+            <li>Time-bounded sessions with automatic revocation</li>
+            <li>Real-time notification when a session is active</li>
+            <li>Session recording from session open to close</li>
+          </ul>
+          <p>JIT access is the target state for most OEM remote access scenarios. Section 4 covers implementation in detail.</p>
+        </div>
+
+        <div class="option-block">
+          <span class="option-label">Option 03</span>
+          <div class="option-title">Cyber-Physical Secure Remote Access (CP-SRA) platforms</div>
+          <p>Dedicated OT remote access platforms — from vendors including Claroty, Tosibox, Secomea, and others — are purpose-built for industrial environments. They provide JIT access, session recording, and protocol-aware controls without requiring changes to OT assets.</p>
+          <p>CP-SRA platforms handle legacy protocols and constrained network environments that generic IT remote access tools do not accommodate. They are the right choice for complex environments with many vendors, many assets, and compliance recording requirements.</p>
+          <div class="option-limitation">Trade-off: cost and deployment complexity. A CP-SRA platform requires procurement, integration with your identity infrastructure, and vendor enrollment. For environments with a small number of vendors and assets, a well-configured jump host with JIT workflow may be sufficient.</div>
+        </div>
+
+        <div class="option-block">
+          <span class="option-label">Option 04</span>
+          <div class="option-title">Protocol break with unidirectional data extraction</div>
+          <p>For the highest-consequence assets — safety instrumented systems, protection relays, critical control systems — the correct architecture is no bidirectional remote access at all. Diagnostic data is extracted via a unidirectional gateway (data diode). Vendor access for configuration changes requires a physical site visit.</p>
+          <p>This is operationally inconvenient and some vendors will resist it. It is also the only architecture that provides a hardware guarantee against remote exploitation of these assets. The inconvenience is the point.</p>
+        </div>
+
+        <!-- Section 4 -->
+        <h2 id="jit-implementation">Just-in-time access implementation</h2>
+
+        <p>JIT access implementation follows a defined sequence. The steps below assume a jump host is in place or being deployed concurrently.</p>
+
+        <h3>Step 1 — Define the access tiers</h3>
+        <p>Not all vendor access requires the same controls. Define tiers before configuring anything.</p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tier</th>
+                <th>Criteria</th>
+                <th>Approval required</th>
+                <th>Session duration</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tier-low">Tier 1</span> — Read-only monitoring</td>
+                <td>Vendor reads diagnostic data only, no configuration changes</td>
+                <td>Single approver, 24-hour advance notice</td>
+                <td>Up to 4 hours</td>
+              </tr>
+              <tr>
+                <td><span class="tier-med">Tier 2</span> — Supervised configuration</td>
+                <td>Vendor makes configuration changes, internal engineer present</td>
+                <td>Two approvers including plant engineer</td>
+                <td>Duration of maintenance window only</td>
+              </tr>
+              <tr>
+                <td><span class="tier-high">Tier 3</span> — Emergency access</td>
+                <td>Unplanned access during active equipment failure</td>
+                <td>Single approver, notification to security team</td>
+                <td>Duration of incident only, extended by request</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Step 2 — Enroll vendors</h3>
+        <p>Before any vendor receives access credentials:</p>
+        <ul>
+          <li>Verify the vendor contact's identity against a named contact in the service contract</li>
+          <li>Issue credentials tied to the individual, not the vendor company</li>
+          <li>Document the vendor contact, the equipment they are authorized to access, and the access tier</li>
+          <li>Require vendors to acknowledge your access policy in writing</li>
+        </ul>
+        <p>Individual credentials matter. Shared vendor accounts make session attribution impossible and survive personnel changes at the vendor indefinitely.</p>
+
+        <h3>Step 3 — Configure the approval workflow</h3>
+        <p>The workflow must produce an audit record. At minimum:</p>
+        <ul>
+          <li>Vendor submits access request with reason, target equipment, and requested duration</li>
+          <li>Request routes to named internal approver</li>
+          <li>Approver grants or denies with documented rationale</li>
+          <li>Approval triggers time-limited credential activation</li>
+          <li>Session open and close are logged with timestamps</li>
+          <li>Credential automatically deactivates at session expiry</li>
+        </ul>
+        <p>If your tooling cannot automate credential activation, a manual process with documented steps is acceptable. What is not acceptable is informal approval via email or phone with no written record.</p>
+
+        <h3>Step 4 — Monitor active sessions</h3>
+        <p>Assign someone to watch active vendor sessions, or configure alerts that notify a named contact when a session is open. Unmonitored sessions defeat the purpose of the access tier system.</p>
+        <p>At minimum, configure alerts for:</p>
+        <ul>
+          <li>Sessions that exceed their approved duration</li>
+          <li>Access to assets outside the approved scope for that vendor</li>
+          <li>Configuration changes during read-only sessions</li>
+          <li>Failed authentication attempts</li>
+        </ul>
+
+        <h3>Step 5 — Conduct post-session review</h3>
+        <p>Review session recordings for Tier 2 and Tier 3 sessions within 48 hours. You are looking for configuration changes that were not discussed during the approval, access to assets outside the approved scope, and anything that looks like reconnaissance rather than maintenance.</p>
+        <p>Post-session review is also how you catch credential sharing. A vendor technician who connects from two different locations during the same session, or from a location inconsistent with their stated role, is a flag worth investigating.</p>
+
+        <!-- Section 5 -->
+        <h2 id="break-glass">The break-glass protocol</h2>
+
+        <p>Break-glass is the emergency access procedure for situations where normal JIT workflow cannot be followed, such as an active equipment failure, a safety system anomaly, or a situation where the cost of a 24-hour approval cycle is a production line shutdown or a safety incident.</p>
+
+        <p>The break-glass protocol exists to make emergency access fast without making it uncontrolled. Emergency access is pre-authorized, controlled, and produces an audit record.</p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Element</th><th>Requirement</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Pre-authorization</td>
+                <td>Break-glass credentials exist before the emergency. They are not created under pressure.</td>
+              </tr>
+              <tr>
+                <td>Named custodian</td>
+                <td>One named internal person holds break-glass credential activation authority per shift. This role rotates; the list is current.</td>
+              </tr>
+              <tr>
+                <td>Activation trigger</td>
+                <td>Written criteria for what constitutes a break-glass situation. "Vendor requested it" is not a trigger.</td>
+              </tr>
+              <tr>
+                <td>Notification</td>
+                <td>Security team is notified within 15 minutes of activation, not after the incident closes.</td>
+              </tr>
+              <tr>
+                <td>Session recording</td>
+                <td>Full session recording regardless of urgency. No exceptions.</td>
+              </tr>
+              <tr>
+                <td>Post-incident review</td>
+                <td>Mandatory review within 24 hours. Documents what was accessed, what changed, and whether the emergency justified the access tier.</td>
+              </tr>
+              <tr>
+                <td>Credential rotation</td>
+                <td>Break-glass credentials are rotated after every use.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>What break-glass does not authorize</h3>
+        <p>Break-glass access is scoped to the equipment involved in the emergency. A vendor who receives break-glass access to a specific PLC does not have break-glass access to adjacent systems. Scope creep during emergency sessions is the most common break-glass abuse pattern.</p>
+
+        <h3>The segmentation guarantee</h3>
+        <p>Break-glass access through a jump host or CP-SRA platform preserves network segmentation. The vendor connects to the jump host; the jump host connects to the target equipment. If the jump host is compromised during the session, the blast radius is the jump host, not your OT network.</p>
+
+        <div class="warning-callout">
+          <span class="warning-callout-label">No exceptions</span>
+          <p>Break-glass that involves physically disabling firewall rules or temporarily connecting a cellular modem does not preserve segmentation and should not be permitted, regardless of the urgency claimed.</p>
+        </div>
+
+        <!-- Section 6 -->
+        <h2 id="contracts">Vendor contract language</h2>
+
+        <p>Access architecture only governs the vendors who agree to use it. Vendors with legacy contracts that specify permanent, unrestricted access have contractual cover for non-compliance. Fixing the architecture without fixing the contracts leaves the program incomplete.</p>
+
+        <h3>What to require in new and renewed contracts</h3>
+
+        <div class="table-wrap">
+          <table class="contract-table">
+            <thead>
+              <tr><th>Provision</th><th>Language approach</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Access method</td>
+                <td>"Remote access shall be conducted exclusively through [organization]'s designated secure remote access infrastructure. Direct connections to OT assets via any other method, including cellular modems, are prohibited."</td>
+              </tr>
+              <tr>
+                <td>Just-in-time requirement</td>
+                <td>"Remote access sessions require advance notice of [X] hours except in cases of active equipment emergency as defined in the break-glass procedure."</td>
+              </tr>
+              <tr>
+                <td>Individual credentials</td>
+                <td>"Remote access credentials shall be issued to named individuals. Shared accounts are prohibited. Vendor shall notify [organization] within 24 hours of any personnel change affecting authorized individuals."</td>
+              </tr>
+              <tr>
+                <td>Session recording consent</td>
+                <td>"Vendor acknowledges that all remote access sessions are recorded and that recordings may be reviewed by [organization] for security and compliance purposes."</td>
+              </tr>
+              <tr>
+                <td>Cellular modem prohibition</td>
+                <td>"Installation of cellular modems, wireless gateways, or any device providing independent network connectivity on [organization]'s OT network is prohibited without written approval."</td>
+              </tr>
+              <tr>
+                <td>Right to audit</td>
+                <td>"[Organization] reserves the right to audit vendor remote access activity and revoke access for non-compliance with this policy."</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Handling vendor pushback</h3>
+
+        <div class="pushback-block">
+          <div class="pushback-quote">"Our support model requires always-on access."</div>
+          <p class="pushback-response">Always-on is a support model preference. JIT access with a short approval window, typically 30 minutes for standard requests, immediate for emergencies, satisfies the operational requirement without the persistent exposure. If the vendor refuses to support equipment without always-on access, that is a procurement risk factor, not a security concession.</p>
+        </div>
+
+        <div class="pushback-block">
+          <div class="pushback-quote">"We cannot support your jump host architecture."</div>
+          <p class="pushback-response">This means their remote access tooling cannot route through a bastion host. In most cases, this is a configuration limitation, not a technical impossibility. Require them to test it before accepting the objection. If it is genuinely impossible, require physical on-site visits for that vendor's equipment.</p>
+        </div>
+
+        <div class="pushback-block">
+          <div class="pushback-quote">"This will void the warranty."</div>
+          <p class="pushback-response">Review the warranty terms. Warranty voiding provisions typically apply to unauthorized hardware modifications, not to network access controls implemented by the asset owner. If a vendor attempts to enforce a warranty void for implementing network segmentation, escalate to legal.</p>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="newsletter-block">
+          <span class="page-label">Stay current</span>
+          <p>Vendor access guidance, enforcement patterns, and updated field notes delivered when they matter.</p>
+          <div class="newsletter-form">
+            <input type="email" id="nl-email" placeholder="your@email.com" autocomplete="email">
+            <button id="nl-submit" type="button">Subscribe</button>
+          </div>
+          <div id="nl-msg" style="font-size:11px; color:var(--mid); margin-top:8px; min-height:16px;"></div>
+        </div>
+
+        <div class="page-footer">
+          <span class="page-label">Related</span>
+          <p><a href="/guides/nis2-nerc-cip-audit-readiness/">NIS2 and NERC CIP Audit-Readiness Guide</a> — evidence collection, incident reporting timelines, and asset scoping</p>
+          <p><a href="/guides/security-platform-evaluation/">OT Security Platform Evaluation Guide</a> — how to evaluate and select an OT security platform</p>
+          <p><a href="/tools/rfp-evaluation-kit/">OT Security RFP Evaluation Kit</a> — four fillable documents for the full evaluation arc</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+</body>
+</html>

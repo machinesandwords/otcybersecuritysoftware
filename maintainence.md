@@ -159,3 +159,40 @@ Key editorial position established in landscape page:
 
 *Last updated: June 2026*
 *Next review: January 2027*
+
+---
+
+## NEWSLETTER WORKER — TECHNICAL NOTES
+
+### Worker configuration
+- Worker name: `newsletter-otcybersecuritysoftware`
+- Worker URL: `https://newsletter-otcybersecuritysoftware.whereismy328.workers.dev`
+- Custom domain `newsletter.otcybersecuritysoftware.com` configured via Workers Routes on the domain (not via Worker Domains UI)
+- Required secrets: `MAILERLITE_API_KEY`, `NEWSLETTER_GROUP_ID`
+
+### MailerLite groups
+| Group | ID | Purpose |
+|-------|----|---------|
+| OT Cybersecurity Newsletter | 189192920775002053 | Newsletter signups via newsletter.js |
+| OT Security RFP Kit | 189440205919356679 | RFP kit gate page downloads |
+
+### How the Worker routes to groups
+The Worker accepts an optional `group_id` in the POST body. If not provided, falls back to `NEWSLETTER_GROUP_ID` environment variable. The gate page passes the RFP Kit group ID explicitly.
+
+### Known issues
+- Cloudflare "Add Domain" UI in the Worker shows "No zones found" even for domains in the same account. Use the domain's Workers Routes page instead (Cloudflare → domain → Compute → Workers Routes → Add route).
+- CNAME pointing to workers.dev URL causes Error 522. Delete any manual CNAME and use Workers Routes instead.
+- workers.dev URL works as a direct endpoint and is used in newsletter.js and the gate page as a fallback.
+
+---
+
+## CLOUDFLARE CACHING
+
+### Development Mode
+Enable Development Mode during active build sprints to bypass Cloudflare's cache and see changes immediately.
+Cloudflare → domain → Caching → Development Mode → toggle on (auto-disables after 3 hours).
+
+### HTML caching issue
+Cloudflare aggressively caches HTML files. After pushing updates, hard refresh (Ctrl+Shift+R) or enable Development Mode to see changes on the live site.
+
+*Last updated: June 2026*

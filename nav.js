@@ -1,38 +1,68 @@
 (function() {
-  var nav = [
-    { label: 'Why',        url: '/why/',                  type: 'top' },
+  var path = window.location.pathname.replace(/\/$/, '') || '/';
 
-    { label: 'Landscape',  url: '/landscape/',            type: 'top' },
-    { label: 'Market overview',    url: '/landscape/',                      type: 'child-mid' },
-    { label: 'Vendor index',       url: '/landscape/vendors/',              type: 'child-mid' },
-    { label: 'Market direction',   url: '/landscape/cps-ot-ics-scada/',    type: 'child-mid' },
-    { label: 'Regulatory map',     url: '/landscape/regulatory-map/',       type: 'child-last' },
+  function active(url) {
+    var href = url.replace(/\/$/, '') || '/';
+    return path === href ? ' active' : '';
+  }
 
-    { label: 'Tools',      url: '/tools/',                type: 'top' },
-    { label: 'Vendor comparison',  url: '/tools/vendor-comparison/',        type: 'child-mid' },
-    { label: 'RFP Evaluation Kit', url: '/tools/rfp-evaluation-kit/',       type: 'child-last' },
+  var html = '';
 
-    { label: 'Comparisons', url: '/comparisons/',         type: 'top' },
+  // ── Why ──────────────────────────────────────────────────
+  html += '<div class="nav-section">';
+  html += '<div class="nav-section-label">Why</div>';
+  html += '<a href="/why/" class="nav-item depth-0' + active('/why/') + '">The information problem</a>';
+  html += '</div>';
 
-    { label: 'Guides',     url: '/guides/',               type: 'top' },
-    { label: 'Platform evaluation', url: '/guides/security-platform-evaluation/', type: 'child-last' },
+  html += '<div class="nav-divider"></div>';
 
-    { label: 'Subscribe →', url: '/subscribe',            type: 'subscribe' }
-  ];
+  // ── Landscape ─────────────────────────────────────────────
+  html += '<div class="nav-section">';
+  html += '<div class="nav-section-label">Landscape</div>';
+  html += '<a href="/landscape/" class="nav-item depth-0' + active('/landscape/') + '">Market overview</a>';
+  html += '<a href="/landscape/vendors/" class="nav-item depth-1' + active('/landscape/vendors/') + '">&#x251C; Vendor index</a>';
+  html += '<a href="/landscape/cps-ot-ics-scada/" class="nav-item depth-1' + active('/landscape/cps-ot-ics-scada/') + '">&#x251C; Market direction</a>';
+  html += '<a href="/landscape/regulatory-map/" class="nav-item depth-1' + active('/landscape/regulatory-map/') + '">&#x2514; Regulatory map</a>';
+  html += '</div>';
 
-  var icons = { 'top': '', 'child-mid': '├ ', 'child-last': '└ ', 'subscribe': '' };
+  html += '<div class="nav-divider"></div>';
 
-  var html = nav.map(function(item) {
-    var path = window.location.pathname.replace(/\/$/, '') || '/';
-    var href = item.url.replace(/\/$/, '') || '/';
-    var active = path === href ? ' active' : '';
-    var cls = 'nav-' + item.type;
-    var prefix = icons[item.type] || '';
-    if (item.type === 'subscribe') {
-      return '<a href="' + item.url + '" class="nav-subscribe">' + item.label + '</a>';
-    }
-    return '<a href="' + item.url + '" class="nav-item ' + cls + active + '">' + prefix + item.label + '</a>';
-  }).join('\n');
+  // ── Tools ─────────────────────────────────────────────────
+  html += '<div class="nav-section">';
+  html += '<div class="nav-section-label">Tools</div>';
+  html += '<a href="/tools/" class="nav-item depth-0' + active('/tools/') + '">All tools</a>';
+  html += '<a href="/tools/vendor-comparison/" class="nav-item depth-1' + active('/tools/vendor-comparison/') + '">&#x251C; Vendor comparison</a>';
+  html += '<a href="/tools/rfp-evaluation-kit/" class="nav-item depth-1' + active('/tools/rfp-evaluation-kit/') + '">&#x251C; RFP Evaluation Kit</a>';
+  html += '<a href="/tools/asset-scoping-tool/" class="nav-item depth-1' + active('/tools/asset-scoping-tool/') + '">&#x2514; Asset scoping tool</a>';
+  html += '</div>';
+
+  html += '<div class="nav-divider"></div>';
+
+  // ── Comparisons ───────────────────────────────────────────
+  html += '<div class="nav-section">';
+  html += '<div class="nav-section-label">Comparisons</div>';
+  html += '<a href="/comparisons/" class="nav-item depth-0' + active('/comparisons/') + '">All comparisons</a>';
+  html += '<a href="/comparisons/dragos-vs-claroty/" class="nav-item depth-1' + active('/comparisons/dragos-vs-claroty/') + '">&#x251C; Dragos vs. Claroty</a>';
+  html += '<a href="/comparisons/nozomi-vs-claroty/" class="nav-item depth-1' + active('/comparisons/nozomi-vs-claroty/') + '">&#x251C; Nozomi vs. Claroty</a>';
+  html += '<a href="/comparisons/" class="nav-item depth-1">&#x2514; More &rarr;</a>';
+  html += '</div>';
+
+  html += '<div class="nav-divider"></div>';
+
+  // ── Guides ────────────────────────────────────────────────
+  html += '<div class="nav-section">';
+  html += '<div class="nav-section-label">Guides</div>';
+  html += '<a href="/guides/" class="nav-item depth-0' + active('/guides/') + '">All guides</a>';
+  html += '<a href="/guides/security-platform-evaluation/" class="nav-item depth-1' + active('/guides/security-platform-evaluation/') + '">&#x251C; Platform evaluation</a>';
+  html += '<a href="/guides/nis2-nerc-cip-audit-readiness/" class="nav-item depth-1' + active('/guides/nis2-nerc-cip-audit-readiness/') + '">&#x251C; NIS2 and NERC CIP</a>';
+  html += '<a href="/guides/oem-remote-access/" class="nav-item depth-1' + active('/guides/oem-remote-access/') + '">&#x251C; OEM remote access</a>';
+  html += '<a href="/guides/" class="nav-item depth-1">&#x2514; More &rarr;</a>';
+  html += '</div>';
+
+  html += '<div class="nav-divider"></div>';
+
+  // ── Subscribe ─────────────────────────────────────────────
+  html += '<a href="/subscribe" class="nav-item nav-subscribe">Subscribe &rarr;</a>';
 
   var el = document.getElementById('sidebar-nav');
   if (el) el.innerHTML = html;

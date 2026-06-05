@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>Asset Scoping Decision Tool | OT Cybersecurity Software</title>
+  <meta name="description" content="Interactive decision tool for classifying OT assets under NERC CIP and NIS2. Produces a documented classification for audit records.">
+  <link rel="canonical" href="https://otcybersecuritysoftware.com/tools/asset-scoping-tool/">
+
+  <meta property="og:title" content="Asset Scoping Decision Tool">
+  <meta property="og:description" content="Interactive decision tool for classifying OT assets under NERC CIP and NIS2. Produces a documented classification for audit records.">
+  <meta property="og:url" content="https://otcybersecuritysoftware.com/tools/asset-scoping-tool/">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js"></script>
+
+  <style>
+    /* ── Tool shell ─────────────────────────────────────────── */
+    .tool-shell {
+      background: var(--surface);
+      border: var(--hairline);
+      border-top: 3px solid var(--accent);
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+
+    /* ── Step indicator ─────────────────────────────────────── */
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 28px;
+      border: var(--hairline);
+      background: var(--bg);
+      overflow: hidden;
+    }
+    .step-pip {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--faint);
+      border-right: var(--hairline);
+      text-align: center;
+      white-space: nowrap;
+    }
+    .step-pip:last-child { border-right: none; }
+    .step-pip.active { background: var(--accent); color: #fff; }
+    .step-pip.done { color: var(--mid); background: var(--surface); }
+
+    /* ── Form elements ──────────────────────────────────────── */
+    .field-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 8px;
+      display: block;
+    }
+    .field-input {
+      width: 100%;
+      font-family: 'Space Mono', monospace;
+      font-size: var(--small);
+      padding: 10px 12px;
+      border: var(--hairline);
+      background: var(--bg);
+      color: var(--charcoal);
+      outline: none;
+      margin-bottom: 4px;
+    }
+    .field-input:focus { border-color: var(--accent); }
+    .field-hint {
+      font-size: 11px;
+      color: var(--faint);
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+
+    /* ── Framework selector ─────────────────────────────────── */
+    .fw-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: var(--hairline);
+      margin-bottom: 20px;
+    }
+    .fw-option {
+      background: var(--bg);
+      padding: 14px 12px;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+      font-family: 'Space Mono', monospace;
+    }
+    .fw-option:hover { background: var(--surface); }
+    .fw-option.selected { background: var(--surface); }
+    .fw-option.selected .fw-option-label { color: var(--accent); }
+    .fw-option.selected .fw-option-flag { opacity: 1; }
+    .fw-option-flag {
+      font-size: 22px;
+      display: block;
+      margin-bottom: 6px;
+      opacity: 0.5;
+    }
+    .fw-option-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--mid);
+      display: block;
+    }
+    .fw-option.selected .fw-option-flag { opacity: 1; }
+
+    /* ── Question block ─────────────────────────────────────── */
+    .question-block {
+      margin-bottom: 24px;
+    }
+    .question-text {
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+    .question-context {
+      font-size: 11px;
+      color: var(--mid);
+      margin-bottom: 14px;
+      border-left: 2px solid var(--border);
+      padding-left: 10px;
+      font-style: italic;
+      line-height: 1.6;
+    }
+    .answer-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: var(--hairline);
+    }
+    .answer-btn {
+      background: var(--bg);
+      border: none;
+      font-family: 'Space Mono', monospace;
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--mid);
+      padding: 12px 16px;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .answer-btn:hover { background: var(--surface); color: var(--charcoal); }
+    .answer-btn.selected { background: var(--accent); color: #fff; }
+    .answer-btn .answer-icon { font-size: 14px; flex-shrink: 0; }
+
+    /* ── Section divider inside tool ────────────────────────── */
+    .tool-section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding: 10px 0 8px;
+      border-top: var(--hairline);
+      margin: 20px 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ── Navigation buttons ─────────────────────────────────── */
+    .tool-nav {
+      display: flex;
+      gap: 8px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: var(--hairline);
+    }
+    .btn-primary {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 9px 20px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary:hover { background: var(--accent-dim); }
+    .btn-primary:disabled { opacity: 0.4; cursor: default; }
+    .btn-secondary {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 9px 20px;
+      background: none;
+      color: var(--mid);
+      border: var(--hairline);
+      cursor: pointer;
+    }
+    .btn-secondary:hover { border-color: var(--charcoal); color: var(--charcoal); }
+
+    /* ── Result block ───────────────────────────────────────── */
+    .result-shell {
+      margin-bottom: 32px;
+    }
+
+    .result-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .result-classification {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+    }
+    .result-classification.high { border-color: #a03020; color: #a03020; }
+    .result-classification.medium { border-color: #b45309; color: #b45309; }
+    .result-classification.low { border-color: #2e7d32; color: #2e7d32; }
+    .result-classification.in-scope { border-color: var(--accent); color: var(--accent); }
+    .result-classification.in-scope-priority { border-color: #a03020; color: #a03020; }
+    .result-classification.out-of-scope { border-color: var(--mid); color: var(--mid); }
+
+    /* ── Printable output ───────────────────────────────────── */
+    .print-block {
+      border: var(--hairline);
+      background: var(--surface);
+      padding: 24px;
+      margin-top: 20px;
+    }
+    .print-block-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--charcoal);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .print-block-title {
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+    .print-block-meta {
+      font-size: 11px;
+      color: var(--mid);
+    }
+    .print-row {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 8px 16px;
+      font-size: var(--small);
+      padding: 8px 0;
+      border-bottom: var(--hairline);
+      align-items: baseline;
+    }
+    .print-row:last-child { border-bottom: none; }
+    .print-row-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--mid);
+    }
+    .print-row-value {
+      color: var(--charcoal);
+      line-height: 1.6;
+    }
+    .criteria-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .criteria-list li {
+      font-size: var(--small);
+      color: var(--charcoal);
+      padding: 3px 0;
+      display: flex;
+      gap: 8px;
+    }
+    .criteria-list li::before {
+      content: '+';
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .print-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    /* ── Print styles ───────────────────────────────────────── */
+    @media print {
+      * { visibility: hidden; }
+      #print-output, #print-output * { visibility: visible; }
+      #print-output {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%;
+        border: none !important;
+        padding: 24px !important;
+      }
+    }
+
+    /* ── Restart link ───────────────────────────────────────── */
+    .restart-link {
+      font-size: 11px;
+      color: var(--mid);
+      cursor: pointer;
+      text-decoration: underline;
+      background: none;
+      border: none;
+      font-family: 'Space Mono', monospace;
+      padding: 0;
+    }
+    .restart-link:hover { color: var(--accent); }
+
+    @media (max-width: 600px) {
+      .fw-selector { grid-template-columns: 1fr; }
+      .answer-row { grid-template-columns: 1fr; }
+      .print-row { grid-template-columns: 1fr; }
+      .print-row-label { margin-bottom: 2px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">OT Cybersecurity <span>Software</span></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for OT and ICS security practitioners</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/tools/">Tools</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>Asset Scoping Decision Tool</span>
+        </div>
+
+        <span class="page-label">Tool</span>
+        <h1>Asset Scoping Decision Tool</h1>
+
+        <p class="lead">Walk through the classification decision for a single OT asset under NERC CIP, NIS2, or both. The tool produces a documented output — asset name, framework, classification, and the criteria that drove it — suitable for inclusion in your audit record.</p>
+
+        <!-- How to use -->
+        <div class="callout" style="margin-bottom: 24px;">
+          <span class="callout-label">How to use this tool</span>
+          <p>One asset at a time. Enter a name, select your framework, answer four questions, and print or copy the result for your audit record. Based on the <a href="/guides/nis2-nerc-cip-audit-readiness/#scoping">NIS2 and NERC CIP Audit-Readiness Guide</a> scoping methodology.</p>
+        </div>
+
+        <!-- Tool shell -->
+        <div class="tool-shell" id="tool-shell">
+
+          <!-- Step indicator -->
+          <div class="step-indicator" id="step-indicator">
+            <div class="step-pip active" id="pip-1">1. Asset</div>
+            <div class="step-pip" id="pip-2">2. Framework</div>
+            <div class="step-pip" id="pip-3">3. Questions</div>
+            <div class="step-pip" id="pip-4">4. Result</div>
+          </div>
+
+          <!-- Step 1: Asset details -->
+          <div id="step-1">
+            <label class="field-label" for="asset-name">Asset name or identifier</label>
+            <input class="field-input" type="text" id="asset-name" placeholder="e.g. Historian Server, Building 4 Line 2">
+            <div class="field-hint">This label will appear on the output document.</div>
+
+            <label class="field-label" for="asset-desc">Brief description (optional)</label>
+            <input class="field-input" type="text" id="asset-desc" placeholder="e.g. OSIsoft PI historian, receives data from Level 1/2 PLCs">
+            <div class="field-hint">Function, location, or key connectivity details.</div>
+
+            <div class="tool-nav">
+              <button class="btn-primary" id="btn-step1-next" onclick="goToStep(2)">Next: Select framework</button>
+            </div>
+          </div>
+
+          <!-- Step 2: Framework selection -->
+          <div id="step-2" style="display:none;">
+            <label class="field-label">Which framework are you classifying under?</label>
+            <div class="fw-selector">
+              <button class="fw-option" id="fw-nerc" onclick="selectFramework('nerc')">
+                <span class="fw-option-flag">🇺🇸</span>
+                <span class="fw-option-label">NERC CIP</span>
+              </button>
+              <button class="fw-option" id="fw-nis2" onclick="selectFramework('nis2')">
+                <span class="fw-option-flag">🇪🇺</span>
+                <span class="fw-option-label">NIS2</span>
+              </button>
+              <button class="fw-option" id="fw-both" onclick="selectFramework('both')">
+                <span class="fw-option-flag">🇺🇸🇪🇺</span>
+                <span class="fw-option-label">Both</span>
+              </button>
+            </div>
+            <div class="field-hint" id="fw-hint">Select the framework(s) that apply to your organization.</div>
+            <div class="tool-nav">
+              <button class="btn-primary" id="btn-step2-next" onclick="goToStep(3)" disabled>Next: Questions</button>
+              <button class="btn-secondary" onclick="goToStep(1)">Back</button>
+            </div>
+          </div>
+
+          <!-- Step 3: Questions -->
+          <div id="step-3" style="display:none;">
+            <div id="questions-container"></div>
+            <div class="tool-nav">
+              <button class="btn-primary" id="btn-step3-next" onclick="goToStep(4)" disabled>See result</button>
+              <button class="btn-secondary" onclick="goToStep(2)">Back</button>
+            </div>
+          </div>
+
+          <!-- Step 4: Result -->
+          <div id="step-4" style="display:none;">
+            <div id="result-container"></div>
+            <div class="tool-nav" style="border-top: none; padding-top: 0; margin-top: 0;">
+              <button class="restart-link" onclick="restart()">Classify another asset</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Newsletter -->
+        <div class="newsletter-block">
+          <span class="page-label">Stay current</span>
+          <p>Regulatory changes, enforcement actions, and updated guidance delivered when they matter.</p>
+          <div class="newsletter-form">
+            <input type="email" id="nl-email" placeholder="your@email.com" autocomplete="email">
+            <button id="nl-submit" type="button">Subscribe</button>
+          </div>
+          <div id="nl-msg" style="font-size:11px; color:var(--mid); margin-top:8px; min-height:16px;"></div>
+        </div>
+
+        <div class="page-footer">
+          <span class="page-label">Related</span>
+          <p><a href="/guides/nis2-nerc-cip-audit-readiness/">NIS2 and NERC CIP Audit-Readiness Guide</a> — full guide covering evidence collection, incident reporting, and audit failures</p>
+          <p><a href="/tools/rfp-evaluation-kit/">OT Security RFP Evaluation Kit</a> — four fillable documents for the full platform evaluation arc</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+  <script>
+    // ── State ─────────────────────────────────────────────────
+    var state = {
+      assetName: '',
+      assetDesc: '',
+      framework: null,
+      answers: {},   // key: question id, value: answer
+      nercResult: null,
+      nis2Result: null
+    };
+
+    // ── NERC CIP decision tree ────────────────────────────────
+    var nercQuestions = [
+      {
+        id: 'nerc_q1',
+        text: 'Is this asset a cyber asset associated with the Bulk Electric System (BES)?',
+        context: 'A cyber asset is any programmable electronic device, including hardware, software, and data. Associated with the BES means it supports the operation, monitoring, control, or protection of BES facilities.',
+        yes: 'nerc_q2',
+        no: 'nerc_out'
+      },
+      {
+        id: 'nerc_q2',
+        text: 'If compromised, could this asset adversely impact the reliable operation of the BES within 15 minutes?',
+        context: 'This is the BES Cyber Asset (BCA) definition threshold under CIP-002. Consider direct control paths, SCADA dependencies, and protection system connections.',
+        yes: 'nerc_q3',
+        no: 'nerc_out'
+      },
+      {
+        id: 'nerc_q3',
+        text: 'Does this asset meet any High impact criteria?',
+        context: 'High impact criteria include: control centers performing reliability tasks for 1,500 MW or more; generation facilities above 1,500 MW; certain transmission facilities at 500 kV or above; or certain reactive resources. See CIP-002 Attachment 1, Category H.',
+        yes: 'nerc_high',
+        no: 'nerc_q4'
+      },
+      {
+        id: 'nerc_q4',
+        text: 'Does this asset meet any Medium impact criteria?',
+        context: 'Medium impact criteria include: control centers for 300–1,500 MW; generation 300–1,500 MW; certain transmission elements; EMS/SCADA systems that monitor or control the BES. See CIP-002 Attachment 1, Category M.',
+        yes: 'nerc_medium',
+        no: 'nerc_low'
+      }
+    ];
+
+    // ── NIS2 decision tree ────────────────────────────────────
+    var nis2Questions = [
+      {
+        id: 'nis2_q1',
+        text: 'Is your organization classified as an essential or important entity under NIS2?',
+        context: 'Essential entities: 250+ employees or EUR 50M+ turnover in energy, transport, health, water, digital infrastructure, and other Annex I sectors. Important entities: 50+ employees or EUR 10M+ turnover in Annex II sectors including manufacturing, chemicals, food, and digital providers.',
+        yes: 'nis2_q2',
+        no: 'nis2_out_org'
+      },
+      {
+        id: 'nis2_q2',
+        text: 'Does this asset directly support a service or function covered by your NIS2 classification?',
+        context: 'Consider whether the asset is involved in delivering the essential or important service your organization provides. Purely administrative assets with no operational connection are generally out of scope.',
+        yes: 'nis2_q3',
+        no: 'nis2_out_asset'
+      },
+      {
+        id: 'nis2_q3',
+        text: 'Is this asset a network or information system as defined by NIS2?',
+        context: 'NIS2 defines network and information systems broadly: any electronic communications network, device, or software. This includes OT systems, industrial control systems, and the data they process.',
+        yes: 'nis2_q4',
+        no: 'nis2_out_asset'
+      },
+      {
+        id: 'nis2_q4',
+        text: 'Is this asset directly connected to or reachable from IT networks or the internet?',
+        context: 'Connectivity to IT networks or the internet does not change in-scope status, but it elevates risk and may affect the proportionality of required security measures. Air-gapped assets are in scope but may require different controls.',
+        yes: 'nis2_in_priority',
+        no: 'nis2_in'
+      }
+    ];
+
+    // ── Result definitions ────────────────────────────────────
+    var nercResults = {
+      nerc_out: {
+        label: 'Out of Scope',
+        cssClass: 'out-of-scope',
+        summary: 'This asset does not meet the BES Cyber Asset definition and is not subject to NERC CIP requirements.',
+        criteria: [
+          'Asset is not a BES Cyber Asset as defined under CIP-002',
+          'No NERC CIP controls are required',
+          'Document this determination and retain with your CIP-002 evidence'
+        ]
+      },
+      nerc_high: {
+        label: 'High Impact',
+        cssClass: 'high',
+        summary: 'This asset meets High impact BES Cyber System criteria. All NERC CIP standards apply in full.',
+        criteria: [
+          'BES Cyber Asset confirmed — adverse impact on BES within 15 minutes',
+          'Meets High impact criteria under CIP-002 Attachment 1 Category H',
+          'Full requirements apply: CIP-002 through CIP-015',
+          'Physical security (CIP-006), electronic perimeter (CIP-005), and monitoring (CIP-015) requirements apply'
+        ]
+      },
+      nerc_medium: {
+        label: 'Medium Impact',
+        cssClass: 'medium',
+        summary: 'This asset meets Medium impact BES Cyber System criteria. Most NERC CIP standards apply, some with modified requirements.',
+        criteria: [
+          'BES Cyber Asset confirmed — adverse impact on BES within 15 minutes',
+          'Meets Medium impact criteria under CIP-002 Attachment 1 Category M',
+          'CIP-002 through CIP-013 apply; review standard-specific applicability tables',
+          'CIP-015 (INSM) applies effective July 2026'
+        ]
+      },
+      nerc_low: {
+        label: 'Low Impact',
+        cssClass: 'low',
+        summary: 'This asset is a Low impact BES Cyber System. CIP-003-8 applies along with organizational policy requirements.',
+        criteria: [
+          'BES Cyber Asset confirmed — adverse impact on BES within 15 minutes',
+          'Does not meet High or Medium impact criteria',
+          'CIP-003-8 applies: cybersecurity policies, physical security, electronic access controls',
+          'Document classification rationale and retain with CIP-002 evidence'
+        ]
+      }
+    };
+
+    var nis2Results = {
+      nis2_out_org: {
+        label: 'Out of Scope',
+        cssClass: 'out-of-scope',
+        summary: 'Your organization does not appear to be classified as an essential or important entity. NIS2 requirements do not apply to this asset.',
+        criteria: [
+          'Organization not classified as essential or important entity under NIS2',
+          'No NIS2 obligations apply to this asset',
+          'Verify your classification against NIS2 Annex I and II and your national implementing law',
+          'Document this determination'
+        ]
+      },
+      nis2_out_asset: {
+        label: 'Out of Scope',
+        cssClass: 'out-of-scope',
+        summary: 'This asset does not appear to be in scope under NIS2. It does not directly support an in-scope service or does not meet the network or information system definition.',
+        criteria: [
+          'Asset does not directly support an essential or important service',
+          'No NIS2 controls required for this asset',
+          'Document this determination as part of your risk assessment methodology',
+          'Revisit if asset connectivity or function changes'
+        ]
+      },
+      nis2_in: {
+        label: 'In Scope',
+        cssClass: 'in-scope',
+        summary: 'This asset is in scope under NIS2. Apply appropriate and proportionate security measures based on risk.',
+        criteria: [
+          'Organization is an essential or important entity under NIS2',
+          'Asset directly supports an in-scope service or function',
+          'Asset meets the network or information system definition',
+          'Apply risk-proportionate security measures per Article 21',
+          'Include in your NIS2 asset register'
+        ]
+      },
+      nis2_in_priority: {
+        label: 'In Scope — Priority',
+        cssClass: 'in-scope-priority',
+        summary: 'This asset is in scope under NIS2 and has connectivity to IT networks or the internet. Treat as elevated risk in your security measure proportionality assessment.',
+        criteria: [
+          'Organization is an essential or important entity under NIS2',
+          'Asset directly supports an in-scope service or function',
+          'Asset meets the network or information system definition',
+          'IT/internet connectivity elevates attack surface — apply proportionately stronger controls',
+          'Include in your NIS2 asset register with connectivity flag',
+          'Review access controls and network segmentation for this asset'
+        ]
+      }
+    };
+
+    // ── Step management ───────────────────────────────────────
+    function goToStep(n) {
+      if (n === 1) {
+        showStep(1);
+      } else if (n === 2) {
+        var name = document.getElementById('asset-name').value.trim();
+        if (!name) {
+          document.getElementById('asset-name').focus();
+          document.getElementById('asset-name').style.borderColor = 'var(--accent)';
+          return;
+        }
+        state.assetName = name;
+        state.assetDesc = document.getElementById('asset-desc').value.trim();
+        showStep(2);
+      } else if (n === 3) {
+        if (!state.framework) return;
+        buildQuestions();
+        showStep(3);
+        checkQuestionsComplete();
+      } else if (n === 4) {
+        computeResults();
+        renderResults();
+        showStep(4);
+        window.scrollTo(0, 0);
+      }
+    }
+
+    function showStep(n) {
+      for (var i = 1; i <= 4; i++) {
+        var el = document.getElementById('step-' + i);
+        var pip = document.getElementById('pip-' + i);
+        if (el) el.style.display = (i === n) ? '' : 'none';
+        if (pip) {
+          pip.classList.remove('active', 'done');
+          if (i === n) pip.classList.add('active');
+          else if (i < n) pip.classList.add('done');
+        }
+      }
+    }
+
+    // ── Framework selection ───────────────────────────────────
+    function selectFramework(fw) {
+      state.framework = fw;
+      state.answers = {};
+      ['fw-nerc', 'fw-nis2', 'fw-both'].forEach(function(id) {
+        document.getElementById(id).classList.remove('selected');
+      });
+      document.getElementById('fw-' + fw).classList.add('selected');
+      document.getElementById('btn-step2-next').disabled = false;
+      var hints = {
+        nerc: 'NERC CIP classification: High, Medium, or Low impact BES Cyber System.',
+        nis2: 'NIS2 classification: In Scope, In Scope (Priority), or Out of Scope.',
+        both: 'Both frameworks will be assessed in sequence. The output will include a classification for each.'
+      };
+      document.getElementById('fw-hint').textContent = hints[fw];
+    }
+
+    // ── Build question UI ─────────────────────────────────────
+    function buildQuestions() {
+      var container = document.getElementById('questions-container');
+      container.innerHTML = '';
+      state.answers = {};
+      state.nercResult = null;
+      state.nis2Result = null;
+
+      var sequences = [];
+      if (state.framework === 'nerc' || state.framework === 'both') {
+        sequences.push({ label: '🇺🇸 NERC CIP', questions: nercQuestions, prefix: 'nerc' });
+      }
+      if (state.framework === 'nis2' || state.framework === 'both') {
+        sequences.push({ label: '🇪🇺 NIS2', questions: nis2Questions, prefix: 'nis2' });
+      }
+
+      sequences.forEach(function(seq, si) {
+        if (state.framework === 'both') {
+          var lbl = document.createElement('div');
+          lbl.className = 'tool-section-label';
+          lbl.textContent = seq.label;
+          container.appendChild(lbl);
+        }
+
+        seq.questions.forEach(function(q, qi) {
+          var block = document.createElement('div');
+          block.className = 'question-block';
+          block.id = 'qblock-' + q.id;
+
+          var num = document.createElement('div');
+          num.style.cssText = 'font-size:11px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:var(--faint);margin-bottom:6px;';
+          num.textContent = 'Question ' + (qi + 1);
+          block.appendChild(num);
+
+          var txt = document.createElement('div');
+          txt.className = 'question-text';
+          txt.textContent = q.text;
+          block.appendChild(txt);
+
+          if (q.context) {
+            var ctx = document.createElement('div');
+            ctx.className = 'question-context';
+            ctx.textContent = q.context;
+            block.appendChild(ctx);
+          }
+
+          var row = document.createElement('div');
+          row.className = 'answer-row';
+
+          var btnYes = document.createElement('button');
+          btnYes.className = 'answer-btn';
+          btnYes.innerHTML = '<span class="answer-icon">+</span> Yes';
+          btnYes.onclick = (function(qid) { return function() { recordAnswer(qid, 'yes'); }; })(q.id);
+          btnYes.id = 'ans-' + q.id + '-yes';
+
+          var btnNo = document.createElement('button');
+          btnNo.className = 'answer-btn';
+          btnNo.innerHTML = '<span class="answer-icon">-</span> No';
+          btnNo.onclick = (function(qid) { return function() { recordAnswer(qid, 'no'); }; })(q.id);
+          btnNo.id = 'ans-' + q.id + '-no';
+
+          row.appendChild(btnYes);
+          row.appendChild(btnNo);
+          block.appendChild(row);
+          container.appendChild(block);
+        });
+      });
+    }
+
+    function recordAnswer(qid, answer) {
+      state.answers[qid] = answer;
+
+      // Update button styles
+      var yBtn = document.getElementById('ans-' + qid + '-yes');
+      var nBtn = document.getElementById('ans-' + qid + '-no');
+      if (yBtn) yBtn.classList.toggle('selected', answer === 'yes');
+      if (nBtn) nBtn.classList.toggle('selected', answer === 'no');
+
+      checkQuestionsComplete();
+    }
+
+    function checkQuestionsComplete() {
+      var allQ = [];
+      if (state.framework === 'nerc' || state.framework === 'both') {
+        nercQuestions.forEach(function(q) { allQ.push(q.id); });
+      }
+      if (state.framework === 'nis2' || state.framework === 'both') {
+        nis2Questions.forEach(function(q) { allQ.push(q.id); });
+      }
+      var answered = allQ.filter(function(id) { return state.answers[id]; });
+      document.getElementById('btn-step3-next').disabled = (answered.length < allQ.length);
+    }
+
+    // ── Compute results ───────────────────────────────────────
+    function computeResults() {
+      // NERC CIP
+      if (state.framework === 'nerc' || state.framework === 'both') {
+        var a = state.answers;
+        if (a['nerc_q1'] === 'no' || a['nerc_q2'] === 'no') {
+          state.nercResult = nercResults['nerc_out'];
+        } else if (a['nerc_q3'] === 'yes') {
+          state.nercResult = nercResults['nerc_high'];
+        } else if (a['nerc_q4'] === 'yes') {
+          state.nercResult = nercResults['nerc_medium'];
+        } else {
+          state.nercResult = nercResults['nerc_low'];
+        }
+      }
+
+      // NIS2
+      if (state.framework === 'nis2' || state.framework === 'both') {
+        var a = state.answers;
+        if (a['nis2_q1'] === 'no') {
+          state.nis2Result = nis2Results['nis2_out_org'];
+        } else if (a['nis2_q2'] === 'no' || a['nis2_q3'] === 'no') {
+          state.nis2Result = nis2Results['nis2_out_asset'];
+        } else if (a['nis2_q4'] === 'yes') {
+          state.nis2Result = nis2Results['nis2_in_priority'];
+        } else {
+          state.nis2Result = nis2Results['nis2_in'];
+        }
+      }
+    }
+
+    // ── Render results ────────────────────────────────────────
+    function renderResults() {
+      var container = document.getElementById('result-container');
+      container.innerHTML = '';
+      var now = new Date();
+      var dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+      var shell = document.createElement('div');
+      shell.className = 'result-shell';
+
+      // Print block
+      var pb = document.createElement('div');
+      pb.className = 'print-block';
+      pb.id = 'print-output';
+
+      // Print header
+      var ph = document.createElement('div');
+      ph.className = 'print-block-header';
+      ph.innerHTML = '<div class="print-block-title">Asset Classification Record</div><div class="print-block-meta">OT Cybersecurity Software — otcybersecuritysoftware.com</div>';
+      pb.appendChild(ph);
+
+      // Asset row
+      pb.appendChild(makeRow('Asset', state.assetName));
+      if (state.assetDesc) {
+        pb.appendChild(makeRow('Description', state.assetDesc));
+      }
+      pb.appendChild(makeRow('Classification date', dateStr));
+      pb.appendChild(makeRow('Framework(s)', { nerc: 'NERC CIP', nis2: 'NIS2', both: 'NERC CIP + NIS2' }[state.framework]));
+
+      // NERC result
+      if (state.nercResult) {
+        var nercDiv = document.createElement('div');
+        nercDiv.style.cssText = 'margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);';
+
+        var nercLabel = document.createElement('div');
+        nercLabel.style.cssText = 'font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--mid);margin-bottom:10px;';
+        nercLabel.textContent = '🇺🇸 NERC CIP Classification';
+        nercDiv.appendChild(nercLabel);
+
+        var badge = document.createElement('div');
+        badge.style.cssText = 'margin-bottom: 12px;';
+        var cls = document.createElement('span');
+        cls.className = 'result-classification ' + state.nercResult.cssClass;
+        cls.textContent = state.nercResult.label;
+        badge.appendChild(cls);
+        nercDiv.appendChild(badge);
+
+        nercDiv.appendChild(makeRow('Summary', state.nercResult.summary));
+        nercDiv.appendChild(makeCriteriaRow('Classification basis', state.nercResult.criteria));
+        pb.appendChild(nercDiv);
+      }
+
+      // NIS2 result
+      if (state.nis2Result) {
+        var nis2Div = document.createElement('div');
+        nis2Div.style.cssText = 'margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);';
+
+        var nis2Label = document.createElement('div');
+        nis2Label.style.cssText = 'font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--mid);margin-bottom:10px;';
+        nis2Label.textContent = '🇪🇺 NIS2 Classification';
+        nis2Div.appendChild(nis2Label);
+
+        var badge2 = document.createElement('div');
+        badge2.style.cssText = 'margin-bottom: 12px;';
+        var cls2 = document.createElement('span');
+        cls2.className = 'result-classification ' + state.nis2Result.cssClass;
+        cls2.textContent = state.nis2Result.label;
+        badge2.appendChild(cls2);
+        nis2Div.appendChild(badge2);
+
+        nis2Div.appendChild(makeRow('Summary', state.nis2Result.summary));
+        nis2Div.appendChild(makeCriteriaRow('Classification basis', state.nis2Result.criteria));
+        pb.appendChild(nis2Div);
+      }
+
+      // Disclaimer row
+      var disc = document.createElement('div');
+      disc.style.cssText = 'margin-top:16px; padding-top:12px; border-top: var(--hairline); font-size:11px; color:var(--faint); line-height:1.6;';
+      disc.textContent = 'This classification record was produced by the Asset Scoping Decision Tool at otcybersecuritysoftware.com. It is intended as a documentation aid and does not substitute for legal or compliance review.';
+      pb.appendChild(disc);
+
+      shell.appendChild(pb);
+
+      // Print actions
+      var actions = document.createElement('div');
+      actions.className = 'print-actions';
+
+      var printBtn = document.createElement('button');
+      printBtn.className = 'btn-primary';
+      printBtn.textContent = 'Print / Save as PDF';
+      printBtn.onclick = function() { window.print(); };
+      actions.appendChild(printBtn);
+
+      var copyBtn = document.createElement('button');
+      copyBtn.className = 'btn-secondary';
+      copyBtn.textContent = 'Copy to clipboard';
+      copyBtn.onclick = function() { copyResult(copyBtn); };
+      actions.appendChild(copyBtn);
+
+      shell.appendChild(actions);
+      container.appendChild(shell);
+    }
+
+    function makeRow(label, value) {
+      var row = document.createElement('div');
+      row.className = 'print-row';
+      row.innerHTML = '<div class="print-row-label">' + label + '</div><div class="print-row-value">' + value + '</div>';
+      return row;
+    }
+
+    function makeCriteriaRow(label, items) {
+      var row = document.createElement('div');
+      row.className = 'print-row';
+      var labelEl = document.createElement('div');
+      labelEl.className = 'print-row-label';
+      labelEl.textContent = label;
+      var valEl = document.createElement('div');
+      valEl.className = 'print-row-value';
+      var ul = document.createElement('ul');
+      ul.className = 'criteria-list';
+      items.forEach(function(item) {
+        var li = document.createElement('li');
+        li.textContent = item;
+        ul.appendChild(li);
+      });
+      valEl.appendChild(ul);
+      row.appendChild(labelEl);
+      row.appendChild(valEl);
+      return row;
+    }
+
+    function copyResult(btn) {
+      var el = document.getElementById('print-output');
+      var lines = [];
+      lines.push('ASSET CLASSIFICATION RECORD');
+      lines.push('OT Cybersecurity Software — otcybersecuritysoftware.com');
+      lines.push('');
+
+      var rows = el.querySelectorAll('.print-row');
+      rows.forEach(function(row) {
+        var lbl = row.querySelector('.print-row-label');
+        var val = row.querySelector('.print-row-value');
+        if (lbl && val) {
+          lines.push(lbl.textContent.toUpperCase() + ': ' + val.textContent.trim().replace(/\s+/g, ' '));
+        }
+      });
+
+      var text = lines.join('\n');
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function() {
+          btn.textContent = 'Copied';
+          setTimeout(function() { btn.textContent = 'Copy to clipboard'; }, 2000);
+        });
+      }
+    }
+
+    function restart() {
+      state = { assetName: '', assetDesc: '', framework: null, answers: {}, nercResult: null, nis2Result: null };
+      document.getElementById('asset-name').value = '';
+      document.getElementById('asset-desc').value = '';
+      document.getElementById('asset-name').style.borderColor = '';
+      ['fw-nerc', 'fw-nis2', 'fw-both'].forEach(function(id) {
+        document.getElementById(id).classList.remove('selected');
+      });
+      document.getElementById('btn-step2-next').disabled = true;
+      goToStep(1);
+      window.scrollTo(0, 0);
+    }
+
+    // Init
+    showStep(1);
+  </script>
+
+</body>
+</html>
