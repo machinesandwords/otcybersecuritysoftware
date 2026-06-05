@@ -124,7 +124,26 @@ img { max-width: 100%; display: block; }
   text-decoration: none;
 }
 .nav-subscribe:hover { background: var(--accent-dim); text-decoration: none; }
+.nav-section-label {
+  font-size: var(--small);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mid);
+  padding: 12px 20px 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
+.nav-section-label::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 12px;
+  background: var(--accent);
+  flex-shrink: 0;
+}
 /* --- Main content --- */
 .main {
   flex: 1;
