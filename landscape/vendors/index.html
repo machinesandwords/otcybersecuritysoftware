@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>OT Cybersecurity Vendor Index — Independent Guide | OT Cybersecurity Software</title>
+  <meta name="description" content="Every significant OT and ICS cybersecurity vendor, organized by functional category. No rankings, no sponsored placements. Established platforms and focused challengers across visibility, converged, enforcement, and specialist categories.">
+  <link rel="canonical" href="https://otcybersecuritysoftware.com/landscape/vendors/">
+
+  <meta property="og:title" content="OT Cybersecurity Vendor Index — Independent Guide">
+  <meta property="og:description" content="Every significant OT and ICS cybersecurity vendor, organized by functional category. No rankings, no sponsored placements.">
+  <meta property="og:url" content="https://otcybersecuritysoftware.com/landscape/vendors/">
+  <meta property="og:type" content="article">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js"></script>
+
+  <style>
+    .vendor-section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      border-top: 2px solid var(--charcoal);
+      padding-top: 0.75rem;
+      margin-top: 2.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .vendor-section-number {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .vendor-section-title {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--charcoal);
+    }
+    .vendor-tier-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin: 1.25rem 0 0.5rem;
+      padding-bottom: 0.25rem;
+      border-bottom: var(--hairline);
+    }
+    .vendor-row {
+      display: grid;
+      grid-template-columns: 180px 1fr 90px;
+      border: var(--hairline);
+      border-bottom: none;
+      background: var(--surface);
+    }
+    .vendor-row:last-of-type,
+    .vendor-row:last-child {
+      border-bottom: var(--hairline);
+    }
+    .vendor-name-col {
+      padding: 0.85rem 1rem;
+      border-right: var(--hairline);
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .vendor-name {
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .vendor-name a {
+      color: var(--charcoal);
+      text-decoration: none;
+    }
+    .vendor-name a:hover { color: var(--accent); }
+    .vendor-also {
+      font-size: 11px;
+      color: var(--faint);
+      font-style: italic;
+    }
+    .vendor-body-col {
+      padding: 0.85rem 1rem;
+      border-right: var(--hairline);
+    }
+    .vendor-desc {
+      font-size: 13px;
+      color: var(--charcoal);
+      line-height: 1.6;
+      margin-bottom: 0.4rem;
+    }
+    .vendor-fit {
+      font-size: 12px;
+      color: var(--mid);
+      line-height: 1.5;
+    }
+    .vendor-meta-col {
+      padding: 0.85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .vendor-price {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .vendor-deploy {
+      font-size: 11px;
+      color: var(--mid);
+      line-height: 1.4;
+    }
+    .vendor-compliance {
+      font-size: 11px;
+      color: var(--faint);
+      line-height: 1.4;
+    }
+    .hardware-callout {
+      border: 1px solid var(--accent);
+      background: var(--accent-pale);
+      padding: 1.25rem;
+      margin-top: 1.5rem;
+    }
+    .hardware-callout-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .hardware-vendor { margin-bottom: 0.75rem; }
+    .hardware-vendor:last-child { margin-bottom: 0; }
+    .hardware-vendor-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 0.2rem;
+    }
+    .hardware-vendor-name a { color: var(--charcoal); text-decoration: none; }
+    .hardware-vendor-name a:hover { color: var(--accent); }
+    .hardware-vendor-desc {
+      font-size: 12px;
+      color: var(--mid);
+      line-height: 1.6;
+    }
+    .index-note {
+      font-size: 12px;
+      color: var(--mid);
+      border-left: 3px solid var(--border);
+      padding-left: 0.75rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+    .jump-nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 1.25rem;
+      border: var(--hairline);
+      background: var(--surface);
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .jump-nav-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--faint);
+      flex-shrink: 0;
+    }
+    .jump-nav a {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .jump-nav a:hover { text-decoration: underline; }
+    @media (max-width: 700px) {
+      .vendor-row { grid-template-columns: 1fr; }
+      .vendor-name-col, .vendor-body-col { border-right: none; border-bottom: var(--hairline); }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">OT Cybersecurity <span>Software</span></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for OT and ICS security practitioners</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/landscape/">Landscape</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>Vendors</span>
+        </div>
+
+        <span class="page-label">Vendor Index</span>
+        <h1>OT Cybersecurity Vendor Index</h1>
+
+        <p class="lead">Every significant OT and ICS cybersecurity vendor, organized by functional category. No rankings. No sponsored placements. Vendors that operate across multiple categories appear in each one that applies.</p>
+
+        <p class="index-note">Pricing tiers reflect relative cost and licensing model, not published rates. $ = accessible, often usage-based or SMB-friendly. $$ = mid-market, standard enterprise licensing. $$$ = large enterprise, custom contracts, professional services typically required. Most vendors in this market do not publish list prices.</p>
+
+        <nav class="jump-nav" aria-label="Jump to section">
+          <span class="jump-nav-label">Jump to:</span>
+          <a href="#visibility">01 &mdash; OT Visibility &amp; Detection</a>
+          <a href="#converged">02 &mdash; IT/OT Converged</a>
+          <a href="#enforcement">03 &mdash; OT Enforcement</a>
+          <a href="#specialists">04 &mdash; Specialists</a>
+        </nav>
+
+
+        <!-- 01 OT VISIBILITY AND DETECTION -->
+        <div class="vendor-section-header" id="visibility">
+          <div class="vendor-section-number">01</div>
+          <div class="vendor-section-title">OT Visibility and Detection</div>
+        </div>
+
+        <div class="vendor-tier-label">Established</div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://claroty.com" target="_blank" rel="noopener">Claroty</a></div>
+            <div class="vendor-also">also in 02</div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Broad cyber-physical systems protection platform covering OT, IoT, and healthcare environments. Passive visibility, continuous threat detection, and vulnerability management. Offers both on-premises (CTD) and cloud-based (xDome) deployment.</div>
+            <div class="vendor-fit">Best fit: Large enterprises needing visibility across mixed OT, IoT, and IT environments. Strong in manufacturing, healthcare, and critical infrastructure.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$$</div>
+            <div class="vendor-deploy">On-prem + cloud</div>
+            <div class="vendor-compliance">NERC CIP, IEC 62443, NIS2</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://dragos.com" target="_blank" rel="noopener">Dragos</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">OT threat intelligence-first platform built by ICS security practitioners. Asset visibility, risk-based vulnerability management, and threat detection with contextualized response playbooks. Deep ICS protocol coverage and a managed services arm for organizations building OT security maturity.</div>
+            <div class="vendor-fit">Best fit: Organizations building mature, threat intelligence-driven OT security programs. Strong in energy, utilities, oil and gas, and manufacturing.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$$</div>
+            <div class="vendor-deploy">On-prem + cloud</div>
+            <div class="vendor-compliance">NERC CIP, IEC 62443, NIS2</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://nozominetworks.com" target="_blank" rel="noopener">Nozomi Networks</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">AI-driven asset intelligence and anomaly detection with strong distributed visibility across large OT and IoT environments. Guardian sensors aggregate into the cloud-based Vantage platform. Includes wireless spectrum monitoring.</div>
+            <div class="vendor-fit">Best fit: Large, multi-site industrial operations — utilities, distributed energy, transportation — needing consistent OT and IoT visibility at scale.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$$</div>
+            <div class="vendor-deploy">On-prem + cloud</div>
+            <div class="vendor-compliance">NERC CIP, IEC 62443, NIS2</div>
+          </div>
+        </div>
+
+        <div class="vendor-tier-label">Challengers</div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://industrialdefender.com" target="_blank" rel="noopener">Industrial Defender</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">OT asset management and compliance-focused visibility platform with deep NERC CIP alignment. Automates evidence collection and reporting for CIP compliance alongside continuous OT network monitoring.</div>
+            <div class="vendor-fit">Best fit: Bulk electric system operators with NERC CIP compliance requirements and limited internal OT security staff.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">On-prem + cloud</div>
+            <div class="vendor-compliance">NERC CIP</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://otorio.com" target="_blank" rel="noopener">OTORIO</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">OT risk management platform combining asset visibility with business-context risk scoring. Prioritizes remediation based on operational impact rather than raw vulnerability severity. Purpose-built for mid-size industrial operators.</div>
+            <div class="vendor-fit">Best fit: Mid-size manufacturers and industrial operators that need risk prioritization without the overhead of an enterprise platform.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">On-prem + cloud</div>
+            <div class="vendor-compliance">IEC 62443, NIS2</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://radiflow.com" target="_blank" rel="noopener">Radiflow</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Unified OT visibility, risk management, and incident response platform (Radiflow360) built for mid-market industrial enterprises. AI-enhanced threat assessment and compliance streamlining. Strong channel distribution in Europe and the UK.</div>
+            <div class="vendor-fit">Best fit: Mid-size industrial enterprises needing a unified OT security platform without enterprise-scale complexity or cost.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">On-prem + cloud</div>
+            <div class="vendor-compliance">IEC 62443, NIS2</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://rhebo.com" target="_blank" rel="noopener">Rhebo</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">OT network monitoring and anomaly detection focused on energy utilities and industrial automation. Passive monitoring with deep protocol coverage for IEC 61850, IEC 60870, and GOOSE — protocols common in grid environments that most platforms cover poorly.</div>
+            <div class="vendor-fit">Best fit: Energy utilities and grid operators needing OT visibility with strong coverage of energy-specific protocols.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">On-prem</div>
+            <div class="vendor-compliance">NERC CIP, IEC 62443</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://verveindustrial.com" target="_blank" rel="noopener">Verve Industrial</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">OT endpoint visibility and vulnerability management with active (agent-based) and passive options. Focuses on remediating vulnerabilities in legacy OT assets — patching, configuration hardening, and change management — not just detecting them.</div>
+            <div class="vendor-fit">Best fit: Organizations ready to move beyond passive detection toward active remediation of OT endpoint vulnerabilities.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">On-prem + agent</div>
+            <div class="vendor-compliance">NERC CIP, IEC 62443</div>
+          </div>
+        </div>
+
+
+        <!-- 02 IT/OT CONVERGED PLATFORMS -->
+        <div class="vendor-section-header" id="converged">
+          <div class="vendor-section-number">02</div>
+          <div class="vendor-section-title">IT/OT Converged Platforms</div>
+        </div>
+
+        <div class="vendor-tier-label">Established</div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://armis.com" target="_blank" rel="noopener">Armis</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Agentless asset intelligence platform covering IT, OT, IoT, and medical devices in a unified view. Approaches OT from an IT asset management foundation. Strong integrations with major SIEM, SOAR, and CMDB platforms.</div>
+            <div class="vendor-fit">Best fit: Enterprises where the CISO owns OT security and needs a single asset risk view across IT and OT without separate tooling.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$$</div>
+            <div class="vendor-deploy">Cloud</div>
+            <div class="vendor-compliance">NIS2, IEC 62443</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://cisco.com/c/en/us/products/security/iot-security/index.html" target="_blank" rel="noopener">Cisco IoT Security</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">OT and IoT visibility integrated into Cisco's broader security and networking portfolio. Leverages existing Cisco network infrastructure for passive OT asset discovery. Deep integration with Cisco SecureX and ISE for policy enforcement.</div>
+            <div class="vendor-fit">Best fit: Organizations already heavily invested in Cisco networking infrastructure wanting OT visibility without adding a standalone platform.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$$</div>
+            <div class="vendor-deploy">On-prem + cloud</div>
+            <div class="vendor-compliance">IEC 62443, NIS2</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://claroty.com" target="_blank" rel="noopener">Claroty</a></div>
+            <div class="vendor-also">also in 01</div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Claroty's xDome platform extends CPS protection across OT, IoT, and IT in a unified cloud dashboard. Strong SIEM and SOAR integrations position it as a converged platform for organizations needing unified reporting alongside OT-native depth.</div>
+            <div class="vendor-fit">Best fit: Enterprises needing both OT-native protocol depth and unified IT/OT risk reporting in a single platform.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$$</div>
+            <div class="vendor-deploy">On-prem + cloud</div>
+            <div class="vendor-compliance">NERC CIP, IEC 62443, NIS2</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://microsoft.com/security/business/endpoint-security/microsoft-defender-iot" target="_blank" rel="noopener">Microsoft Defender for IoT</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Agentless OT and IoT asset discovery and threat detection integrated into the Microsoft security stack. Native integration with Microsoft Sentinel and Defender XDR. OT protocol coverage has expanded significantly but remains narrower than pure-play OT platforms.</div>
+            <div class="vendor-fit">Best fit: Organizations running Microsoft-centric security stacks wanting OT visibility without adding a separate vendor relationship.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">Cloud + on-prem sensor</div>
+            <div class="vendor-compliance">NIS2, IEC 62443</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://tenable.com/products/tenable-ot" target="_blank" rel="noopener">Tenable OT Security</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">OT asset visibility and vulnerability management that integrates with Tenable's broader vulnerability management portfolio. Bridges OT and IT vulnerability data in a unified risk view. Built on the Indegy platform acquired in 2019.</div>
+            <div class="vendor-fit">Best fit: Organizations already running Tenable for IT vulnerability management wanting to extend coverage to OT environments.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">On-prem + cloud</div>
+            <div class="vendor-compliance">NERC CIP, IEC 62443</div>
+          </div>
+        </div>
+
+        <div class="vendor-tier-label">Challengers</div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://darktrace.com" target="_blank" rel="noopener">Darktrace (OT)</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">AI-based anomaly detection extending from IT into OT environments via its Industrial module. Uses unsupervised machine learning to establish behavioral baselines across converged environments. Autonomous response capabilities exist but require careful configuration in OT contexts.</div>
+            <div class="vendor-fit">Best fit: Organizations already running Darktrace for IT security wanting to extend its AI detection model into OT without a separate tool.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$$</div>
+            <div class="vendor-deploy">On-prem + cloud</div>
+            <div class="vendor-compliance">NIS2</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://stellarcyber.ai" target="_blank" rel="noopener">Stellar Cyber</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Open XDR platform with OT asset visibility and threat detection alongside IT coverage. Ingests data from OT sensors and correlates across the full IT/OT environment in a unified security operations view. Positioned as a SIEM/XDR replacement for converged environments.</div>
+            <div class="vendor-fit">Best fit: Organizations building a unified SOC across IT and OT that want to consolidate tooling rather than run separate platforms.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">Cloud</div>
+            <div class="vendor-compliance">NIS2</div>
+          </div>
+        </div>
+
+
+        <!-- 03 OT ENFORCEMENT AND PROTECTION -->
+        <div class="vendor-section-header" id="enforcement">
+          <div class="vendor-section-number">03</div>
+          <div class="vendor-section-title">OT Enforcement and Protection</div>
+        </div>
+
+        <div class="vendor-tier-label">Established</div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://fortinet.com/solutions/enterprise-midsize-business/ot-ics-scada.html" target="_blank" rel="noopener">Fortinet (OT)</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Ruggedized industrial firewall and network security appliances for harsh OT environments. FortiGate Rugged series handles temperature extremes and physical conditions that standard firewalls cannot. Integrates with Fortinet's Security Fabric for unified IT/OT policy management.</div>
+            <div class="vendor-fit">Best fit: Organizations needing ruggedized perimeter enforcement in industrial environments, particularly manufacturing and energy.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$$</div>
+            <div class="vendor-deploy">Hardware appliance</div>
+            <div class="vendor-compliance">IEC 62443, NERC CIP</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://paloaltonetworks.com/network-security/industrial-ot-security" target="_blank" rel="noopener">Palo Alto Networks (OT)</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">OT security extending Palo Alto's NGFW capabilities into industrial environments. Industrial OT Security provides passive asset discovery and threat prevention inline. Ruggedized hardware options available. Integrates with Cortex XSIAM for SOC-level response.</div>
+            <div class="vendor-fit">Best fit: Organizations already running Palo Alto NGFWs wanting to extend enforcement capabilities into OT without a separate vendor.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$$</div>
+            <div class="vendor-deploy">Hardware + cloud</div>
+            <div class="vendor-compliance">IEC 62443, NIS2</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://txone.com" target="_blank" rel="noopener">TXOne Networks</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">OT-native endpoint and network protection purpose-built for ICS environments. Portable inspection tools for air-gapped environments, network defense appliances, and endpoint agents for legacy OT assets. No internet connectivity required for operation.</div>
+            <div class="vendor-fit">Best fit: Organizations needing OT endpoint protection for legacy assets in air-gapped or semi-isolated environments where standard IT security tools cannot operate.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">On-prem + hardware</div>
+            <div class="vendor-compliance">IEC 62443</div>
+          </div>
+        </div>
+
+        <div class="vendor-tier-label">Challengers</div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://elisity.com" target="_blank" rel="noopener">Elisity</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Identity-based microsegmentation that enforces least-privilege access policies across OT environments without requiring network redesign. Policy enforcement happens at the software layer over existing network infrastructure.</div>
+            <div class="vendor-fit">Best fit: Organizations that need network segmentation for compliance or risk reduction but cannot tolerate the disruption of a physical network redesign.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">Cloud-managed</div>
+            <div class="vendor-compliance">NERC CIP, IEC 62443</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://packetviper.com" target="_blank" rel="noopener">PacketViper</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">OT network deception and active defense platform. Deploys decoy assets within OT networks to detect and deflect attackers before they reach real systems. Adds an active enforcement layer on top of passive detection tools.</div>
+            <div class="vendor-fit">Best fit: Organizations with a visibility platform already in place looking to add an active deception layer to detect lateral movement earlier.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">On-prem</div>
+            <div class="vendor-compliance">NERC CIP</div>
+          </div>
+        </div>
+
+        <div class="hardware-callout">
+          <div class="hardware-callout-label">Beyond software: hardware-enforced unidirectional gateways</div>
+          <p style="font-size:12px;color:var(--mid);margin-bottom:1rem;line-height:1.6;">These are hardware solutions, not software platforms, and sit outside the scope of this index. They are included here because any organization evaluating OT enforcement architecture for NERC CIP compliance or critical infrastructure protection needs to know they exist. Unidirectional security gateways — data diodes — enforce one-way data flow at the hardware level, making network-based attacks against protected systems physically impossible.</p>
+          <div class="hardware-vendor">
+            <div class="hardware-vendor-name"><a href="https://waterfall-security.com" target="_blank" rel="noopener">Waterfall Security Solutions</a></div>
+            <div class="hardware-vendor-desc">The market leader in unidirectional security gateways. Hardware-enforced one-way data replication from OT to IT networks with no physical path for return traffic. Used extensively in nuclear, electric utility, and oil and gas environments where NERC CIP and other regulations require strict network separation. Software connectors replicate historian, SCADA, and other OT data to IT systems without creating a network attack path.</div>
+          </div>
+          <div class="hardware-vendor">
+            <div class="hardware-vendor-name"><a href="https://owlcyberdefense.com" target="_blank" rel="noopener">Owl Cyber Defense</a></div>
+            <div class="hardware-vendor-desc">Hardware-enforced data diode and cross-domain solutions for government, defense, and critical infrastructure environments. Strong presence in US federal and defense OT environments. Offers a range of unidirectional and controlled-transfer solutions for environments with strict data sovereignty or classification requirements alongside OT isolation needs.</div>
+          </div>
+        </div>
+
+
+        <!-- 04 SPECIALISTS -->
+        <div class="vendor-section-header" id="specialists">
+          <div class="vendor-section-number">04</div>
+          <div class="vendor-section-title">Specialists</div>
+        </div>
+
+        <div class="vendor-tier-label">Established</div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://honeywell.com/us/en/industrial-cyber-security" target="_blank" rel="noopener">Honeywell Forge</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">OT cybersecurity services and software from an industrial automation incumbent. Forge Cybersecurity Suite covers asset visibility, risk assessment, and managed detection for Honeywell and third-party OT environments. Backed by Honeywell's deep relationships with process industry operators.</div>
+            <div class="vendor-fit">Best fit: Process industry operators — oil and gas, chemicals, refining — already running Honeywell automation systems seeking security from a trusted automation vendor.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$$</div>
+            <div class="vendor-deploy">On-prem + cloud</div>
+            <div class="vendor-compliance">IEC 62443, NERC CIP</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://rockwellautomation.com/en-us/capabilities/industrial-cybersecurity.html" target="_blank" rel="noopener">Rockwell Automation</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">OT security services and FactoryTalk network security tools from a leading industrial automation vendor. Cybersecurity assessments, network design, and managed services primarily for Rockwell-centric manufacturing environments.</div>
+            <div class="vendor-fit">Best fit: Discrete and hybrid manufacturing organizations running Allen-Bradley and FactoryTalk automation infrastructure.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$$</div>
+            <div class="vendor-deploy">On-prem + services</div>
+            <div class="vendor-compliance">IEC 62443</div>
+          </div>
+        </div>
+
+        <div class="vendor-tier-label">Challengers</div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://cyolo.io" target="_blank" rel="noopener">Cyolo</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Zero-trust secure remote access built around OT constraints. Identity-based access with continuous session validation — authorized users only, access to specific assets only, all sessions monitored and recorded. Designed to replace insecure remote access practices without disrupting operations.</div>
+            <div class="vendor-fit">Best fit: Organizations replacing legacy VPN-based remote access for OT environments, or managing third-party vendor access to industrial systems.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">Cloud + on-prem</div>
+            <div class="vendor-compliance">IEC 62443, NIS2</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://opswat.com/markets/ics-scada" target="_blank" rel="noopener">OPSWAT</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">OT endpoint and media security for removable media, portable devices, and file transfers into air-gapped or isolated OT environments. MetaDefender Kiosk scans USB drives and portable media before they enter secure OT zones — addressing a common attack vector that network-based tools cannot reach.</div>
+            <div class="vendor-fit">Best fit: Organizations with air-gapped or highly isolated OT environments where removable media is a primary attack vector.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">On-prem + hardware kiosk</div>
+            <div class="vendor-compliance">NERC CIP, IEC 62443</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://phosphorus.io" target="_blank" rel="noopener">Phosphorus</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Proactive security for IoT and OT devices — firmware updates, credential management, and configuration hardening at scale. Addresses the vulnerability management gap for devices that cannot run agents and are excluded from standard IT patch management workflows.</div>
+            <div class="vendor-fit">Best fit: Organizations with large IoT and OT device populations needing automated remediation rather than passive vulnerability detection.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">Cloud</div>
+            <div class="vendor-compliance">IEC 62443, NIS2</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://xage.com" target="_blank" rel="noopener">Xage Security</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Zero trust access and identity platform for OT and critical infrastructure. Distributed enforcement fabric works without central infrastructure — nodes enforce policy independently, making the system resilient to network disruption. Covers remote access, machine-to-machine access, and multi-party operations.</div>
+            <div class="vendor-fit">Best fit: Critical infrastructure operators — energy, utilities, oil and gas — needing zero trust access enforcement across distributed, remote, or air-gapped OT environments.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">On-prem + cloud</div>
+            <div class="vendor-compliance">NERC CIP, IEC 62443</div>
+          </div>
+        </div>
+
+
+        <h2>Where to go next</h2>
+
+        <p>The <a href="/landscape/">landscape overview</a> explains the strategic trade-offs between vendor categories and tiers before you engage with specific vendors. The <a href="/comparisons/">comparisons section</a> goes head-to-head on the platforms practitioners evaluate most often. The <a href="/guides/ot-security-platform-evaluation/">evaluation checklist</a> is a structured framework for any OT security platform assessment.</p>
+
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="page-label">OT Cybersecurity Software</span>
+      <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
+    </div>
+  </footer>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+</body>
+</html>

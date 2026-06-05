@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>Understanding CPS: OT, ICS, and SCADA Explained — OT Cybersecurity Software</title>
+  <meta name="description" content="Cyber-physical systems (CPS) is the term redefining how vendors frame OT, ICS, and SCADA security. Understanding what it covers — and what it obscures — is essential for evaluating security platforms.">
+  <link rel="canonical" href="https://otcybersecuritysoftware.com/landscape/market-direction/">
+
+  <meta property="og:title" content="Understanding CPS: OT, ICS, and SCADA Explained">
+  <meta property="og:description" content="CPS is the term redefining how vendors frame OT, ICS, and SCADA security. Understanding what it covers — and what it obscures — matters for evaluation.">
+  <meta property="og:url" content="https://otcybersecuritysoftware.com/landscape/market-direction/">
+  <meta property="og:type" content="article">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js"></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is CPS in cybersecurity?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Cyber-physical systems (CPS) is the broadest framing for systems where software and physical processes are tightly integrated. It encompasses OT, ICS, SCADA, IoT, medical devices, and building systems. Vendors increasingly use CPS to signal that their platforms protect across that entire spectrum, not just traditional industrial environments."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the difference between OT, ICS, and SCADA?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "OT (operational technology) covers all hardware and software that monitors or controls physical processes. ICS (industrial control systems) is a subset of OT covering industrial automation specifically. SCADA (Supervisory Control and Data Acquisition) is a subset of ICS used for geographically distributed assets like pipelines and power grids. All three sit under the CPS umbrella."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why do OT security vendors use different terms?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Vendors use OT, ICS, SCADA, and CPS to signal the scope of what their products protect. A CPS platform claim is the broadest possible framing. An ICS specialist claim signals depth in industrial environments. Understanding what these terms signal — and what they may obscure — is essential when evaluating platform coverage against your actual environment."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    .hierarchy-block {
+      border: var(--hairline);
+      background: var(--surface);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      font-size: 13px;
+      line-height: 2.1;
+    }
+    .hier-level {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+    }
+    .hier-label {
+      font-weight: 700;
+      color: var(--charcoal);
+      min-width: 80px;
+      flex-shrink: 0;
+    }
+    .hier-label-cps {
+      font-weight: 700;
+      color: var(--accent);
+      min-width: 80px;
+      flex-shrink: 0;
+      font-size: 15px;
+    }
+    .hier-desc {
+      color: var(--mid);
+      font-size: 12px;
+    }
+    .hier-indent-1 { padding-left: 1.5rem; }
+    .hier-indent-2 { padding-left: 3rem; }
+    .hier-indent-3 { padding-left: 4.5rem; }
+    .hier-pipe { color: var(--accent); font-weight: 700; margin-right: 0.25rem; flex-shrink: 0; }
+    .hier-divider {
+      border-top: var(--hairline);
+      margin: 0.5rem 0;
+    }
+    .eval-block {
+      border: var(--hairline);
+      border-left: 3px solid var(--accent);
+      background: var(--surface);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .eval-term {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+    }
+    .eval-body {
+      font-size: 13px;
+      color: var(--charcoal);
+      line-height: 1.7;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">OT Cybersecurity <span>Software</span></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for OT and ICS security practitioners</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/landscape/">Landscape</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>CPS: OT, ICS, and SCADA</span>
+        </div>
+
+        <span class="page-label">Landscape</span>
+        <h1>Understanding CPS: OT, ICS, and SCADA Explained</h1>
+
+        <p class="lead">Cyber-physical systems (CPS) is the term redefining how vendors frame OT, ICS, and SCADA security. Understanding what it covers — and what it can obscure — is essential for evaluating whether a platform actually protects your environment.</p>
+
+
+        <h2>CPS: the umbrella term</h2>
+
+        <p>Cyber-physical systems is the broadest possible framing: any system where software and physical processes are tightly integrated. It encompasses OT, ICS, SCADA, IoT, medical devices, and building systems under a single term. Claroty's 2022 rebrand from OT security to CPS protection was the clearest signal that the market was converging around this language, and other major vendors have followed.</p>
+
+        <p>The shift reflects a genuine market evolution. As IT/OT convergence has accelerated and IoT devices have proliferated across industrial environments, the boundaries between traditional industrial OT and other connected physical systems have blurred. A factory floor now routinely includes legacy PLCs running proprietary protocols alongside modern IoT sensors streaming data to cloud analytics platforms. A platform claiming CPS coverage is signaling that it protects across that entire spectrum.</p>
+
+        <p>For evaluation purposes, a CPS platform claim is broad by definition. Verify the depth of coverage in your specific environment — particularly ICS protocol support and deployment constraints for legacy industrial assets — rather than taking the CPS label at face value. Breadth and depth are different capabilities, and the vendors with the widest CPS coverage are not always the ones with the deepest OT expertise.</p>
+
+
+        <h2>How the terms relate</h2>
+
+        <p>OT, ICS, and SCADA are nested subsets, all sitting under the CPS umbrella alongside IoT, medical devices, and building systems.</p>
+
+        <div class="hierarchy-block">
+          <div class="hier-level">
+            <span class="hier-label-cps">CPS</span>
+            <span class="hier-desc">All systems where software and physical processes are tightly integrated</span>
+          </div>
+          <div class="hier-divider"></div>
+          <div class="hier-level hier-indent-1">
+            <span class="hier-pipe">├</span>
+            <span class="hier-label">OT</span>
+            <span class="hier-desc">All technology that monitors or controls physical processes</span>
+          </div>
+          <div class="hier-level hier-indent-2">
+            <span class="hier-pipe">├</span>
+            <span class="hier-label">ICS</span>
+            <span class="hier-desc">Industrial automation and control systems specifically</span>
+          </div>
+          <div class="hier-level hier-indent-3">
+            <span class="hier-pipe">├</span>
+            <span class="hier-label">SCADA</span>
+            <span class="hier-desc">Distributed supervisory control — pipelines, grids, water networks</span>
+          </div>
+          <div class="hier-level hier-indent-3">
+            <span class="hier-pipe">├</span>
+            <span class="hier-label">DCS</span>
+            <span class="hier-desc">Distributed control systems — refineries, chemical plants, process industries</span>
+          </div>
+          <div class="hier-level hier-indent-3">
+            <span class="hier-pipe">└</span>
+            <span class="hier-label">PLC / RTU</span>
+            <span class="hier-desc">Programmable logic controllers and remote terminal units — discrete manufacturing, field devices</span>
+          </div>
+          <div class="hier-level hier-indent-1">
+            <span class="hier-pipe">├</span>
+            <span class="hier-label">IoT</span>
+            <span class="hier-desc">Connected sensors, actuators, and edge devices — industrial and commercial</span>
+          </div>
+          <div class="hier-level hier-indent-1">
+            <span class="hier-pipe">├</span>
+            <span class="hier-label">Medical</span>
+            <span class="hier-desc">Connected medical devices and healthcare infrastructure</span>
+          </div>
+          <div class="hier-level hier-indent-1">
+            <span class="hier-pipe">└</span>
+            <span class="hier-label">BMS</span>
+            <span class="hier-desc">Building management systems — HVAC, access control, physical security</span>
+          </div>
+        </div>
+
+
+        <h2>What vendor terminology signals during evaluation</h2>
+
+        <p>Vendors use these terms to define the scope of what their products protect. The signals are not always accurate, and the same platform may use different terminology in different sales contexts. Here is what each term typically implies.</p>
+
+        <div class="eval-block">
+          <div class="eval-term">CPS platform</div>
+          <div class="eval-body">Broadest possible coverage claim. The vendor is signaling that their platform sees across OT, IoT, medical, and building systems in a unified view. Verify protocol depth in your specific industrial environment — CPS breadth often comes at the cost of ICS-specific depth. Ask specifically about coverage for the protocols your equipment uses.</div>
+        </div>
+
+        <div class="eval-block">
+          <div class="eval-term">OT security platform</div>
+          <div class="eval-body">Broad industrial coverage claim without the IoT and medical device framing. Typically signals stronger roots in traditional industrial environments. Verify whether coverage extends to your specific OT stack — the protocols, legacy assets, and deployment constraints that define your environment.</div>
+        </div>
+
+        <div class="eval-block">
+          <div class="eval-term">ICS security specialist</div>
+          <div class="eval-body">Depth signal. The vendor is claiming expertise specifically in industrial control system environments. This typically means stronger protocol coverage for ICS protocols (Modbus, Profinet, EtherNet/IP, DNP3) and more experience with the operational constraints of factory and plant environments — passive-only monitoring, no active scanning, air-gapped deployment options.</div>
+        </div>
+
+        <div class="eval-block">
+          <div class="eval-term">SCADA security</div>
+          <div class="eval-body">Vertical signal. Strong coverage for distributed infrastructure environments — energy, utilities, pipelines, water. May have weaker coverage for discrete manufacturing or process industry environments that use DCS architectures rather than SCADA. Check protocol support for IEC 61850, IEC 60870, and DNP3 if you operate grid or utility infrastructure.</div>
+        </div>
+
+        <p>The <a href="/landscape/vendors/">vendor index</a> organizes platforms by functional category and includes protocol support and deployment model for each vendor — a more reliable evaluation signal than the terminology a vendor uses to describe itself.</p>
+
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="page-label">OT Cybersecurity Software</span>
+      <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
+    </div>
+  </footer>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>OT Security Regulatory Map — Independent Guide | OT Cybersecurity Software</title>
+  <meta name="description" content="A visual map of OT and ICS security regulatory frameworks: what each requires, which vendor categories satisfy each requirement, and how frameworks overlap for organizations under multiple compliance obligations.">
+  <link rel="canonical" href="https://otcybersecuritysoftware.com/landscape/regulatory-map/">
+
+  <meta property="og:title" content="OT Security Regulatory Map — Independent Guide">
+  <meta property="og:description" content="A visual map of OT security regulatory frameworks, requirements, and vendor categories.">
+  <meta property="og:url" content="https://otcybersecuritysoftware.com/landscape/regulatory-map/">
+  <meta property="og:type" content="article">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js"></script>
+
+  <style>
+    /* MAP LAYER 1 — Framework x Requirement matrix */
+    .map-section {
+      margin-bottom: 2.5rem;
+    }
+    .map-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .map-label::before { content: '| '; }
+    .map-subtitle {
+      font-size: 12px;
+      color: var(--mid);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    /* Matrix grid */
+    .matrix-wrap { overflow-x: auto; }
+    .matrix {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      min-width: 560px;
+    }
+    .matrix thead th {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.6rem 0.75rem;
+      text-align: center;
+      border-bottom: 2px solid var(--charcoal);
+      border-right: var(--hairline);
+      background: var(--surface);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .matrix thead th:first-child {
+      text-align: left;
+      width: 200px;
+      cursor: default;
+    }
+    .matrix thead th:not(:first-child):hover { background: var(--accent-pale); }
+    .matrix thead th.highlighted { background: var(--accent-pale); color: var(--accent); }
+    .matrix tbody tr { border-bottom: var(--hairline); }
+    .matrix tbody tr:hover td { background: #fafafa; }
+    .matrix tbody td {
+      padding: 0.6rem 0.75rem;
+      border-right: var(--hairline);
+      vertical-align: middle;
+      background: var(--surface);
+      transition: background 0.15s;
+    }
+    .matrix tbody td.highlighted { background: var(--accent-pale); }
+    .matrix tbody td:first-child {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--charcoal);
+      background: var(--bg);
+      white-space: nowrap;
+    }
+    .matrix tbody td:first-child.highlighted { background: var(--accent-pale); }
+
+    /* Cell states */
+    .cell-required {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.2rem;
+      text-align: center;
+    }
+    .cell-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .dot-required { background: var(--accent); color: #fff; }
+    .dot-implied { background: var(--accent-pale); border: 1px solid var(--accent); color: var(--accent); }
+    .dot-none { background: var(--bg); border: var(--hairline); color: var(--faint); }
+    .cell-note {
+      font-size: 10px;
+      color: var(--mid);
+      line-height: 1.3;
+      max-width: 90px;
+    }
+    .cell-note-accent { color: var(--accent); font-weight: 700; }
+
+    /* Row labels with vendor category indicator */
+    .row-label-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .row-cat-dot {
+      width: 8px;
+      height: 8px;
+      flex-shrink: 0;
+      background: var(--accent);
+      opacity: 0.4;
+    }
+
+    /* Legend */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--surface);
+      border: var(--hairline);
+      font-size: 11px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--mid);
+    }
+    .legend-dot {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    /* MAP LAYER 2 — Procurement lens */
+    .procurement-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: var(--hairline);
+      margin-bottom: 1.5rem;
+    }
+    .proc-cell {
+      background: var(--surface);
+      padding: 1rem 1.1rem;
+    }
+    .proc-requirement {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--charcoal);
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--accent);
+    }
+    .proc-frameworks {
+      font-size: 11px;
+      color: var(--faint);
+      margin-bottom: 0.5rem;
+      line-height: 1.5;
+    }
+    .proc-buys {
+      font-size: 12px;
+      color: var(--charcoal);
+      line-height: 1.6;
+    }
+    .proc-buys strong { color: var(--accent); }
+
+    /* LAYER 3 — Framework detail blocks */
+    .framework-block {
+      border: var(--hairline);
+      margin-bottom: 1.5rem;
+      scroll-margin-top: 60px;
+    }
+    .framework-header {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      border-bottom: 2px solid var(--charcoal);
+      cursor: pointer;
+      user-select: none;
+    }
+    .framework-header:hover .framework-toggle { color: var(--accent); }
+    .framework-name-col {
+      padding: 0.85rem 1rem;
+      border-right: var(--hairline);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.15rem;
+    }
+    .framework-acronym {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+    .framework-full {
+      font-size: 11px;
+      color: var(--mid);
+      line-height: 1.4;
+    }
+    .framework-summary-col {
+      padding: 0.85rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .framework-who {
+      font-size: 12px;
+      color: var(--charcoal);
+      line-height: 1.5;
+      flex: 1;
+    }
+    .framework-penalty {
+      font-size: 11px;
+      color: var(--mid);
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .framework-toggle {
+      font-size: 16px;
+      color: var(--faint);
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+    .framework-toggle.open { transform: rotate(180deg); color: var(--accent); }
+    .framework-body {
+      padding: 1.25rem;
+      display: none;
+    }
+    .framework-body.open { display: block; }
+    .framework-body h3 {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--charcoal);
+      margin-top: 1.1rem;
+      margin-bottom: 0.4rem;
+      border-top: none;
+    }
+    .framework-body h3:first-child { margin-top: 0; }
+    .framework-body p { font-size: 13px; margin-bottom: 0.75rem; }
+    .framework-body p:last-child { margin-bottom: 0; }
+    .deadline-flag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #fff;
+      background: var(--accent);
+      padding: 0.1rem 0.4rem;
+      margin-left: 0.4rem;
+      vertical-align: middle;
+    }
+    .vendor-cats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.35rem;
+    }
+    .vendor-cat-tag {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-pale);
+      border: 1px solid var(--accent);
+      padding: 0.15rem 0.4rem;
+    }
+
+    /* Other jurisdictions */
+    .other-block {
+      border: var(--hairline);
+      background: var(--surface);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .other-block h3 {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--charcoal);
+      margin-bottom: 0.75rem;
+      border-top: none;
+      margin-top: 0;
+    }
+    .other-row {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 0.75rem;
+      padding: 0.6rem 0;
+      border-top: var(--hairline);
+      font-size: 12px;
+    }
+    .other-row:first-of-type { border-top: none; padding-top: 0; }
+    .other-name { font-weight: 700; color: var(--charcoal); }
+    .other-desc { color: var(--mid); line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">OT Cybersecurity <span>Software</span></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for OT and ICS security practitioners</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/landscape/">Landscape</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>Regulatory Map</span>
+        </div>
+
+        <span class="page-label">Landscape</span>
+        <h1>OT Security Regulatory Map</h1>
+
+        <p class="lead">Compliance requirements are driving more OT security procurement than internal risk programs. This table shows what each framework requires, which vendor categories satisfy each requirement, and where frameworks overlap for organizations under multiple obligations.</p>
+
+
+        <!-- LAYER 1: FRAMEWORK x REQUIREMENT MATRIX -->
+        <div class="map-section">
+          <div class="map-label">Layer 1</div>
+          <p class="map-subtitle">Click a framework column to highlight its requirements. Hover any row to see cross-framework coverage at a glance.</p>
+
+          <div class="legend">
+            <div class="legend-item">
+              <div class="legend-dot dot-required" style="width:14px;height:14px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;">R</div>
+              Explicitly required
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="width:14px;height:14px;background:var(--accent-pale);border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:9px;font-weight:700;">~</div>
+              Implied or referenced
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="width:14px;height:14px;background:var(--bg);border:var(--hairline);display:flex;align-items:center;justify-content:center;color:var(--faint);font-size:9px;font-weight:700;">&#8212;</div>
+              Not addressed
+            </div>
+          </div>
+
+          <div class="matrix-wrap">
+            <table class="matrix" id="req-matrix">
+              <thead>
+                <tr>
+                  <th>Requirement</th>
+                  <th data-col="0">NERC CIP</th>
+                  <th data-col="1">IEC 62443</th>
+                  <th data-col="2">NIS2 / CRA</th>
+                  <th data-col="3">TSA Directives</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- OT Network Visibility -->
+                <tr>
+                  <td>
+                    <div class="row-label-wrap">
+                      <div class="row-cat-dot" style="opacity:1;background:var(--accent)"></div>
+                      OT Network Visibility
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note cell-note-accent">CIP-015 (2026)</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-implied">~</div>
+                      <div class="cell-note">Implied by zone model</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note">Incident detection</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note">Continuous monitoring</div>
+                    </div>
+                  </td>
+                </tr>
+                <!-- Network Segmentation -->
+                <tr>
+                  <td>
+                    <div class="row-label-wrap">
+                      <div class="row-cat-dot"></div>
+                      Network Segmentation
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note">ESP / PSP zones</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note">Zone &amp; conduit model</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note">Network security</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note">IT/OT separation</div>
+                    </div>
+                  </td>
+                </tr>
+                <!-- Access Control -->
+                <tr>
+                  <td>
+                    <div class="row-label-wrap">
+                      <div class="row-cat-dot"></div>
+                      Access Control
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note">CIP-006 / CIP-007</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note">Least privilege</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note">IAM measures</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note">MFA required</div>
+                    </div>
+                  </td>
+                </tr>
+                <!-- Incident Reporting -->
+                <tr>
+                  <td>
+                    <div class="row-label-wrap">
+                      <div class="row-cat-dot"></div>
+                      Incident Reporting
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note">To E-ISAC</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-none">—</div>
+                      <div class="cell-note">Not specified</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note cell-note-accent">24hr / 72hr rule</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note">To CISA</div>
+                    </div>
+                  </td>
+                </tr>
+                <!-- Vulnerability Management -->
+                <tr>
+                  <td>
+                    <div class="row-label-wrap">
+                      <div class="row-cat-dot"></div>
+                      Vulnerability Management
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note">CIP-010 assessments</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note">Patch management</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note">Risk management</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-implied">~</div>
+                      <div class="cell-note">Implied</div>
+                    </div>
+                  </td>
+                </tr>
+                <!-- Supply Chain Security -->
+                <tr>
+                  <td>
+                    <div class="row-label-wrap">
+                      <div class="row-cat-dot"></div>
+                      Supply Chain Security
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note">CIP-013</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-implied">~</div>
+                      <div class="cell-note">Vendor requirements</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note">Supply chain risk</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-implied">~</div>
+                      <div class="cell-note">Implied</div>
+                    </div>
+                  </td>
+                </tr>
+                <!-- Secure Remote Access -->
+                <tr>
+                  <td>
+                    <div class="row-label-wrap">
+                      <div class="row-cat-dot"></div>
+                      Secure Remote Access
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-implied">~</div>
+                      <div class="cell-note">Under access control</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note">Remote access controls</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note">Access management</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note">Explicit requirement</div>
+                    </div>
+                  </td>
+                </tr>
+                <!-- Board Accountability -->
+                <tr>
+                  <td>
+                    <div class="row-label-wrap">
+                      <div class="row-cat-dot"></div>
+                      Board Accountability
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-none">—</div>
+                      <div class="cell-note">Not specified</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-none">—</div>
+                      <div class="cell-note">Not specified</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-required">R</div>
+                      <div class="cell-note">Management liability</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="cell-required">
+                      <div class="cell-dot dot-none">—</div>
+                      <div class="cell-note">Not specified</div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+
+        </div>
+
+
+        <!-- LAYER 2: PROCUREMENT LENS -->
+        <div class="map-section">
+          <div class="map-label">Layer 2 — Procurement lens</div>
+          <p class="map-subtitle">For each requirement, which vendor category satisfies it and across how many frameworks simultaneously.</p>
+
+          <div class="procurement-grid">
+            <div class="proc-cell">
+              <div class="proc-requirement">OT Network Visibility</div>
+              <div class="proc-frameworks">Required by: NERC CIP, NIS2, TSA — implied by IEC 62443</div>
+              <div class="proc-buys">Buy: <strong>OT Visibility &amp; Detection platform.</strong> Single highest-leverage purchase — satisfies continuous monitoring across all four frameworks simultaneously.</div>
+            </div>
+            <div class="proc-cell">
+              <div class="proc-requirement">Network Segmentation</div>
+              <div class="proc-frameworks">Required by: NERC CIP, IEC 62443, NIS2, TSA</div>
+              <div class="proc-buys">Buy: <strong>OT Enforcement &amp; Protection.</strong> Required by all four frameworks. Hardware firewalls for perimeter enforcement; identity-based segmentation tools where network redesign is not feasible.</div>
+            </div>
+            <div class="proc-cell">
+              <div class="proc-requirement">Access Control</div>
+              <div class="proc-frameworks">Required by: NERC CIP, IEC 62443, NIS2, TSA</div>
+              <div class="proc-buys">Buy: <strong>Specialist — secure remote access / zero trust.</strong> Cyolo, Xage Security. TSA explicitly requires MFA for all remote OT access.</div>
+            </div>
+            <div class="proc-cell">
+              <div class="proc-requirement">Incident Reporting</div>
+              <div class="proc-frameworks">Required by: NERC CIP, NIS2, TSA — not IEC 62443</div>
+              <div class="proc-buys">Buy: <strong>IT/OT Converged Platform</strong> for unified incident workflows across IT and OT. NIS2's 24hr deadline is the most demanding — ensure detection-to-notification workflow is automated, not manual.</div>
+            </div>
+            <div class="proc-cell">
+              <div class="proc-requirement">Vulnerability Management</div>
+              <div class="proc-frameworks">Required by: NERC CIP, IEC 62443, NIS2 — implied by TSA</div>
+              <div class="proc-buys">Buy: <strong>Specialist — OT vulnerability management.</strong> Verve Industrial, Phosphorus. Most visibility platforms include vuln detection; remediation for legacy assets requires a specialist.</div>
+            </div>
+            <div class="proc-cell">
+              <div class="proc-requirement">Supply Chain Security</div>
+              <div class="proc-frameworks">Required by: NERC CIP (CIP-013), NIS2 — implied by IEC 62443, TSA</div>
+              <div class="proc-buys">Buy: <strong>Vendor qualification process</strong> more than a specific tool. Require IEC 62443 certification from OT software vendors. NIS2 supply chain requirements extend to your security vendors themselves.</div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- LAYER 3: FRAMEWORK DETAIL -->
+        <div class="map-section">
+          <div class="map-label">Layer 3 — Framework detail</div>
+          <p class="map-subtitle">Click any framework to expand enforcement details, specific requirements, and upcoming deadlines.</p>
+
+          <!-- NERC CIP -->
+          <div class="framework-block" id="nerc-cip">
+            <div class="framework-header" onclick="toggleFramework('nerc-cip-body', 'nerc-cip-toggle')">
+              <div class="framework-name-col">
+                <div class="framework-acronym">NERC CIP</div>
+                <div class="framework-full">Critical Infrastructure Protection</div>
+              </div>
+              <div class="framework-summary-col">
+                <div class="framework-who">US, Canadian, and Mexican bulk electric system operators. Enforced by NERC with FERC oversight.</div>
+                <div class="framework-penalty">Up to $1M per violation per day</div>
+                <div class="framework-toggle" id="nerc-cip-toggle">&#9660;</div>
+              </div>
+            </div>
+            <div class="framework-body" id="nerc-cip-body">
+              <h3>Key standards for software procurement</h3>
+              <p>CIP-007 requires system security management — ports and services hardening, security patch management, and malicious code prevention for all OT assets within the electronic security perimeter. CIP-010 requires configuration change management and vulnerability assessments. CIP-013 requires supply chain risk management for industrial control systems. CIP-015, effective 2026, requires internal network security monitoring within the electronic security perimeter.</p>
+
+              <h3>What CIP-015 means in practice</h3>
+              <p>CIP-015 is the most significant recent development. It mandates continuous visibility into OT network traffic — point-in-time assessments do not satisfy the requirement. Organizations that have been deferring OT security platform investment now have a hard compliance deadline. Passive monitoring is required; active scanning is not acceptable in most bulk electric environments.</p>
+
+              <h3>Compliance evidence requirements</h3>
+              <p>NERC CIP audits require documented evidence. Vendors that automate evidence collection and reporting reduce the administrative burden significantly. Industrial Defender is built around this specifically. Dragos, Claroty, and Nozomi all have CIP compliance reporting capabilities worth evaluating.</p>
+
+              <h3>Vendor categories implicated</h3>
+              <div class="vendor-cats">
+                <span class="vendor-cat-tag">OT Visibility &amp; Detection</span>
+                <span class="vendor-cat-tag">Network Segmentation</span>
+                <span class="vendor-cat-tag">Logging &amp; Monitoring</span>
+              </div>
+
+              <h3>Upcoming <span class="deadline-flag">Active 2026</span></h3>
+              <p>CIP-015 enforcement is active. Organizations without an INSM-capable platform are out of compliance. Check NERC's standards page for any pending revisions to other CIP standards.</p>
+            </div>
+          </div>
+
+          <!-- IEC 62443 -->
+          <div class="framework-block" id="iec-62443">
+            <div class="framework-header" onclick="toggleFramework('iec-body', 'iec-toggle')">
+              <div class="framework-name-col">
+                <div class="framework-acronym">IEC 62443</div>
+                <div class="framework-full">ISA/IEC 62443 Industrial Cybersecurity</div>
+              </div>
+              <div class="framework-summary-col">
+                <div class="framework-who">Industrial control system operators and integrators globally. Voluntary standard; referenced by binding frameworks including NIS2 and NERC CIP.</div>
+                <div class="framework-penalty">No direct penalties; creates regulatory exposure where referenced</div>
+                <div class="framework-toggle" id="iec-toggle">&#9660;</div>
+              </div>
+            </div>
+            <div class="framework-body" id="iec-body">
+              <h3>What it requires</h3>
+              <p>IEC 62443 is a multi-part standard covering ICS security across the full lifecycle. The zone and conduit model requires dividing OT networks into security zones with controlled communication between them. Security levels (SL 1–4) define the protection level required based on risk. Supplier requirements define what vendors developing ICS components must demonstrate.</p>
+
+              <h3>Why it matters even without direct enforcement</h3>
+              <p>IEC 62443 alignment is increasingly required in vendor procurement qualification — particularly in Europe and in supply chain security programs. The EU Cyber Resilience Act explicitly references IEC 62443 as a harmonized standard for CRA compliance, meaning IEC 62443 product certification will carry direct regulatory weight from 2027. Vendors with ISASecure certification are in a stronger procurement position than those claiming alignment without third-party verification.</p>
+
+              <h3>Vendor categories implicated</h3>
+              <div class="vendor-cats">
+                <span class="vendor-cat-tag">OT Enforcement</span>
+                <span class="vendor-cat-tag">Network Segmentation</span>
+                <span class="vendor-cat-tag">Vendor Qualification</span>
+              </div>
+
+              <h3>Upcoming <span class="deadline-flag">CRA 2027</span></h3>
+              <p>IEC 62443 Part 2-1 was revised in 2024. The CRA's 2027 enforcement date makes IEC 62443 certification a commercial requirement for vendors selling connected OT products in the EU — not just a best practice. Begin requiring certification in vendor RFPs now.</p>
+            </div>
+          </div>
+
+          <!-- NIS2 / CRA -->
+          <div class="framework-block" id="nis2-cra">
+            <div class="framework-header" onclick="toggleFramework('nis2-body', 'nis2-toggle')">
+              <div class="framework-name-col">
+                <div class="framework-acronym">NIS2 / CRA</div>
+                <div class="framework-full">EU Network &amp; Information Security 2 / Cyber Resilience Act</div>
+              </div>
+              <div class="framework-summary-col">
+                <div class="framework-who">NIS2: EU operators of essential services. CRA: manufacturers selling connected devices in the EU.</div>
+                <div class="framework-penalty">NIS2: up to €10M or 2% revenue. CRA: up to €15M or 2.5% revenue</div>
+                <div class="framework-toggle" id="nis2-toggle">&#9660;</div>
+              </div>
+            </div>
+            <div class="framework-body" id="nis2-body">
+              <h3>NIS2 requirements</h3>
+              <p>NIS2 expands scope significantly from the original directive — more sectors, stricter requirements, board-level accountability. For OT environments: risk management measures including network segmentation and asset management, supply chain security, incident reporting within 24 hours for significant incidents, and management liability for cybersecurity failures.</p>
+
+              <h3>The 24-hour reporting requirement</h3>
+              <p>NIS2's incident reporting timeline — 24 hours for initial notification, 72 hours for fuller assessment — is the most operationally demanding requirement. Organizations cannot report incidents they cannot detect. This makes OT visibility and detection tooling non-negotiable for NIS2 compliance. For organizations under both NIS2 and NERC CIP, NIS2's timeline is stricter and should set the standard for incident response workflows.</p>
+
+              <h3>CRA requirements</h3>
+              <p>The Cyber Resilience Act applies to manufacturers of products with digital elements sold in the EU. For OT security practitioners: CRA compliance from vendors means they have a documented vulnerability disclosure process, provide security updates for the product lifetime, and have had their security processes audited. Require CRA compliance documentation from OT software vendors in EU procurement processes from 2027.</p>
+
+              <h3>Vendor categories implicated</h3>
+              <div class="vendor-cats">
+                <span class="vendor-cat-tag">OT Visibility &amp; Detection</span>
+                <span class="vendor-cat-tag">IT/OT Converged Platforms</span>
+                <span class="vendor-cat-tag">Device Security (CRA)</span>
+              </div>
+
+              <h3>Upcoming <span class="deadline-flag">CRA 2027</span></h3>
+              <p>NIS2 transposition is complete in most EU member states. CRA full enforcement begins 2027. Organizations procuring OT equipment for EU operations should begin CRA vendor qualification processes now — certification takes time.</p>
+            </div>
+          </div>
+
+          <!-- TSA -->
+          <div class="framework-block" id="tsa">
+            <div class="framework-header" onclick="toggleFramework('tsa-body', 'tsa-toggle')">
+              <div class="framework-name-col">
+                <div class="framework-acronym">TSA</div>
+                <div class="framework-full">TSA Security Directives — Pipeline &amp; Rail</div>
+              </div>
+              <div class="framework-summary-col">
+                <div class="framework-who">US critical pipeline operators and rail carriers. Enforced by TSA / DHS.</div>
+                <div class="framework-penalty">Civil penalties; escalating enforcement for repeat violations</div>
+                <div class="framework-toggle" id="tsa-toggle">&#9660;</div>
+              </div>
+            </div>
+            <div class="framework-body" id="tsa-body">
+              <h3>What it requires</h3>
+              <p>Following the Colonial Pipeline attack, TSA issued directives requiring network segmentation between IT and OT systems, multi-factor authentication for remote OT access, continuous monitoring of OT networks for cybersecurity threats, and documented incident response plans tested against OT-specific scenarios. Directives are outcome-based — TSA reviews implementation plans and approves alternative measures where operators demonstrate equivalent security outcomes.</p>
+
+              <h3>Overlap with NERC CIP</h3>
+              <p>Pipeline operators who also operate bulk electric system assets face overlapping TSA and NERC CIP obligations. Both require continuous OT monitoring — a single OT visibility platform can satisfy both requirements, reducing tooling complexity. TSA's MFA requirement for remote access is more explicit than NERC CIP's access control standards.</p>
+
+              <h3>Distributed environment considerations</h3>
+              <p>Pipeline SCADA environments span hundreds of miles with remote assets that cannot easily be reached for hardware deployment. Segmentation tools that enforce zone policies without physical network redesign at remote sites have operational advantages in this context.</p>
+
+              <h3>Vendor categories implicated</h3>
+              <div class="vendor-cats">
+                <span class="vendor-cat-tag">OT Visibility &amp; Detection</span>
+                <span class="vendor-cat-tag">Network Segmentation</span>
+                <span class="vendor-cat-tag">Secure Remote Access</span>
+              </div>
+
+              <h3>Upcoming</h3>
+              <p>TSA directives are updated periodically — the pipeline directives have been revised twice since 2021. Check TSA's surface cybersecurity page for current directive versions before beginning a compliance-driven procurement process.</p>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- OTHER JURISDICTIONS -->
+        <h2>Other jurisdictions</h2>
+
+        <div class="other-block">
+          <h3>Additional frameworks to monitor</h3>
+          <div class="other-row">
+            <div class="other-name">UK NIS Regulations / PSTI</div>
+            <div class="other-desc">The UK retained and is updating its NIS framework post-Brexit. The Product Security and Telecommunications Infrastructure Act 2022 adds connected device security requirements. Organizations in both EU and UK markets face parallel but distinct obligations.</div>
+          </div>
+          <div class="other-row">
+            <div class="other-name">Australia SOCI Act</div>
+            <div class="other-desc">The Security of Critical Infrastructure Act, significantly expanded in 2022, imposes risk management program obligations on Australian critical infrastructure operators including energy, water, and manufacturing. Increasingly aligned with NERC CIP principles for the energy sector.</div>
+          </div>
+          <div class="other-row">
+            <div class="other-name">US sector-specific</div>
+            <div class="other-desc">Water (EPA / AWIA 2018), nuclear (NRC 10 CFR 73.54), and chemical facilities (CISA CFATS) each have distinct OT security implications. Review applicable sector frameworks before beginning a compliance-driven procurement process.</div>
+          </div>
+        </div>
+
+        <p>The <a href="/landscape/vendors/">vendor index</a> includes compliance framework alignment for each platform. The <a href="/tools/vendor-comparison/">vendor comparison tool</a> lets you filter by compliance framework to surface platforms aligned with your specific obligations.</p>
+
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="page-label">OT Cybersecurity Software</span>
+      <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
+    </div>
+  </footer>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+  <script>
+    // Column highlight on click
+    var highlightedCol = null;
+    document.querySelectorAll('.matrix thead th[data-col]').forEach(function(th) {
+      th.addEventListener('click', function() {
+        var col = parseInt(this.getAttribute('data-col'));
+        var allTh = document.querySelectorAll('.matrix thead th[data-col]');
+        var allCells = document.querySelectorAll('.matrix tbody td:not(:first-child)');
+        var allRowLabels = document.querySelectorAll('.matrix tbody td:first-child');
+
+        if (highlightedCol === col) {
+          // Deselect
+          allTh.forEach(function(t) { t.classList.remove('highlighted'); });
+          allCells.forEach(function(c) { c.classList.remove('highlighted'); });
+          allRowLabels.forEach(function(c) { c.classList.remove('highlighted'); });
+          highlightedCol = null;
+        } else {
+          allTh.forEach(function(t) { t.classList.remove('highlighted'); });
+          allCells.forEach(function(c) { c.classList.remove('highlighted'); });
+          allRowLabels.forEach(function(c) { c.classList.remove('highlighted'); });
+          this.classList.add('highlighted');
+          // Highlight column cells (col+1 because first col is row label)
+          document.querySelectorAll('.matrix tbody tr').forEach(function(row) {
+            var cells = row.querySelectorAll('td');
+            if (cells[col + 1]) cells[col + 1].classList.add('highlighted');
+            if (cells[0]) cells[0].classList.add('highlighted');
+          });
+          highlightedCol = col;
+        }
+      });
+    });
+
+    // Framework accordion
+    function toggleFramework(bodyId, toggleId) {
+      var body = document.getElementById(bodyId);
+      var toggle = document.getElementById(toggleId);
+      if (body.classList.contains('open')) {
+        body.classList.remove('open');
+        toggle.classList.remove('open');
+      } else {
+        body.classList.add('open');
+        toggle.classList.add('open');
+      }
+    }
+
+    // Auto-open framework if hash matches
+    var hash = window.location.hash;
+    var hashMap = {
+      '#nerc-cip': ['nerc-cip-body', 'nerc-cip-toggle'],
+      '#iec-62443': ['iec-body', 'iec-toggle'],
+      '#nis2-cra': ['nis2-body', 'nis2-toggle'],
+      '#tsa': ['tsa-body', 'tsa-toggle']
+    };
+    if (hash && hashMap[hash]) {
+      toggleFramework(hashMap[hash][0], hashMap[hash][1]);
+    }
+  </script>
+
+</body>
+</html>
