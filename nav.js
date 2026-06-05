@@ -17,7 +17,7 @@
       <div class="nav-section-label">Landscape</div>
       <a href="/landscape/" class="nav-item depth-0">Market overview</a>
       <a href="/landscape/vendors/" class="nav-item depth-1">├ Vendor index</a>
-      <a href="/landscape/market-direction/" class="nav-item depth-1">├ Market direction</a>
+      <a href="/landscape/cps-ot-ics-scada/" class="nav-item depth-1">├ Market direction</a>
       <a href="/landscape/regulatory-map/" class="nav-item depth-1">└ Regulatory map</a>
     </div>
 
