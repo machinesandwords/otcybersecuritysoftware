@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>OT Security Platform Evaluation: A Practitioner's Guide — OT Cybersecurity Software</title>
+  <meta name="description" content="A structured guide to evaluating OT and ICS security platforms. Covers the full arc from internal preparation through vendor briefing, proof of concept, plant manager buy-in, and final decision. Includes embedded checklists at each stage.">
+  <link rel="canonical" href="https://otcybersecuritysoftware.com/guides/ot-security-platform-evaluation/">
+
+  <meta property="og:title" content="OT Security Platform Evaluation: A Practitioner's Guide">
+  <meta property="og:description" content="A structured guide to evaluating OT and ICS security platforms. Covers the full arc from internal preparation through final decision with embedded checklists.">
+  <meta property="og:url" content="https://otcybersecuritysoftware.com/guides/ot-security-platform-evaluation/">
+  <meta property="og:type" content="article">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js"></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "OT Security Platform Evaluation: A Practitioner's Guide",
+    "description": "A structured guide to evaluating OT and ICS security platforms covering the full arc from internal preparation through final decision.",
+    "url": "https://otcybersecuritysoftware.com/guides/ot-security-platform-evaluation/",
+    "publisher": {
+      "@type": "Organization",
+      "name": "OT Cybersecurity Software",
+      "url": "https://otcybersecuritysoftware.com"
+    }
+  }
+  </script>
+
+  <style>
+    .guide-section {
+      margin-bottom: 2.5rem;
+    }
+    .checklist-block {
+      border: var(--hairline);
+      border-left: 3px solid var(--accent);
+      background: var(--surface);
+      padding: 1.1rem 1.25rem;
+      margin: 1.25rem 0;
+    }
+    .checklist-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .checklist-block ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .checklist-block li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-size: 13px;
+      color: var(--charcoal);
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+    }
+    .checklist-block li:last-child { margin-bottom: 0; }
+    .checklist-block li input[type="checkbox"] {
+      accent-color: var(--accent);
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      margin-top: 3px;
+      cursor: pointer;
+    }
+    .checklist-block li.checked {
+      color: var(--mid);
+      text-decoration: line-through;
+      text-decoration-color: var(--accent);
+    }
+    .qa-block {
+      border: var(--hairline);
+      background: var(--surface);
+      margin-bottom: 1rem;
+    }
+    .qa-question {
+      padding: 0.85rem 1.1rem;
+      background: var(--bg);
+      border-bottom: var(--hairline);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--charcoal);
+      font-style: italic;
+    }
+    .qa-answers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .qa-answer {
+      padding: 0.85rem 1.1rem;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    .qa-answer:first-child {
+      border-right: var(--hairline);
+    }
+    .qa-answer-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .qa-good .qa-answer-label { color: #2a7a2a; }
+    .qa-evasive .qa-answer-label { color: #a03020; }
+    .qa-good { color: var(--charcoal); }
+    .qa-evasive { color: var(--charcoal); }
+    .kit-callout {
+      border: 1px solid var(--accent);
+      background: var(--accent-pale);
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .kit-callout-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .kit-callout p {
+      font-size: 13px;
+      color: var(--charcoal);
+      margin-bottom: 0.75rem;
+    }
+    .kit-callout a {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #fff;
+      background: var(--accent);
+      padding: 0.45rem 1rem;
+      text-decoration: none;
+    }
+    .kit-callout a:hover { background: var(--accent-dim); }
+    .section-divider {
+      border: none;
+      border-top: 2px solid var(--charcoal);
+      margin: 2rem 0 1.5rem;
+    }
+    .red-flags {
+      border: var(--hairline);
+      background: var(--surface);
+      padding: 1.1rem 1.25rem;
+      margin: 1rem 0;
+    }
+    .red-flags-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #a03020;
+      margin-bottom: 0.75rem;
+    }
+    .red-flags ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .red-flags li {
+      font-size: 13px;
+      color: var(--charcoal);
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+      padding-left: 1rem;
+      position: relative;
+    }
+    .red-flags li::before {
+      content: '×';
+      position: absolute;
+      left: 0;
+      color: #a03020;
+      font-weight: 700;
+    }
+    .jump-nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 1.25rem;
+      border: var(--hairline);
+      background: var(--surface);
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .jump-nav-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--faint);
+      flex-shrink: 0;
+    }
+    .jump-nav a {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .jump-nav a:hover { text-decoration: underline; }
+    @media (max-width: 600px) {
+      .qa-answers { grid-template-columns: 1fr; }
+      .qa-answer:first-child { border-right: none; border-bottom: var(--hairline); }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">OT Cybersecurity <span>Software</span></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for OT and ICS security practitioners</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/guides/">Guides</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>OT Platform Evaluation</span>
+        </div>
+
+        <span class="page-label">Guide</span>
+        <h1>OT Security Platform Evaluation: A Practitioner's Guide</h1>
+
+        <p class="lead">Most OT security platform evaluations go wrong before the first vendor demo. Buyers enter conversations without a clear picture of their own environment, evaluate platforms against feature lists rather than operational constraints, and make decisions based on what vendors chose to demonstrate rather than what matters in their specific facility. This guide is a structured alternative that covers the full arc, from internal preparation through final decision, with embedded checklists at each stage.</p>
+
+        <nav class="jump-nav" aria-label="Jump to section">
+          <span class="jump-nav-label">Jump to:</span>
+          <a href="#pre-vendor">Before you talk to vendors</a>
+          <a href="#shortlisting">Shortlisting</a>
+          <a href="#rfp">RFP and vendor briefing</a>
+          <a href="#poc">Proof of concept</a>
+          <a href="#plant-manager">Plant manager buy-in</a>
+          <a href="#decision">Making the decision</a>
+        </nav>
+
+        <div class="kit-callout">
+          <div class="kit-callout-label">RFP Evaluation Kit</div>
+          <p>The vendor briefing template, PoC success criteria checklist, protocol questionnaire, and evaluation decision tracker are available as a downloadable PDF kit. We do not share your information with vendors or third parties.</p>
+          <a href="/tools/rfp-evaluation-kit/">Download the kit</a>
+        </div>
+
+
+        <!-- SECTION 1 -->
+        <hr class="section-divider" id="pre-vendor">
+
+        <div class="guide-section">
+          <h2>Before you talk to vendors</h2>
+
+          <p>The most common evaluation mistake is starting with vendor conversations. Before any outreach, you need an accurate picture of your own environment. Vendors will ask about it. More importantly, your answers determine which platforms are actually worth evaluating.</p>
+
+          <p>Know your asset inventory. Most organizations discover during evaluation that their asset inventory is incomplete or stale. A visibility platform that finds 40% more assets than you knew existed is not a selling point; it is a data point about your current blind spots. Know this going in.</p>
+
+          <p>Audit your protocol stack. List every industrial protocol running in your environment. Include legacy protocols on aging equipment. This list determines which platforms can cover your environment and which cannot, regardless of what their marketing materials claim. Vendors with strong Modbus and EtherNet/IP coverage may have thin coverage for IEC 61850 or GOOSE if you operate grid infrastructure. The protocol audit is non-negotiable.</p>
+
+          <p>Document your deployment constraints. Active scanning is not acceptable in most OT environments. Air-gapped segments cannot phone home to a cloud platform. Legacy assets cannot run agents. Capture these constraints explicitly — they will eliminate platforms from consideration faster than any feature comparison.</p>
+
+          <p>Identify your compliance obligations. If you are under NERC CIP, NIS2, TSA directives, or IEC 62443, list the specific requirements that drive this procurement. Compliance requirements often determine vendor category before anything else does. A NERC CIP-015 obligation points directly to passive OT network monitoring. A NIS2 24-hour incident reporting requirement points to detection and logging capabilities with automated notification workflows.</p>
+
+          <div class="checklist-block">
+            <div class="checklist-label">Pre-vendor checklist</div>
+            <ul>
+              <li><input type="checkbox"> Asset inventory completed and dated — note when it was last verified</li>
+              <li><input type="checkbox"> Protocol list documented — include every protocol on every network segment</li>
+              <li><input type="checkbox"> Deployment constraints documented — passive-only requirements, air-gap segments, no-agent assets</li>
+              <li><input type="checkbox"> Compliance obligations listed with specific standard and subsection</li>
+              <li><input type="checkbox"> Internal stakeholders identified — who needs to approve (CISO, plant manager, operations, procurement)</li>
+              <li><input type="checkbox"> Budget range established</li>
+              <li><input type="checkbox"> Timeline established — is there a compliance deadline driving this?</li>
+            </ul>
+          </div>
+        </div>
+
+
+        <!-- SECTION 2 -->
+        <hr class="section-divider" id="shortlisting">
+
+        <div class="guide-section">
+          <h2>Shortlisting: from the full market to three to five platforms</h2>
+
+          <p>Do not evaluate every vendor in the market. The evaluation process is disruptive enough without running six parallel PoCs. Get to three to five platforms before any formal engagement.</p>
+
+          <p>Start with functional category fit. The four vendor categories — OT visibility and detection, IT/OT converged platforms, OT enforcement and protection, and specialists — solve different problems. If you do not have OT visibility today, a converged platform that requires existing OT data to be meaningful is the wrong starting point. Match the category to the gap you are closing first.</p>
+
+          <p>Make the tier decision. Established platforms bring integration depth, enterprise support, and proven deployments in environments like yours. Challengers bring tighter focus and often better performance on specific problems. The decision depends on your organization's risk tolerance for unproven vendors, your internal OT security maturity, and whether you need the support infrastructure that established vendors provide. There is no universally correct answer, but the decision should be explicit, not defaulted.</p>
+
+          <p>Apply deployment model as a filter. A cloud-only platform is disqualifying if you have air-gapped segments that cannot reach it. An agent-based platform is disqualifying if your legacy assets cannot support agents. Apply these filters before reaching out to any vendor.</p>
+
+          <p>Apply compliance alignment as a filter. If NERC CIP compliance reporting automation matters to your procurement, platforms without it require manual evidence collection — a meaningful operational cost that should be factored in.</p>
+
+          <div class="checklist-block">
+            <div class="checklist-label">Shortlisting checklist</div>
+            <ul>
+              <li><input type="checkbox"> Functional category confirmed — what problem are you solving first</li>
+              <li><input type="checkbox"> Tier decision documented — established, challenger, or mix</li>
+              <li><input type="checkbox"> Deployment model filter applied — eliminated platforms that cannot work in your environment</li>
+              <li><input type="checkbox"> Protocol coverage filter applied — eliminated platforms with thin coverage of your protocol stack</li>
+              <li><input type="checkbox"> Compliance alignment checked — confirmed shortlisted platforms address your specific obligations</li>
+              <li><input type="checkbox"> Shortlist at three to five platforms — no more</li>
+            </ul>
+          </div>
+        </div>
+
+
+        <!-- SECTION 3 -->
+        <hr class="section-divider" id="rfp">
+
+        <div class="guide-section">
+          <h2>The RFP and vendor briefing</h2>
+
+          <p>Send a written briefing document to shortlisted vendors before any demo. This serves two purposes: it tells vendors what matters to you, and it tests whether they actually read it. A vendor who demos capabilities you explicitly said you do not need has already told you something about how they will approach implementation.</p>
+
+          <p>The briefing document should include your protocol list, your deployment constraints, your compliance obligations, and your top three evaluation criteria. Ask vendors to confirm in writing how their platform addresses each one before scheduling a demo.</p>
+
+          <p>Ask about protocol coverage specifically. "Do you support Modbus?" is the wrong question. Ask for the specific version and function codes supported, and ask how coverage was validated, as passive deep-packet inspection and active querying produce different coverage claims. Ask specifically about the protocols on your list that are not Modbus or EtherNet/IP.</p>
+
+          <p>Test passive-only claims. Ask how asset discovery works in a passive-only deployment. Ask whether any features require active queries. Ask specifically what happens if an active query reaches a legacy PLC that was not designed to handle unexpected network traffic. Vendors with genuine passive-only architectures answer this without hesitation. Vendors whose "passive" deployment has exceptions will hedge.</p>
+
+          <p>Ask about professional services requirements. Some platforms require vendor professional services for deployment, tuning, and ongoing operation. This is not necessarily disqualifying — but it needs to be in your TCO calculation and your internal resource plan from the start, not discovered after purchase.</p>
+
+          <p>Ask about your specific compliance obligations. Ask the vendor to walk through exactly how their platform satisfies your specific CIP standards or NIS2 requirements. Ask what evidence the platform generates and in what format. Ask whether they have customers who have been audited under these frameworks and what the auditor's experience with their evidence package was.</p>
+
+          <h3>What good and evasive answers look like</h3>
+
+          <div class="qa-block">
+            <div class="qa-question">"Walk through exactly how your platform handles [specific protocol from your list]. What function codes do you decode, and how was that coverage validated in a production environment?"</div>
+            <div class="qa-answers">
+              <div class="qa-answer qa-good">
+                <div class="qa-answer-label">Good answer</div>
+                Names specific function codes, explains whether coverage comes from passive DPI or active querying, and references a customer deployment in a similar environment.
+              </div>
+              <div class="qa-answer qa-evasive">
+                <div class="qa-answer-label">Evasive answer</div>
+                Restates that the protocol is supported without specifics, or pivots to a demo without answering the question directly.
+              </div>
+            </div>
+          </div>
+
+          <div class="qa-block">
+            <div class="qa-question">"If your sensor is deployed in passive-only mode with no active queries permitted, what capabilities are unavailable or degraded?"</div>
+            <div class="qa-answers">
+              <div class="qa-answer qa-good">
+                <div class="qa-answer-label">Good answer</div>
+                Lists the specific features that require active queries and explains what compensating approaches exist in a passive-only deployment.
+              </div>
+              <div class="qa-answer qa-evasive">
+                <div class="qa-answer-label">Evasive answer</div>
+                Insists everything works in passive mode without acknowledging any trade-offs, or deflects to "it depends on your configuration."
+              </div>
+            </div>
+          </div>
+
+          <div class="qa-block">
+            <div class="qa-question">"Show me the exact evidence package your platform generates for a NERC CIP-015 audit. What format is it in, and has it been accepted by a NERC auditor?"</div>
+            <div class="qa-answers">
+              <div class="qa-answer qa-good">
+                <div class="qa-answer-label">Good answer</div>
+                Produces a sample report and references specific audit outcomes with named customer types or regions where auditor acceptance has been demonstrated.
+              </div>
+              <div class="qa-answer qa-evasive">
+                <div class="qa-answer-label">Evasive answer</div>
+                Describes the platform's logging capabilities generally without producing a sample evidence package or citing auditor experience.
+              </div>
+            </div>
+          </div>
+
+          <div class="checklist-block">
+            <div class="checklist-label">RFP / vendor briefing checklist</div>
+            <ul>
+              <li><input type="checkbox"> Written briefing sent to all shortlisted vendors before demo scheduling</li>
+              <li><input type="checkbox"> Protocol coverage verified for your specific protocol list — not generic claims</li>
+              <li><input type="checkbox"> Passive-only deployment confirmed — active query exceptions documented</li>
+              <li><input type="checkbox"> Professional services requirements quantified</li>
+              <li><input type="checkbox"> Compliance evidence format confirmed for your specific obligations</li>
+              <li><input type="checkbox"> Reference customers requested — specifically in your industry and under your compliance framework</li>
+              <li><input type="checkbox"> Pricing model confirmed — perpetual, subscription, asset-based, or site-based</li>
+            </ul>
+          </div>
+        </div>
+
+
+        <!-- SECTION 4 -->
+        <hr class="section-divider" id="poc">
+
+        <div class="guide-section">
+          <h2>The proof of concept</h2>
+
+          <p>A PoC should test your environment, not a vendor's demo environment. If a vendor will only run a PoC in their lab against their test assets, that tells you something. Push for a limited deployment in a representative segment of your actual network.</p>
+
+          <p>Define success criteria before the PoC starts. Write them down and share them with the vendor. Success criteria should include asset discovery completeness (compare against your known inventory), false positive rate on normal operations, protocol coverage against your specific equipment, and operational impact during deployment. If the vendor objects to written success criteria, that is a red flag.</p>
+
+          <p>Test against your most challenging assets. Every platform performs well against modern, well-documented equipment. Test against the oldest, most proprietary assets in your environment: the 15-year-old PLC running a custom protocol, the historian on Windows Server 2008. This is where platforms differentiate.</p>
+
+          <p>Measure false positive rate against real operations. Run the platform during a normal engineering maintenance window. Count how many alerts it generates on known-good activity. A platform that cannot be tuned to distinguish between a cyberattack and a planned maintenance session will generate alert fatigue that causes your SOC to ignore it.</p>
+
+          <p>Evaluate the interface for the people who will actually use it. If the primary user is an OT engineer, the interface needs to make sense to someone who thinks in terms of PLCs and process flows, not IP addresses and CVEs. If the primary user is a SOC analyst, it needs to map to the workflows they already use. Run the interface past the actual end users during the PoC, not just the security team.</p>
+
+          <div class="checklist-block">
+            <div class="checklist-label">PoC checklist</div>
+            <ul>
+              <li><input type="checkbox"> Success criteria documented and shared with vendor before PoC begins</li>
+              <li><input type="checkbox"> PoC running in representative segment of actual environment — not vendor lab</li>
+              <li><input type="checkbox"> Asset discovery completeness measured against known inventory</li>
+              <li><input type="checkbox"> False positive rate measured during normal operations including maintenance windows</li>
+              <li><input type="checkbox"> Protocol coverage tested against your most challenging legacy assets</li>
+              <li><input type="checkbox"> Operational impact documented — any disruption during deployment, however minor</li>
+              <li><input type="checkbox"> End users (OT engineers or SOC analysts) evaluated the interface directly</li>
+              <li><input type="checkbox"> Integration with existing SIEM or SOC tooling tested if applicable</li>
+            </ul>
+          </div>
+        </div>
+
+
+        <!-- SECTION 5 -->
+        <hr class="section-divider" id="plant-manager">
+
+        <div class="guide-section">
+          <h2>Getting plant manager buy-in</h2>
+
+          <p>A platform that the CISO approves and the plant manager blocks does not get deployed. The plant manager's concerns are legitimate operational risk concerns, not obstruction. Address them directly rather than working around them.</p>
+
+          <p>The core concern is that the security tool itself becomes an operational risk — that it will generate traffic that affects a sensitive process, that a misconfiguration will cause a false isolation event, that deployment will require downtime. These are not hypothetical concerns. They have happened.</p>
+
+          <p>Address them with specifics. Show the plant manager exactly how the platform deploys: which network ports it connects to, what traffic it generates (if any), what actions it can and cannot take autonomously. If the platform is passive-only with no autonomous response capability, state that clearly and document it. If the platform has enforcement capabilities, document exactly what conditions trigger them and confirm they can be disabled or restricted during initial deployment.</p>
+
+          <p>The plant manager also needs to understand the operational risk of not deploying. The <a href="/landscape/regulatory-map/">OT Security Regulatory Map</a> and threat data from the <a href="/why/">Why page</a> address the same risk calculus the plant manager applies to every other operational decision.</p>
+
+          <div class="checklist-block">
+            <div class="checklist-label">Plant manager alignment checklist</div>
+            <ul>
+              <li><input type="checkbox"> Deployment architecture documented — exactly what the platform connects to and what traffic it generates</li>
+              <li><input type="checkbox"> Autonomous response capabilities documented — what the platform can do without human approval</li>
+              <li><input type="checkbox"> Deployment plan reviewed with operations — downtime requirements, if any, agreed in advance</li>
+              <li><input type="checkbox"> Rollback plan documented — how to remove the platform if operational issues arise</li>
+              <li><input type="checkbox"> Operational risk of non-deployment documented alongside operational risk of deployment</li>
+            </ul>
+          </div>
+        </div>
+
+
+        <!-- SECTION 6 -->
+        <hr class="section-divider" id="decision">
+
+        <div class="guide-section">
+          <h2>Making the decision</h2>
+
+          <p>When two platforms are close, the tiebreakers in rough order of importance are: protocol coverage depth on your most challenging assets, compliance evidence quality for your specific obligations, support model fit for your internal team's maturity, and deployment track record in environments like yours.</p>
+
+          <div class="red-flags">
+            <div class="red-flags-label">Red flags that should kill a deal</div>
+            <ul>
+              <li>A vendor who will not run a PoC in your environment</li>
+              <li>A vendor whose passive-only claims have undocumented exceptions</li>
+              <li>A vendor who cannot provide reference customers under your compliance framework</li>
+              <li>A vendor whose professional services requirement exceeds your budget and who will not negotiate</li>
+              <li>A vendor who cannot explain what their platform does when it encounters an asset it does not recognize</li>
+            </ul>
+          </div>
+
+          <div class="checklist-block">
+            <div class="checklist-label">Decision checklist</div>
+            <ul>
+              <li><input type="checkbox"> PoC results reviewed against written success criteria</li>
+              <li><input type="checkbox"> Reference calls completed — specifically customers in your industry under your compliance framework</li>
+              <li><input type="checkbox"> Total cost of ownership calculated — license, professional services, internal resource requirements, annual renewal</li>
+              <li><input type="checkbox"> Contract reviewed — particularly around data handling, liability, and support SLAs</li>
+              <li><input type="checkbox"> Plant manager sign-off obtained</li>
+              <li><input type="checkbox"> Compliance team sign-off obtained</li>
+              <li><input type="checkbox"> Procurement sign-off obtained</li>
+            </ul>
+          </div>
+        </div>
+
+        <hr class="section-divider">
+
+        <div class="kit-callout">
+          <div class="kit-callout-label">RFP Evaluation Kit</div>
+          <p>The vendor briefing template, PoC success criteria checklist, protocol questionnaire, and evaluation decision tracker are available as a downloadable PDF kit. We do not share your information with vendors or third parties.</p>
+          <a href="/tools/rfp-evaluation-kit/">Download the kit</a>
+        </div>
+
+        <p>The <a href="/landscape/vendors/">vendor index</a> covers every significant platform in the market organized by category. The <a href="/tools/vendor-comparison/">vendor comparison tool</a> lets you filter by protocol support, compliance framework, deployment model, and pricing tier to surface platforms that fit your environment before you begin formal evaluation.</p>
+
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="page-label">OT Cybersecurity Software</span>
+      <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
+    </div>
+  </footer>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+  <script>
+    // Interactive checkboxes with persistence via sessionStorage
+    document.querySelectorAll('.checklist-block input[type="checkbox"]').forEach(function(cb, i) {
+      var key = 'checklist-' + i;
+      if (sessionStorage.getItem(key) === 'checked') {
+        cb.checked = true;
+        cb.closest('li').classList.add('checked');
+      }
+      cb.addEventListener('change', function() {
+        if (this.checked) {
+          sessionStorage.setItem(key, 'checked');
+          this.closest('li').classList.add('checked');
+        } else {
+          sessionStorage.removeItem(key);
+          this.closest('li').classList.remove('checked');
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

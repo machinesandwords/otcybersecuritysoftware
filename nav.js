@@ -5,15 +5,16 @@
     { label: 'Landscape',  url: '/landscape/',            type: 'top' },
     { label: 'Market overview',    url: '/landscape/',             type: 'child-mid' },
     { label: 'Vendor index',       url: '/landscape/vendors/',     type: 'child-mid' },
-    { label: 'Market direction', url: '/landscape/market-direction/', type: 'child-mid' },
-    { label: 'Regulatory map', url: '/landscape/regulatory-map/', type: 'child-last' },
+    { label: 'CPS: OT, ICS, SCADA', url: '/landscape/ot-ics-scada/', type: 'child-last' },
 
     { label: 'Tools',      url: '/tools/',                type: 'top' },
-    { label: 'Vendor comparison',  url: '/tools/vendor-comparison/', type: 'child-last' },
+    { label: 'Vendor comparison',  url: '/tools/vendor-comparison/', type: 'child-mid' },
+    { label: 'RFP Evaluation Kit',   url: '/tools/rfp-evaluation-kit/', type: 'child-last' },
 
     { label: 'Comparisons', url: '/comparisons/',         type: 'top' },
 
     { label: 'Guides',     url: '/guides/',               type: 'top' },
+    { label: 'Platform evaluation',url: '/guides/ot-security-platform-evaluation/', type: 'child-last' },
 
     { label: 'Subscribe →', url: '/subscribe',            type: 'subscribe' }
   ];
