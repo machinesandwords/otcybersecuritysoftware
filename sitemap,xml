@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Core -->
+  <url><loc>https://otcybersecuritysoftware.com/</loc><changefreq>monthly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/why/</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/subscribe</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>
+
+  <!-- Landscape -->
+  <url><loc>https://otcybersecuritysoftware.com/landscape/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/landscape/vendors/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/landscape/cps-ot-ics-scada/</loc><changefreq>yearly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/landscape/regulatory-map/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
+  <!-- Tools -->
+  <url><loc>https://otcybersecuritysoftware.com/tools/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/tools/vendor-comparison/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/tools/rfp-evaluation-kit/</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/tools/asset-scoping-tool/</loc><changefreq>yearly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/tools/firewall-vs-diode-tco/</loc><changefreq>yearly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/tools/ot-soc-scorecard/</loc><changefreq>yearly</changefreq><priority>0.7</priority></url>
+
+  <!-- Comparisons -->
+  <url><loc>https://otcybersecuritysoftware.com/comparisons/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/comparisons/dragos-vs-claroty/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/comparisons/nozomi-vs-claroty/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/comparisons/dragos-vs-nozomi/</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/comparisons/claroty-vs-armis/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/comparisons/dragos-vs-industrial-defender/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/comparisons/otorio-vs-claroty/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/comparisons/verve-vs-claroty/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
+  <!-- Guides -->
+  <url><loc>https://otcybersecuritysoftware.com/guides/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/guides/security-platform-evaluation/</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/guides/nis2-nerc-cip-audit-readiness/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/guides/oem-remote-access/</loc><changefreq>yearly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/guides/patching-vs-microsegmentation/</loc><changefreq>yearly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/guides/firewalls-vs-data-diodes/</loc><changefreq>yearly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/guides/it-ot-soc-integration/</loc><changefreq>yearly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://otcybersecuritysoftware.com/guides/ot-zero-trust-blueprint/</loc><changefreq>yearly</changefreq><priority>0.7</priority></url>
+
+</urlset>

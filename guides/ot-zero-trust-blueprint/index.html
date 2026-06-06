@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>OT Zero Trust Blueprint: Adapting Federal Standards to Legacy Hardware | OT Cybersecurity Software</title>
+  <meta name="description" content="A practical zero trust blueprint for OT environments. Translates CISA and NIST CSF 2.0 requirements into controls that work on legacy PLCs, RTUs, and HMIs that cannot support modern identity stacks.">
+  <link rel="canonical" href="https://otcybersecuritysoftware.com/guides/ot-zero-trust-blueprint/">
+
+  <meta property="og:title" content="OT Zero Trust Blueprint: Adapting Federal Standards to Legacy Hardware">
+  <meta property="og:description" content="Translates CISA zero trust requirements into controls that work on the hardware you actually have — including assets that will never support an agent, a certificate, or a modern identity stack.">
+  <meta property="og:url" content="https://otcybersecuritysoftware.com/guides/ot-zero-trust-blueprint/">
+  <meta property="og:type" content="article">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js"></script>
+
+  <style>
+    /* ── Pillar blocks ───────────────────────────────────────── */
+    .pillar {
+      border: var(--hairline);
+      background: var(--surface);
+      padding: 20px 24px;
+      margin-bottom: 12px;
+    }
+    .pillar-header {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: var(--hairline);
+    }
+    .pillar-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .pillar-title {
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+    .pillar-row {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 8px 16px;
+      padding: 10px 0;
+      border-bottom: var(--hairline);
+      font-size: var(--small);
+      align-items: baseline;
+    }
+    .pillar-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .pillar-row-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--mid);
+    }
+    .pillar-row-content { color: var(--mid); line-height: 1.6; }
+    .pillar-row-content.translation { color: var(--charcoal); }
+    .pillar-row-content ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .pillar-row-content li {
+      padding: 4px 0;
+      border-bottom: var(--hairline);
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      line-height: 1.5;
+    }
+    .pillar-row-content li:last-child { border-bottom: none; }
+    .pillar-row-content li::before {
+      content: '+';
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ── Control blocks ──────────────────────────────────────── */
+    .control-block {
+      border: var(--hairline);
+      border-left: 3px solid var(--accent);
+      background: var(--surface);
+      padding: 16px 20px;
+      margin-bottom: 12px;
+    }
+    .control-block-title {
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 8px;
+    }
+    .control-block p {
+      font-size: var(--small);
+      color: var(--mid);
+      margin-bottom: 0;
+      line-height: 1.7;
+    }
+
+    /* ── Machine actor controls ──────────────────────────────── */
+    .machine-control {
+      padding: 16px 0;
+      border-bottom: var(--hairline);
+    }
+    .machine-control:last-child { border-bottom: none; }
+    .machine-control-title {
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 6px;
+    }
+    .machine-control p {
+      font-size: var(--small);
+      color: var(--mid);
+      margin-bottom: 0;
+      line-height: 1.7;
+    }
+
+    /* ── Year blocks ─────────────────────────────────────────── */
+    .year-block {
+      border: var(--hairline);
+      background: var(--surface);
+      padding: 20px 24px;
+      margin-bottom: 12px;
+    }
+    .year-header {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: var(--hairline);
+    }
+    .year-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .year-title {
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+    .year-block ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .year-block li {
+      font-size: var(--small);
+      padding: 8px 0;
+      border-bottom: var(--hairline);
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      line-height: 1.5;
+      color: var(--mid);
+    }
+    .year-block li:last-child { border-bottom: none; }
+    .year-block li::before {
+      content: '—';
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 600px) {
+      .pillar-row { grid-template-columns: 1fr; }
+      .pillar-row-label { margin-bottom: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">OT Cybersecurity <span>Software</span></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for OT and ICS security practitioners</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/guides/">Guides</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>OT Zero Trust Blueprint</span>
+        </div>
+
+        <span class="page-label">Guide</span>
+        <h1>OT Zero Trust Blueprint: Adapting Federal Standards to Legacy Hardware</h1>
+
+        <p class="lead">Zero trust for OT is not a product you buy. It is an architectural posture you build incrementally, constrained at every step by hardware that predates the concept by decades. Federal mandates from CISA and the Department of Defense have formalized zero trust requirements for industrial networks, but the guidance assumes identity-capable assets, modern authentication, and network flexibility that most OT environments do not have. This guide translates those requirements into controls that work on the hardware you actually have — including the PLCs, RTUs, and HMIs that will never support an agent, a certificate, or a modern identity stack.</p>
+
+        <!-- TOC -->
+        <div style="background:var(--surface); border:var(--hairline); border-left:3px solid var(--accent); padding:16px 20px; margin-bottom:40px;">
+          <div style="font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--accent); margin-bottom:12px;">Contents</div>
+          <ol style="padding-left:18px; margin:0;">
+            <li style="font-size:var(--small); margin-bottom:6px;"><a href="#ot-context">What zero trust means in OT context</a></li>
+            <li style="font-size:var(--small); margin-bottom:6px;"><a href="#cisa-translated">The CISA framework translated</a></li>
+            <li style="font-size:var(--small); margin-bottom:6px;"><a href="#compensating-controls">Compensating controls for legacy assets</a></li>
+            <li style="font-size:var(--small); margin-bottom:6px;"><a href="#machine-actors">Identity for machine actors at Levels 1 and 2</a></li>
+            <li style="font-size:var(--small); margin-bottom:0;"><a href="#implementation">Implementation sequence</a></li>
+          </ol>
+        </div>
+
+        <!-- Section 1 -->
+        <h2 id="ot-context">What zero trust means in OT context</h2>
+
+        <p>Zero trust is not a product category. The core principle is: never trust, always verify. No user, device, or network segment is trusted by default — access is granted based on verified identity, device posture, and least-privilege policy, and that verification happens continuously, not just at initial connection.</p>
+
+        <p>In IT environments, zero trust is implemented through identity providers, endpoint detection agents, micro-perimeters, and continuous authentication. In OT environments, most of those mechanisms are unavailable or unsafe to deploy.</p>
+
+        <p>The practical translation for OT: since you cannot verify identity at the device level on most OT assets, enforce zero trust principles at the network boundary instead. Microsegmentation, network-layer access controls, and compensating controls create virtual zero trust boundaries around assets that cannot enforce them natively.</p>
+
+        <div class="callout">
+          <span class="callout-label">Federal guidance</span>
+          <p>CISA's guidance "Applying Zero Trust Principles to Enterprise Mobility" and the NSA/CISA joint advisory on OT security both acknowledge this constraint explicitly. Zero trust in OT is a matter of applying the principles at whatever layer the environment supports — not achieving the full identity-based model that cloud-native IT environments can reach.</p>
+        </div>
+
+        <!-- Section 2 -->
+        <h2 id="cisa-translated">The CISA framework translated</h2>
+
+        <p>CISA organizes zero trust around five pillars: Identity, Devices, Networks, Applications and Workloads, and Data. Here is what each pillar means in OT practice, organized by NIST CSF 2.0 functions.</p>
+
+        <!-- Identity -->
+        <div class="pillar">
+          <div class="pillar-header">
+            <span class="pillar-label">Pillar 01</span>
+            <span class="pillar-title">Identity</span>
+          </div>
+          <div class="pillar-row">
+            <span class="pillar-row-label">Requirement</span>
+            <span class="pillar-row-content">Verify identity for every user and device before granting access.</span>
+          </div>
+          <div class="pillar-row">
+            <span class="pillar-row-label">OT reality</span>
+            <span class="pillar-row-content">PLCs, RTUs, and legacy HMIs do not support modern identity protocols. Many run firmware from the 1990s with no authentication capability at all.</span>
+          </div>
+          <div class="pillar-row">
+            <span class="pillar-row-label">OT translation</span>
+            <div class="pillar-row-content translation">
+              <ul>
+                <li>Apply identity verification at the access layer, not the device layer. Engineers authenticate to a jump host or PAM system before reaching OT assets — the jump host enforces identity, the OT asset does not need to.</li>
+                <li>For assets that do support authentication (modern HMIs, SCADA servers, engineering workstations), enforce MFA.</li>
+                <li>Eliminate shared accounts. Each engineer who accesses OT assets has individual credentials, even if the asset itself uses a shared service account.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Devices -->
+        <div class="pillar">
+          <div class="pillar-header">
+            <span class="pillar-label">Pillar 02</span>
+            <span class="pillar-title">Devices</span>
+          </div>
+          <div class="pillar-row">
+            <span class="pillar-row-label">Requirement</span>
+            <span class="pillar-row-content">Verify device posture before granting access. Unmanaged or non-compliant devices should not reach sensitive resources.</span>
+          </div>
+          <div class="pillar-row">
+            <span class="pillar-row-label">OT reality</span>
+            <span class="pillar-row-content">Engineering laptops connect to OT networks with varying patch currency and endpoint protection. Vendor laptops are unmanaged. Legacy OT assets cannot be assessed for posture.</span>
+          </div>
+          <div class="pillar-row">
+            <span class="pillar-row-label">OT translation</span>
+            <div class="pillar-row-content translation">
+              <ul>
+                <li>Enforce network access control at the IT/OT boundary. Unmanaged devices connect to a quarantine VLAN and reach OT assets only through the jump host.</li>
+                <li>Maintain an asset inventory with classification. A device not in the inventory should not be able to communicate on OT segments.</li>
+                <li>Accept that legacy OT assets will fail any posture check. Compensating controls — microsegmentation, protocol filtering — substitute for posture verification on those assets.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Networks -->
+        <div class="pillar">
+          <div class="pillar-header">
+            <span class="pillar-label">Pillar 03</span>
+            <span class="pillar-title">Networks</span>
+          </div>
+          <div class="pillar-row">
+            <span class="pillar-row-label">Requirement</span>
+            <span class="pillar-row-content">Microsegment the network. Limit lateral movement. Enforce least-privilege communication policies.</span>
+          </div>
+          <div class="pillar-row">
+            <span class="pillar-row-label">OT reality</span>
+            <span class="pillar-row-content">Flat OT networks are common. Segmentation requires firewall deployment, network redesign, or software-defined approaches — all of which carry operational risk.</span>
+          </div>
+          <div class="pillar-row">
+            <span class="pillar-row-label">OT translation</span>
+            <div class="pillar-row-content translation">
+              <ul>
+                <li>Start with the IT/OT boundary. A single well-enforced firewall between IT and OT is more valuable than attempting full microsegmentation of a flat OT network.</li>
+                <li>Use the Purdue model as the segmentation framework. Level 3 should not communicate directly with Level 1. Each level boundary is a microsegmentation target.</li>
+                <li>For environments that cannot tolerate a network redesign, software-defined microsegmentation platforms (Elisity and similar) enforce policy at the software layer without physical changes.</li>
+                <li>Data diodes at high-consequence asset boundaries enforce unidirectional communication as the strongest possible network-layer zero trust control.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Applications -->
+        <div class="pillar">
+          <div class="pillar-header">
+            <span class="pillar-label">Pillar 04</span>
+            <span class="pillar-title">Applications and Workloads</span>
+          </div>
+          <div class="pillar-row">
+            <span class="pillar-row-label">Requirement</span>
+            <span class="pillar-row-content">Authenticate and authorize access to applications and workloads. Limit what each user and device can do within each application.</span>
+          </div>
+          <div class="pillar-row">
+            <span class="pillar-row-label">OT reality</span>
+            <span class="pillar-row-content">SCADA and DCS systems often have limited role-based access control. Some have none. Vendor remote access bypasses application-layer controls entirely.</span>
+          </div>
+          <div class="pillar-row">
+            <span class="pillar-row-label">OT translation</span>
+            <div class="pillar-row-content translation">
+              <ul>
+                <li>Implement application-layer controls where the platform supports them. SCADA and DCS systems with role-based access should enforce least-privilege — operators cannot access engineering functions, engineers cannot access historian configurations they do not own.</li>
+                <li>For vendor remote access, enforce application-layer controls at the jump host. The vendor reaches only the specific asset and protocol required for their work.</li>
+                <li>Log all application-layer access. What you cannot prevent, you can detect and audit.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data -->
+        <div class="pillar">
+          <div class="pillar-header">
+            <span class="pillar-label">Pillar 05</span>
+            <span class="pillar-title">Data</span>
+          </div>
+          <div class="pillar-row">
+            <span class="pillar-row-label">Requirement</span>
+            <span class="pillar-row-content">Classify and protect data. Limit access to data based on need.</span>
+          </div>
+          <div class="pillar-row">
+            <span class="pillar-row-label">OT reality</span>
+            <span class="pillar-row-content">OT data classification is rarely formalized. Process data, configuration data, and compliance evidence are often stored without access controls.</span>
+          </div>
+          <div class="pillar-row">
+            <span class="pillar-row-label">OT translation</span>
+            <div class="pillar-row-content translation">
+              <ul>
+                <li>Classify OT data by sensitivity: process telemetry (low), asset configuration files (medium), compliance evidence and network diagrams (high).</li>
+                <li>Apply access controls to configuration file repositories. Engineering workstations that do not require access to PLC configuration files should not have it.</li>
+                <li>Historian data leaving the OT network via a data diode is already protected by the diode's unidirectionality. Apply access controls on the IT-side historian to prevent unauthorized access to the extracted data.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3 -->
+        <h2 id="compensating-controls">Compensating controls for legacy assets</h2>
+
+        <p>Legacy assets that cannot support zero trust natively require compensating controls that enforce the principles at the network layer. The control stack below applies to the majority of OT environments.</p>
+
+        <div class="control-block">
+          <div class="control-block-title">Network microsegmentation</div>
+          <p>Segment assets by function and criticality. A safety instrumented system should not be on the same network segment as a historian. A PLC that controls a physical process should not be reachable from the corporate network.</p>
+        </div>
+
+        <div class="table-wrap" style="margin-bottom: 24px;">
+          <table>
+            <thead>
+              <tr>
+                <th>Constraint</th>
+                <th>Segmentation approach</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Can tolerate network changes</td>
+                <td>Physical VLAN segmentation with firewall enforcement at each boundary</td>
+              </tr>
+              <tr>
+                <td>Cannot tolerate physical changes</td>
+                <td>Software-defined microsegmentation (Elisity, Cisco ISE) enforcing policy over existing infrastructure</td>
+              </tr>
+              <tr>
+                <td>Highest-consequence assets</td>
+                <td>Data diode — hardware-enforced unidirectional boundary, no policy to misconfigure</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="control-block">
+          <div class="control-block-title">Identity-based edge fabrics</div>
+          <p>For environments that cannot deploy traditional firewalls at every segment boundary, identity-based edge fabrics enforce communication policy at the switch level. Devices are authenticated at network entry and assigned to policy groups — a PLC in the control group can only communicate with assets in the same group and with explicitly permitted assets in adjacent groups.</p>
+        </div>
+
+        <div class="control-block">
+          <div class="control-block-title">Protocol filtering</div>
+          <p>Industrial firewalls with OT protocol awareness enforce least-privilege communication at the protocol level. A firewall rule that permits Modbus TCP from a specific historian IP to a specific PLC IP on port 502 — and blocks all other Modbus traffic — is a zero trust control that does not require the PLC to support modern identity.</p>
+        </div>
+
+        <div class="control-block">
+          <div class="control-block-title">Privileged access management at the boundary</div>
+          <p>A PAM system deployed at the IT/OT boundary enforces zero trust principles for human access to OT assets, regardless of the asset's native authentication capability. All engineer and vendor access is authenticated, authorized, time-limited, and recorded at the PAM layer — the OT asset itself does not need to support any of those controls natively.</p>
+        </div>
+
+        <!-- Section 4 -->
+        <h2 id="machine-actors">Identity for machine actors at Levels 1 and 2</h2>
+
+        <p>The hardest zero trust problem in OT is machine-to-machine communication at the lower Purdue levels. Level 1 (basic control) and Level 2 (supervisory control) contain the assets least capable of supporting modern identity — and the assets where a compromised communication path has the most direct physical consequence.</p>
+
+        <div class="callout">
+          <span class="callout-label">The problem</span>
+          <p>A PLC communicating with a historian, a SCADA server polling an RTU, an HMI sending setpoints to a controller — none of these communications carry verifiable identity. If an attacker inserts a device that mimics the PLC's IP address and sends malicious setpoints, most OT networks have no mechanism to detect the impersonation.</p>
+        </div>
+
+        <div class="machine-control">
+          <div class="machine-control-title">Communication allowlisting</div>
+          <p>Define the complete set of legitimate communication pairs for your environment. Every communication pair that is not on the allowlist is blocked at the network layer. This is not identity verification — it is communication pattern verification — but it achieves a similar security outcome for assets that cannot support identity.</p>
+        </div>
+
+        <div class="machine-control">
+          <div class="machine-control-title">Anomaly detection</div>
+          <p>OT monitoring platforms (Dragos, Claroty, Nozomi) baseline normal communication patterns and alert on deviations. A new device sending Modbus commands to a PLC that has never received commands from that source is flagged. This is detective, not preventive, but it closes the gap that communication allowlisting leaves open.</p>
+        </div>
+
+        <div class="machine-control">
+          <div class="machine-control-title">Certificate-based authentication where supported</div>
+          <p>Modern PLCs and IEDs from vendors including Siemens, Rockwell, and Schneider increasingly support certificate-based authentication for engineering access. Where supported, deploy it. The installed base of legacy assets that will never support it is large — but future procurement should require it.</p>
+        </div>
+
+        <div class="machine-control">
+          <div class="machine-control-title">Physical security as the last line</div>
+          <p>For Level 1 assets that support no network-layer identity verification, physical access controls are the zero trust backstop. A PLC in a locked cabinet with tamper detection, on a network segment accessible only through a PAM-enforced jump host, is a more defensible posture than the same PLC on a flat network with no access controls — even if the PLC itself cannot verify the identity of anything communicating with it.</p>
+        </div>
+
+        <!-- Section 5 -->
+        <h2 id="implementation">Implementation sequence</h2>
+
+        <p>Zero trust in OT is a multi-year program. This sequence prioritizes the controls with the highest risk reduction per unit of operational disruption.</p>
+
+        <div class="year-block">
+          <div class="year-header">
+            <span class="year-label">Year 1</span>
+            <span class="year-title">Boundary and access controls</span>
+          </div>
+          <ul>
+            <li>Deploy or harden the IT/OT boundary firewall. Enforce default-deny with explicit permit rules.</li>
+            <li>Implement a jump host or PAM system for all engineer and vendor access to OT assets.</li>
+            <li>Eliminate shared accounts for human access to OT systems.</li>
+            <li>Complete asset inventory and classification. You cannot segment what you have not mapped.</li>
+          </ul>
+        </div>
+
+        <div class="year-block">
+          <div class="year-header">
+            <span class="year-label">Year 2</span>
+            <span class="year-title">Segmentation</span>
+          </div>
+          <ul>
+            <li>Segment OT networks by Purdue level. Start at the Level 3/2 boundary.</li>
+            <li>Deploy OT monitoring in passive mode. Build the communication baseline.</li>
+            <li>Build communication allowlists from the baseline data. Begin blocking unauthorized communication pairs.</li>
+          </ul>
+        </div>
+
+        <div class="year-block">
+          <div class="year-header">
+            <span class="year-label">Year 3</span>
+            <span class="year-title">Advanced controls</span>
+          </div>
+          <ul>
+            <li>Extend microsegmentation to Level 2/1 boundaries for highest-consequence assets.</li>
+            <li>Deploy data diodes at SIS and protection relay boundaries where bidirectional access is not operationally required.</li>
+            <li>Implement certificate-based authentication for newly procured OT assets.</li>
+            <li>Review and formalize procurement standards — new OT assets must support specified identity and authentication capabilities.</li>
+          </ul>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="newsletter-block">
+          <span class="page-label">Stay current</span>
+          <p>OT architecture guidance, federal standard updates, and field notes delivered when they matter.</p>
+          <div class="newsletter-form">
+            <input type="email" id="nl-email" placeholder="your@email.com" autocomplete="email">
+            <button id="nl-submit" type="button">Subscribe</button>
+          </div>
+          <div id="nl-msg" style="font-size:11px; color:var(--mid); margin-top:8px; min-height:16px;"></div>
+        </div>
+
+        <div class="page-footer">
+          <span class="page-label">Related</span>
+          <p><a href="/guides/oem-remote-access/">OEM Remote Access Field Guide</a> — JIT access, jump hosts, and break-glass protocols</p>
+          <p><a href="/guides/patching-vs-microsegmentation/">Patching vs. Compensating Controls</a> — decision framework for OT vulnerability management</p>
+          <p><a href="/guides/firewalls-vs-data-diodes/">Firewalls vs. Data Diodes</a> — placement logic and TCO for network-layer zero trust controls</p>
+          <p><a href="/tools/asset-scoping-tool/">Asset Scoping Decision Tool</a> — classify OT assets under NERC CIP or NIS2</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+</body>
+</html>

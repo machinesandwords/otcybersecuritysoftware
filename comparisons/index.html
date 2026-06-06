@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>Comparisons | OT Cybersecurity Software</title>
+  <meta name="description" content="Independent head-to-head comparisons of OT and ICS security platforms. Dragos vs Claroty, Nozomi vs Claroty, Claroty vs Armis, and more.">
+  <link rel="canonical" href="https://otcybersecuritysoftware.com/comparisons/">
+
+  <meta property="og:title" content="Comparisons | OT Cybersecurity Software">
+  <meta property="og:description" content="Independent head-to-head comparisons of OT and ICS security platforms. No vendor affiliation.">
+  <meta property="og:url" content="https://otcybersecuritysoftware.com/comparisons/">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js"></script>
+
+  <style>
+    .comparison-list { list-style: none; padding: 0; margin-bottom: 32px; }
+    .comparison-list li { border-bottom: var(--hairline); }
+    .comparison-list li:last-child { border-bottom: none; }
+    .comparison-list a {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 14px 0;
+      color: var(--charcoal);
+      text-decoration: none;
+    }
+    .comparison-list a:hover .comparison-list-name { color: var(--accent); }
+    .comparison-list-body { flex: 1; }
+    .comparison-list-name { font-size: var(--small); font-weight: 700; margin-bottom: 2px; }
+    .comparison-list-desc { font-size: 12px; color: var(--mid); line-height: 1.5; }
+    .comparison-list-tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 4px;
+      display: block;
+    }
+    .comparison-list-arrow { color: var(--border); font-size: 11px; padding-top: 2px; flex-shrink: 0; }
+    .comparison-list a:hover .comparison-list-arrow { color: var(--accent); }
+
+    .section-head {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--mid);
+      padding: 16px 0 8px;
+      border-bottom: 1px solid var(--charcoal);
+      margin-bottom: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-head::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 12px;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">OT Cybersecurity <span>Software</span></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for OT and ICS security practitioners</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>Comparisons</span>
+        </div>
+
+        <span class="page-label">Head-to-Head Comparisons</span>
+        <h1>Comparisons</h1>
+
+        <p class="lead">Independent head-to-head comparisons of OT and ICS security platforms. Each comparison covers technical differentiation, deployment fit, and a direct verdict on which platform belongs in which environment. No vendor affiliation.</p>
+
+        <div class="section-intro">
+          <p>Use the <a href="/tools/vendor-comparison/">vendor comparison tool</a> to filter the full market before shortlisting. Use these comparisons once you have a shortlist and need to understand the specific trade-offs between two platforms.</p>
+        </div>
+
+        <!-- Enterprise visibility -->
+        <div class="section-head" style="margin-top: 32px;">Enterprise OT visibility</div>
+        <ul class="comparison-list">
+          <li>
+            <a href="/comparisons/dragos-vs-claroty/">
+              <div class="comparison-list-body">
+                <span class="comparison-list-tag">OT visibility</span>
+                <div class="comparison-list-name">Dragos vs. Claroty</div>
+                <div class="comparison-list-desc">Threat intelligence-led OT detection vs. converged CPS visibility across OT, IoT, and healthcare. The most common enterprise shortlist pairing.</div>
+              </div>
+              <span class="comparison-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+          <li>
+            <a href="/comparisons/nozomi-vs-claroty/">
+              <div class="comparison-list-body">
+                <span class="comparison-list-tag">OT visibility</span>
+                <div class="comparison-list-name">Nozomi Networks vs. Claroty</div>
+                <div class="comparison-list-desc">AI-driven distributed OT and IoT visibility vs. converged CPS platform. Key differentiators: wireless spectrum monitoring (Nozomi) and healthcare device visibility (Claroty).</div>
+              </div>
+              <span class="comparison-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+          <li>
+            <a href="/comparisons/dragos-vs-nozomi/">
+              <div class="comparison-list-body">
+                <span class="comparison-list-tag">OT visibility</span>
+                <div class="comparison-list-name">Dragos vs. Nozomi Networks</div>
+                <div class="comparison-list-desc">Both are pure OT and IoT visibility platforms. Dragos leads with adversary-specific threat intelligence and managed services. Nozomi leads with AI analytics and large-scale distributed visibility.</div>
+              </div>
+              <span class="comparison-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+          <li>
+            <a href="/comparisons/claroty-vs-armis/">
+              <div class="comparison-list-body">
+                <span class="comparison-list-tag">Converged CPS</span>
+                <div class="comparison-list-name">Claroty vs. Armis</div>
+                <div class="comparison-list-desc">OT-origin CPS platform vs. IT-origin asset intelligence platform. Both cover OT, IoT, and healthcare — the difference is in depth, origin, and which environment each is built for.</div>
+              </div>
+              <span class="comparison-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Compliance and utilities -->
+        <div class="section-head">Compliance and utilities</div>
+        <ul class="comparison-list">
+          <li>
+            <a href="/comparisons/dragos-vs-industrial-defender/">
+              <div class="comparison-list-body">
+                <span class="comparison-list-tag">Energy and utilities</span>
+                <div class="comparison-list-name">Dragos vs. Industrial Defender</div>
+                <div class="comparison-list-desc">Threat intelligence vs. NERC CIP compliance automation. Frequently shortlisted together in utility evaluations — they are not the same category of product.</div>
+              </div>
+              <span class="comparison-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Mid-market -->
+        <div class="section-head">Mid-market</div>
+        <ul class="comparison-list">
+          <li>
+            <a href="/comparisons/otorio-vs-claroty/">
+              <div class="comparison-list-body">
+                <span class="comparison-list-tag">Mid-market</span>
+                <div class="comparison-list-name">OTORIO vs. Claroty</div>
+                <div class="comparison-list-desc">Mid-market OT risk prioritization tied to operational impact vs. enterprise CPS platform. Relevant for manufacturers who find enterprise platforms oversized for their environment.</div>
+              </div>
+              <span class="comparison-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+          <li>
+            <a href="/comparisons/verve-vs-claroty/">
+              <div class="comparison-list-body">
+                <span class="comparison-list-tag">Remediation vs. detection</span>
+                <div class="comparison-list-name">Verve Industrial vs. Claroty</div>
+                <div class="comparison-list-desc">Active OT endpoint remediation — patching, configuration hardening, change management — vs. passive CPS visibility and detection. Different jobs, often complementary.</div>
+              </div>
+              <span class="comparison-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="newsletter-block">
+          <span class="page-label">Stay current</span>
+          <p>Vendor updates, acquisition alerts, and new comparisons delivered when they matter.</p>
+          <div class="newsletter-form">
+            <input type="email" id="nl-email" placeholder="your@email.com" autocomplete="email">
+            <button id="nl-submit" type="button">Subscribe</button>
+          </div>
+          <div id="nl-msg" style="font-size:11px; color:var(--mid); margin-top:8px; min-height:16px;"></div>
+        </div>
+
+        <div class="page-footer">
+          <span class="page-label">OT Cybersecurity Software</span>
+          <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+</body>
+</html>

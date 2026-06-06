@@ -1,0 +1,53 @@
+# OT Cybersecurity Software
+# https://otcybersecuritysoftware.com
+# An independent guide for OT and ICS security practitioners.
+# Published by Machines & Words (machinesandwords.com).
+# No sponsored content. No vendor affiliation.
+
+## About this site
+
+OT Cybersecurity Software covers the market for operational technology and industrial control system security platforms. Content is written for practitioners — OT security managers, CISOs, plant engineers, and compliance teams — evaluating software and platforms for industrial environments.
+
+Coverage includes:
+- Vendor-neutral market landscape and vendor index
+- Head-to-head vendor comparisons
+- Practical evaluation guides for OT security procurement
+- Interactive tools for asset scoping, TCO analysis, and SOC integration assessment
+- Regulatory compliance guidance for NERC CIP and NIS2
+
+## Content index
+
+### Landscape
+- Market overview: https://otcybersecuritysoftware.com/landscape/
+- Vendor index (all vendors): https://otcybersecuritysoftware.com/landscape/vendors/
+- Market direction (CPS/OT/ICS/SCADA terminology): https://otcybersecuritysoftware.com/landscape/cps-ot-ics-scada/
+- Regulatory map: https://otcybersecuritysoftware.com/landscape/regulatory-map/
+
+### Guides
+- OT Security Platform Evaluation Guide: https://otcybersecuritysoftware.com/guides/security-platform-evaluation/
+- NIS2 and NERC CIP Audit-Readiness Guide: https://otcybersecuritysoftware.com/guides/nis2-nerc-cip-audit-readiness/
+- OEM Remote Access Field Guide: https://otcybersecuritysoftware.com/guides/oem-remote-access/
+- Patching vs. Compensating Controls: https://otcybersecuritysoftware.com/guides/patching-vs-microsegmentation/
+- Firewalls vs. Data Diodes: https://otcybersecuritysoftware.com/guides/firewalls-vs-data-diodes/
+- IT/OT SOC Integration Playbook: https://otcybersecuritysoftware.com/guides/it-ot-soc-integration/
+- OT Zero Trust Blueprint: https://otcybersecuritysoftware.com/guides/ot-zero-trust-blueprint/
+
+### Tools
+- Vendor comparison tool: https://otcybersecuritysoftware.com/tools/vendor-comparison/
+- OT Security RFP Evaluation Kit (gated download): https://otcybersecuritysoftware.com/tools/rfp-evaluation-kit/
+- Asset Scoping Decision Tool (NERC CIP / NIS2): https://otcybersecuritysoftware.com/tools/asset-scoping-tool/
+- Firewall vs. Data Diode TCO Calculator: https://otcybersecuritysoftware.com/tools/firewall-vs-diode-tco/
+- OT SOC Integration Health Scorecard: https://otcybersecuritysoftware.com/tools/ot-soc-scorecard/
+
+### Comparisons
+- Dragos vs. Claroty: https://otcybersecuritysoftware.com/comparisons/dragos-vs-claroty/
+- Nozomi vs. Claroty: https://otcybersecuritysoftware.com/comparisons/nozomi-vs-claroty/
+- Dragos vs. Nozomi: https://otcybersecuritysoftware.com/comparisons/dragos-vs-nozomi/
+- Claroty vs. Armis: https://otcybersecuritysoftware.com/comparisons/claroty-vs-armis/
+- Dragos vs. Industrial Defender: https://otcybersecuritysoftware.com/comparisons/dragos-vs-industrial-defender/
+- OTORIO vs. Claroty: https://otcybersecuritysoftware.com/comparisons/otorio-vs-claroty/
+- Verve vs. Claroty: https://otcybersecuritysoftware.com/comparisons/verve-vs-claroty/
+
+## Editorial policy
+
+All coverage is independent. Vendors do not pay for inclusion, placement, or editorial influence. Vendor descriptions reflect publicly available information and are updated when product positioning changes materially. The vendor index includes established and challenger vendors across all OT security categories.

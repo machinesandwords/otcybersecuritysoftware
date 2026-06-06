@@ -295,7 +295,8 @@ th {
 }
 td { padding: 8px 12px; border-bottom: var(--hairline); vertical-align: top; }
 tr:last-child td { border-bottom: none; }
-tr:hover td { background: var(--bg); }
+tr:hover td { background: #ece9e4; }
+tr.section-divider:hover td { background: var(--bg); cursor: default; }
 .compare-table th:first-child { width: 180px; }
 .compare-win { color: var(--accent); font-weight: 700; }
 .compare-loss { color: var(--faint); }

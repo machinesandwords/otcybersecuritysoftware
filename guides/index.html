@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>Guides | OT Cybersecurity Software</title>
+  <meta name="description" content="Practical guides for OT and ICS security practitioners. Platform evaluation, NERC CIP and NIS2 compliance, OEM remote access, patching, firewalls, SOC integration, and zero trust.">
+  <link rel="canonical" href="https://otcybersecuritysoftware.com/guides/">
+
+  <meta property="og:title" content="Guides | OT Cybersecurity Software">
+  <meta property="og:description" content="Practical guides for OT and ICS security practitioners covering evaluation, compliance, architecture, and operations.">
+  <meta property="og:url" content="https://otcybersecuritysoftware.com/guides/">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js"></script>
+
+  <style>
+    .guide-list { list-style: none; padding: 0; margin-bottom: 32px; }
+    .guide-list li { border-bottom: var(--hairline); }
+    .guide-list li:last-child { border-bottom: none; }
+    .guide-list a {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 14px 0;
+      color: var(--charcoal);
+      text-decoration: none;
+    }
+    .guide-list a:hover .guide-list-name { color: var(--accent); }
+    .guide-list-body { flex: 1; }
+    .guide-list-name { font-size: var(--small); font-weight: 700; margin-bottom: 2px; }
+    .guide-list-desc { font-size: 12px; color: var(--mid); line-height: 1.5; }
+    .guide-list-tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 4px;
+      display: block;
+    }
+    .guide-list-arrow { color: var(--border); font-size: 11px; padding-top: 2px; flex-shrink: 0; }
+    .guide-list a:hover .guide-list-arrow { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">OT Cybersecurity <span>Software</span></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for OT and ICS security practitioners</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>Guides</span>
+        </div>
+
+        <span class="page-label">Guides</span>
+        <h1>Guides</h1>
+
+        <p class="lead">Practical field guides covering the full OT security program lifecycle — from platform evaluation and procurement through compliance, architecture, and operations.</p>
+
+        <ul class="guide-list">
+          <li>
+            <a href="/guides/security-platform-evaluation/">
+              <div class="guide-list-body">
+                <span class="guide-list-tag">Evaluation</span>
+                <div class="guide-list-name">OT Security Platform Evaluation Guide</div>
+                <div class="guide-list-desc">How to evaluate and select an OT security platform. Covers passive deployment verification, protocol coverage testing, PoC design, and procurement decision criteria.</div>
+              </div>
+              <span class="guide-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+          <li>
+            <a href="/guides/nis2-nerc-cip-audit-readiness/">
+              <div class="guide-list-body">
+                <span class="guide-list-tag">Compliance</span>
+                <div class="guide-list-name">NIS2 and NERC CIP Audit-Readiness Guide</div>
+                <div class="guide-list-desc">Evidence collection requirements, incident reporting timelines, asset categorization, and common audit failures — for both frameworks in parallel, with a filter to highlight your framework.</div>
+              </div>
+              <span class="guide-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+          <li>
+            <a href="/guides/oem-remote-access/">
+              <div class="guide-list-body">
+                <span class="guide-list-tag">Architecture</span>
+                <div class="guide-list-name">OEM Remote Access Field Guide</div>
+                <div class="guide-list-desc">Shadow access discovery, jump host and JIT access architecture, break-glass protocols, and vendor contract language for governing third-party access to OT networks.</div>
+              </div>
+              <span class="guide-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+          <li>
+            <a href="/guides/patching-vs-microsegmentation/">
+              <div class="guide-list-body">
+                <span class="guide-list-tag">Vulnerability management</span>
+                <div class="guide-list-name">Patching vs. Compensating Controls</div>
+                <div class="guide-list-desc">A decision framework for making the patch-versus-compensating-control call deliberately, documenting it defensibly, and building the review process that keeps open findings from accumulating.</div>
+              </div>
+              <span class="guide-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+          <li>
+            <a href="/guides/firewalls-vs-data-diodes/">
+              <div class="guide-list-body">
+                <span class="guide-list-tag">Architecture</span>
+                <div class="guide-list-name">Firewalls vs. Data Diodes</div>
+                <div class="guide-list-desc">Placement logic across the Purdue model, vendor landscape, TCO comparison, and how to make the internal business case for hardware isolation at high-consequence asset boundaries.</div>
+              </div>
+              <span class="guide-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+          <li>
+            <a href="/guides/it-ot-soc-integration/">
+              <div class="guide-list-body">
+                <span class="guide-list-tag">Operations</span>
+                <div class="guide-list-name">IT/OT SOC Integration Playbook</div>
+                <div class="guide-list-desc">Building the translation and filtering layer between OT monitoring and an enterprise SIEM. Covers triage architecture, SOC model selection, and an eight-step implementation sequence.</div>
+              </div>
+              <span class="guide-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+          <li>
+            <a href="/guides/ot-zero-trust-blueprint/">
+              <div class="guide-list-body">
+                <span class="guide-list-tag">Architecture</span>
+                <div class="guide-list-name">OT Zero Trust Blueprint</div>
+                <div class="guide-list-desc">Translates CISA and NIST CSF 2.0 zero trust requirements into controls that work on legacy PLCs, RTUs, and HMIs. Covers compensating controls, machine actor identity, and a three-year implementation sequence.</div>
+              </div>
+              <span class="guide-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="newsletter-block">
+          <span class="page-label">Stay current</span>
+          <p>New guides publish as new decision points come up. The newsletter covers additions.</p>
+          <div class="newsletter-form">
+            <input type="email" id="nl-email" placeholder="your@email.com" autocomplete="email">
+            <button id="nl-submit" type="button">Subscribe</button>
+          </div>
+          <div id="nl-msg" style="font-size:11px; color:var(--mid); margin-top:8px; min-height:16px;"></div>
+        </div>
+
+        <div class="page-footer">
+          <span class="page-label">OT Cybersecurity Software</span>
+          <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+</body>
+</html>
