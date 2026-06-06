@@ -29,7 +29,8 @@
       <a href="/tools/vendor-comparison/" class="nav-item depth-1">├ Vendor comparison</a>
       <a href="/tools/rfp-evaluation-kit/" class="nav-item depth-1">├ RFP Evaluation Kit</a>
       <a href="/tools/asset-scoping-tool/" class="nav-item depth-1">├ Asset scoping tool</a>
-      <a href="/tools/firewall-vs-diode-tco/" class="nav-item depth-1">└ Firewall vs. diode TCO</a>
+      <a href="/tools/firewall-vs-diode-tco/" class="nav-item depth-1">├ Firewall vs. diode TCO</a>
+      <a href="/tools/ot-soc-scorecard/" class="nav-item depth-1">└ SOC integration scorecard</a>
     </div>
 
     <div class="nav-divider"></div>
@@ -38,8 +39,7 @@
       <div class="nav-section-label">Comparisons</div>
       <a href="/comparisons/" class="nav-item depth-0">All comparisons</a>
       <a href="/comparisons/dragos-vs-claroty/" class="nav-item depth-1">├ Dragos vs. Claroty</a>
-      <a href="/comparisons/nozomi-vs-claroty/" class="nav-item depth-1">├ Nozomi vs. Claroty</a>
-      <a href="/comparisons/" class="nav-item depth-1">└ More &rarr;</a>
+      <a href="/comparisons/nozomi-vs-claroty/" class="nav-item depth-1">└ Nozomi vs. Claroty</a>
     </div>
 
     <div class="nav-divider"></div>
@@ -52,6 +52,7 @@
       <a href="/guides/oem-remote-access/" class="nav-item depth-1">├ OEM remote access</a>
       <a href="/guides/patching-vs-microsegmentation/" class="nav-item depth-1">├ Patching vs. compensating controls</a>
       <a href="/guides/firewalls-vs-data-diodes/" class="nav-item depth-1">├ Firewalls vs. data diodes</a>
+      <a href="/guides/it-ot-soc-integration/" class="nav-item depth-1">├ IT/OT SOC integration</a>
       <a href="/guides/" class="nav-item depth-1">└ More &rarr;</a>
     </div>
 

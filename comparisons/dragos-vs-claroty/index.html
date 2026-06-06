@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>Dragos vs. Claroty: OT Visibility Platform Comparison | OT Cybersecurity Software</title>
+  <meta name="description" content="Dragos vs. Claroty: threat intelligence-led OT detection vs. converged CPS visibility. An independent head-to-head comparison for enterprise OT security buyers.">
+  <link rel="canonical" href="https://otcybersecuritysoftware.com/comparisons/dragos-vs-claroty/">
+
+  <meta property="og:title" content="Dragos vs. Claroty: OT Visibility Platform Comparison">
+  <meta property="og:description" content="Dragos vs. Claroty: threat intelligence-led OT detection vs. converged CPS visibility. Independent head-to-head for enterprise OT security buyers.">
+  <meta property="og:url" content="https://otcybersecuritysoftware.com/comparisons/dragos-vs-claroty/">
+  <meta property="og:type" content="article">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Dragos vs. Claroty: OT Visibility Platform Comparison",
+    "description": "Dragos vs. Claroty: threat intelligence-led OT detection vs. converged CPS visibility.",
+    "url": "https://otcybersecuritysoftware.com/comparisons/dragos-vs-claroty/",
+    "publisher": { "@type": "Organization", "name": "OT Cybersecurity Software", "url": "https://otcybersecuritysoftware.com" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://otcybersecuritysoftware.com" },
+        { "@type": "ListItem", "position": 2, "name": "Comparisons", "item": "https://otcybersecuritysoftware.com/comparisons/" },
+        { "@type": "ListItem", "position": 3, "name": "Dragos vs. Claroty", "item": "https://otcybersecuritysoftware.com/comparisons/dragos-vs-claroty/" }
+      ]
+    }
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js"></script>
+
+  <style>
+    .compare-table td:first-child {
+      width: 200px;
+      font-weight: 700;
+      font-size: 11px;
+      color: var(--mid);
+      letter-spacing: 0.02em;
+    }
+    .compare-table .section-divider td {
+      background: var(--bg);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--faint);
+      padding: 10px 12px 6px;
+      border-bottom: var(--hairline);
+    }
+    .compare-table .win-a td:nth-child(2) { color: var(--accent); font-weight: 700; }
+    .compare-table .win-b td:nth-child(3) { color: var(--accent); font-weight: 700; }
+
+    .wins-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: var(--hairline);
+      margin-bottom: 32px;
+    }
+    .wins-col { background: var(--surface); padding: 20px 24px; }
+    .wins-col-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+      display: block;
+    }
+    .wins-col ul { list-style: none; padding: 0; margin: 0; }
+    .wins-col li {
+      font-size: var(--small);
+      padding: 7px 0;
+      border-bottom: var(--hairline);
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      line-height: 1.5;
+      color: var(--mid);
+    }
+    .wins-col li:last-child { border-bottom: none; }
+    .wins-col li::before { content: '+'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+
+    @media (max-width: 640px) {
+      .wins-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">OT Cybersecurity <span>Software</span></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for OT and ICS security practitioners</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/comparisons/">Comparisons</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>Dragos vs. Claroty</span>
+        </div>
+
+        <span class="page-label">OT Visibility &mdash; Head-to-Head</span>
+        <h1>Dragos vs. Claroty</h1>
+
+        <p class="lead">Both are enterprise OT visibility platforms. The difference is in orientation: Dragos is built around threat intelligence and response for OT-specific adversaries. Claroty is built around cyber-physical systems visibility at scale — OT, IoT, and healthcare under a single platform. Choosing between them is not a features question. It is a question of which problem your program is actually trying to solve.</p>
+
+        <!-- Comparison table -->
+        <div class="table-wrap">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th style="width:200px;">Criteria</th>
+                <th>Dragos</th>
+                <th>Claroty</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr class="section-divider"><td colspan="3">Platform</td></tr>
+              <tr>
+                <td>Primary orientation</td>
+                <td>Threat intelligence-led OT detection and response</td>
+                <td>Cyber-physical systems visibility across OT, IoT, and healthcare</td>
+              </tr>
+              <tr>
+                <td>Platform scope</td>
+                <td>OT / ICS only</td>
+                <td>OT, IoT, healthcare (CPS)</td>
+              </tr>
+              <tr>
+                <td>Market fit</td>
+                <td>Enterprise only</td>
+                <td>Mid-market and enterprise</td>
+              </tr>
+              <tr>
+                <td>Deployment model</td>
+                <td>On-premises sensor; cloud management optional</td>
+                <td>On-premises (CTD) or cloud SaaS (xDome)</td>
+              </tr>
+
+              <tr class="section-divider"><td colspan="3">Technical</td></tr>
+              <tr>
+                <td>Passive deployment</td>
+                <td>Yes — passive-only, no active queries required</td>
+                <td>Yes — passive monitoring; active queries available but not required</td>
+              </tr>
+              <tr>
+                <td>Protocol coverage</td>
+                <td>Modbus, EtherNet/IP, DNP3, IEC 61850, IEC 60870, Profinet, SRTP, CIP, OPC-UA</td>
+                <td>Modbus, EtherNet/IP, DNP3, IEC 61850, IEC 60870, Profinet, OPC-UA, BACnet, HART</td>
+              </tr>
+              <tr>
+                <td>Asset discovery</td>
+                <td>Strong — built around OT asset context for threat detection</td>
+                <td>Strong — broadest coverage across OT, IoT, and healthcare device types</td>
+              </tr>
+              <tr>
+                <td>Vulnerability management</td>
+                <td>Risk-based, contextualized for OT operational impact</td>
+                <td>Broad vulnerability coverage across CPS device types</td>
+              </tr>
+
+              <tr class="section-divider"><td colspan="3">Threat detection</td></tr>
+              <tr class="win-a">
+                <td>Threat intelligence</td>
+                <td>Proprietary ICS intelligence with named adversary tracking. Industry-leading depth for OT-specific threats.</td>
+                <td>Integrated; broader IT/OT/IoT scope. Less OT-specific adversary depth.</td>
+              </tr>
+              <tr class="win-a">
+                <td>Response playbooks</td>
+                <td>Practitioner-built, adversary-specific ICS response playbooks</td>
+                <td>Playbooks available; less OT-specific adversary focus</td>
+              </tr>
+              <tr class="win-a">
+                <td>Managed services</td>
+                <td>Dragos OT Watch — dedicated OT MDR with ICS-trained analysts</td>
+                <td>Available through partners; not a Claroty-native offering</td>
+              </tr>
+
+              <tr class="section-divider"><td colspan="3">Integration and compliance</td></tr>
+              <tr class="win-b">
+                <td>SIEM / SOAR integration</td>
+                <td>Supported; OT-contextualized alerts</td>
+                <td>Strong — one of the broader integration libraries in the category</td>
+              </tr>
+              <tr>
+                <td>Compliance coverage</td>
+                <td>NERC CIP, IEC 62443, NIS2</td>
+                <td>NERC CIP, IEC 62443, NIS2</td>
+              </tr>
+
+              <tr class="section-divider"><td colspan="3">Procurement</td></tr>
+              <tr>
+                <td>Professional services</td>
+                <td>Required for deployment</td>
+                <td>Required for deployment</td>
+              </tr>
+              <tr>
+                <td>Pricing</td>
+                <td>$$$ — quote only</td>
+                <td>$$$ — quote only</td>
+              </tr>
+              <tr>
+                <td>Watch</td>
+                <td>—</td>
+                <td>CTD/xDome product consolidation ongoing — confirm roadmap and CTD support timeline before committing</td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+        <p style="font-size:12px; color:var(--faint); margin-top:-20px; margin-bottom:40px;">Protocol coverage sourced from vendor documentation. Verify current capabilities during vendor briefing — platform feature sets change with each release.</p>
+
+        <!-- Where each wins -->
+        <div class="wins-grid">
+          <div class="wins-col">
+            <span class="wins-col-label">Dragos wins when</span>
+            <ul>
+              <li>Your primary concern is detecting OT-specific adversaries and nation-state threats</li>
+              <li>You are building a threat intelligence-driven OT security program</li>
+              <li>Your environment is pure OT with no requirement to extend to IoT or healthcare</li>
+              <li>You need managed OT SOC coverage and cannot staff it internally</li>
+              <li>Your industry is energy, utilities, or oil and gas where ICS-specific threat actor tracking is highest value</li>
+            </ul>
+          </div>
+          <div class="wins-col">
+            <span class="wins-col-label">Claroty wins when</span>
+            <ul>
+              <li>Your environment includes IoT and healthcare devices alongside OT and you need a single platform</li>
+              <li>You want cloud-based management and SaaS deployment flexibility via xDome</li>
+              <li>You need mid-market pricing and enterprise-only platforms are out of reach</li>
+              <li>Your SIEM and SOAR integration requirements are extensive</li>
+              <li>Your organization is in manufacturing, healthcare, or water where CPS convergence matters more than OT-specific threat intelligence depth</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Verdict -->
+        <div class="verdict">
+          <span class="verdict-label">The real decision</span>
+          <p>If your OT environment is relatively bounded, your primary concern is ICS-specific threat actors, and you are building toward a mature threat detection and response capability, Dragos is the stronger fit. If your environment has grown beyond traditional OT into IoT and healthcare devices, or if you need cloud management flexibility and broader CPS coverage, Claroty is the better starting point.</p>
+          <p style="margin-top:12px;">The one question that matters most before shortlisting either: do you need OT-only visibility, or CPS visibility across a converged environment? That question determines the category before the vendor comparison begins. Neither platform publishes pricing. Use the <a href="/tools/rfp-evaluation-kit/">RFP Evaluation Kit</a> to structure your vendor briefing and PoC before entering a commercial discussion.</p>
+        </div>
+
+        <p style="font-size:var(--small); margin-top:32px;">Related comparisons: <a href="/comparisons/nozomi-vs-claroty/">Nozomi vs. Claroty</a></p>
+
+        <!-- Newsletter -->
+        <div class="newsletter-block">
+          <span class="page-label">Stay current</span>
+          <p>Vendor updates, acquisition alerts, and new comparisons delivered when they matter.</p>
+          <div class="newsletter-form">
+            <input type="email" id="nl-email" placeholder="your@email.com" autocomplete="email">
+            <button id="nl-submit" type="button">Subscribe</button>
+          </div>
+          <div id="nl-msg" style="font-size:11px; color:var(--mid); margin-top:8px; min-height:16px;"></div>
+        </div>
+
+        <div class="page-footer">
+          <span class="page-label">Related</span>
+          <p><a href="/tools/rfp-evaluation-kit/">OT Security RFP Evaluation Kit</a> — structure your vendor briefing and PoC before any commercial discussion</p>
+          <p><a href="/tools/vendor-comparison/">Vendor comparison tool</a> — filter the full OT security market by protocol, deployment, and compliance</p>
+          <p><a href="/landscape/vendors/">Vendor index</a> — full market coverage including challenger vendors</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+</body>
+</html>

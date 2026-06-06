@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>OT SOC Integration Health Scorecard | OT Cybersecurity Software</title>
+  <meta name="description" content="Benchmark your OT SOC integration across six key metrics. Identifies where your integration is working, where it is failing, and what to fix first.">
+  <link rel="canonical" href="https://otcybersecuritysoftware.com/tools/ot-soc-scorecard/">
+
+  <meta property="og:title" content="OT SOC Integration Health Scorecard">
+  <meta property="og:description" content="Benchmark your OT SOC integration across six key metrics. Identifies where your integration is working, where it is failing, and what to fix first.">
+  <meta property="og:url" content="https://otcybersecuritysoftware.com/tools/ot-soc-scorecard/">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js"></script>
+
+  <style>
+    .metric-card {
+      border: var(--hairline);
+      background: var(--surface);
+      padding: 20px 24px;
+      margin-bottom: 12px;
+    }
+    .metric-card-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .metric-card-title { font-size: var(--small); font-weight: 700; color: var(--charcoal); }
+    .metric-card-num { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); flex-shrink: 0; }
+    .metric-card-desc { font-size: 11px; color: var(--mid); font-style: italic; margin-bottom: 14px; line-height: 1.6; }
+    .metric-input-row { display: grid; grid-template-columns: 1fr 160px; gap: 12px; align-items: center; }
+    .metric-input-label { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--mid); }
+    .metric-input-wrap { display: flex; align-items: center; gap: 8px; }
+    .metric-input {
+      font-family: 'Space Mono', monospace;
+      font-size: var(--small);
+      padding: 7px 10px;
+      border: var(--hairline);
+      background: var(--bg);
+      color: var(--charcoal);
+      outline: none;
+      width: 90px;
+      text-align: right;
+    }
+    .metric-input:focus { border-color: var(--accent); }
+    .metric-unit { font-size: 11px; color: var(--mid); white-space: nowrap; }
+    .metric-benchmark { font-size: 11px; color: var(--faint); margin-top: 8px; font-style: italic; }
+    .metric-unknown-row { margin-top: 8px; }
+    .metric-unknown-row label { font-size: 11px; color: var(--mid); cursor: pointer; display: flex; align-items: center; gap: 6px; }
+
+    .score-btn {
+      font-family: 'Space Mono', monospace;
+      font-size: var(--small);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 12px 32px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 8px;
+    }
+    .score-btn:hover { background: var(--accent-dim); }
+
+    .results-shell { display: none; margin-top: 32px; }
+    .results-shell.visible { display: block; }
+
+    .score-hero {
+      border: var(--hairline);
+      border-top: 3px solid var(--accent);
+      background: var(--surface);
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .score-hero-left { text-align: center; flex-shrink: 0; }
+    .score-circle {
+      width: 96px; height: 96px;
+      border: 3px solid var(--accent);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      margin: 0 auto 8px;
+    }
+    .score-circle-num { font-size: 32px; font-weight: 700; color: var(--charcoal); line-height: 1; }
+    .score-circle-denom { font-size: 11px; color: var(--mid); }
+    .score-rating { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+    .score-hero-right { flex: 1; min-width: 200px; }
+    .score-hero-label { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; display: block; }
+    .score-summary { font-size: var(--small); color: var(--mid); line-height: 1.7; margin-bottom: 0; }
+
+    .metric-result {
+      border: var(--hairline);
+      background: var(--surface);
+      padding: 16px 20px;
+      margin-bottom: 8px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px 24px;
+      align-items: start;
+    }
+    .metric-result-name { font-size: var(--small); font-weight: 700; color: var(--charcoal); margin-bottom: 4px; }
+    .metric-result-finding { font-size: var(--small); color: var(--mid); line-height: 1.6; margin-bottom: 6px; }
+    .metric-result-action { font-size: 11px; color: var(--charcoal); font-style: italic; border-top: var(--hairline); padding-top: 6px; margin-top: 2px; }
+    .metric-score-badge { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 4px 10px; border: 1px solid; white-space: nowrap; flex-shrink: 0; }
+    .badge-good { border-color: #2e7d32; color: #2e7d32; }
+    .badge-fair { border-color: #b45309; color: #b45309; }
+    .badge-poor { border-color: #a03020; color: #a03020; }
+    .badge-unknown { border-color: var(--border); color: var(--mid); }
+
+    .priority-section {
+      border: var(--hairline);
+      border-left: 3px solid #a03020;
+      background: var(--surface);
+      padding: 16px 20px;
+      margin-bottom: 24px;
+    }
+    .priority-label { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #a03020; margin-bottom: 10px; display: block; }
+
+    .print-bar { display: flex; justify-content: flex-end; margin-bottom: 16px; }
+    .print-btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      padding: 6px 16px; background: var(--accent);
+      color: #fff; border: none; cursor: pointer;
+    }
+    .print-btn:hover { background: var(--accent-dim); }
+
+    .restart-link {
+      font-size: 11px; color: var(--mid);
+      cursor: pointer; text-decoration: underline;
+      background: none; border: none;
+      font-family: 'Space Mono', monospace;
+      padding: 0; margin-top: 8px; display: inline-block;
+    }
+    .restart-link:hover { color: var(--accent); }
+
+    @media print {
+      * { visibility: hidden; }
+      #print-output, #print-output * { visibility: visible; }
+      #print-output { position: fixed; top: 0; left: 0; width: 100%; padding: 32px; background: white; }
+      .print-bar { display: none !important; }
+    }
+    @media (max-width: 600px) {
+      .metric-input-row { grid-template-columns: 1fr; }
+      .metric-result { grid-template-columns: 1fr; }
+      .score-hero { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">OT Cybersecurity <span>Software</span></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for OT and ICS security practitioners</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/tools/">Tools</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>OT SOC Integration Health Scorecard</span>
+        </div>
+
+        <span class="page-label">Tool</span>
+        <h1>OT SOC Integration Health Scorecard</h1>
+
+        <p class="lead">Enter your current metrics across six dimensions. The scorecard benchmarks each one against typical OT SOC integration performance, scores your integration health, and identifies the specific areas to fix first. If you do not yet have data for a metric, mark it as unknown — the scorecard will flag it as a gap.</p>
+
+        <div class="callout" style="margin-bottom: 32px;">
+          <span class="callout-label">How to use this tool</span>
+          <p>Pull your data from your SIEM or OT monitoring platform before starting. The six metrics map directly to the <a href="/guides/it-ot-soc-integration/#metrics">IT/OT SOC Integration Playbook</a>. Run this scorecard quarterly to track improvement over time.</p>
+        </div>
+
+        <div id="scorecard-form">
+
+          <!-- Metric 1: Detection coverage -->
+          <div class="metric-card">
+            <div class="metric-card-header">
+              <span class="metric-card-title">Detection coverage</span>
+              <span class="metric-card-num">01 / 06</span>
+            </div>
+            <div class="metric-card-desc">Percentage of OT assets generating telemetry that reaches the SIEM. Covers both asset visibility and data forwarding completeness.</div>
+            <div class="metric-input-row">
+              <span class="metric-input-label">Current coverage</span>
+              <div class="metric-input-wrap">
+                <input class="metric-input" type="number" id="m1-val" min="0" max="100" placeholder="—">
+                <span class="metric-unit">% of assets</span>
+              </div>
+            </div>
+            <div class="metric-unknown-row">
+              <label><input type="checkbox" id="m1-unknown" onchange="toggleUnknown(1)"> I do not have this data yet</label>
+            </div>
+            <div class="metric-benchmark">Benchmark: 80%+ is operational. Below 60% means significant blind spots.</div>
+          </div>
+
+          <!-- Metric 2: False positive rate -->
+          <div class="metric-card">
+            <div class="metric-card-header">
+              <span class="metric-card-title">False positive rate (highest-volume alert category)</span>
+              <span class="metric-card-num">02 / 06</span>
+            </div>
+            <div class="metric-card-desc">Percentage of alerts in your highest-volume OT alert category that are false positives. Use the category analysts complain about most.</div>
+            <div class="metric-input-row">
+              <span class="metric-input-label">False positive rate</span>
+              <div class="metric-input-wrap">
+                <input class="metric-input" type="number" id="m2-val" min="0" max="100" placeholder="—">
+                <span class="metric-unit">%</span>
+              </div>
+            </div>
+            <div class="metric-unknown-row">
+              <label><input type="checkbox" id="m2-unknown" onchange="toggleUnknown(2)"> I do not have this data yet</label>
+            </div>
+            <div class="metric-benchmark">Benchmark: below 30% is acceptable. Above 50% means analysts are ignoring that category.</div>
+          </div>
+
+          <!-- Metric 3: Mean time to detect -->
+          <div class="metric-card">
+            <div class="metric-card-header">
+              <span class="metric-card-title">Mean time to detect (confirmed OT incidents)</span>
+              <span class="metric-card-num">03 / 06</span>
+            </div>
+            <div class="metric-card-desc">For confirmed OT security incidents, average hours between first indicator appearing in OT monitoring data and analyst detection. The core effectiveness metric.</div>
+            <div class="metric-input-row">
+              <span class="metric-input-label">Mean detection time</span>
+              <div class="metric-input-wrap">
+                <input class="metric-input" type="number" id="m3-val" min="0" max="8760" placeholder="—">
+                <span class="metric-unit">hours</span>
+              </div>
+            </div>
+            <div class="metric-unknown-row">
+              <label><input type="checkbox" id="m3-unknown" onchange="toggleUnknown(3)"> I do not have this data yet</label>
+            </div>
+            <div class="metric-benchmark">Benchmark: under 4 hours is strong. 4–24 hours is acceptable. Over 24 hours indicates a systemic integration failure.</div>
+          </div>
+
+          <!-- Metric 4: Mean time to triage -->
+          <div class="metric-card">
+            <div class="metric-card-header">
+              <span class="metric-card-title">Mean time to triage (OT alerts)</span>
+              <span class="metric-card-num">04 / 06</span>
+            </div>
+            <div class="metric-card-desc">Average time from alert arrival in the queue to analyst triage decision. Measures whether enrichment and playbooks are sufficient.</div>
+            <div class="metric-input-row">
+              <span class="metric-input-label">Mean triage time</span>
+              <div class="metric-input-wrap">
+                <input class="metric-input" type="number" id="m4-val" min="0" max="480" placeholder="—">
+                <span class="metric-unit">minutes</span>
+              </div>
+            </div>
+            <div class="metric-unknown-row">
+              <label><input type="checkbox" id="m4-unknown" onchange="toggleUnknown(4)"> I do not have this data yet</label>
+            </div>
+            <div class="metric-benchmark">Benchmark: under 15 min is strong. 15–30 min is acceptable. Over 30 min indicates enrichment or playbook gaps.</div>
+          </div>
+
+          <!-- Metric 5: Escalation accuracy -->
+          <div class="metric-card">
+            <div class="metric-card-header">
+              <span class="metric-card-title">Escalation accuracy</span>
+              <span class="metric-card-num">05 / 06</span>
+            </div>
+            <div class="metric-card-desc">Of alerts escalated to OT engineering, the percentage that genuinely required OT engineering involvement to resolve.</div>
+            <div class="metric-input-row">
+              <span class="metric-input-label">Escalations requiring OT</span>
+              <div class="metric-input-wrap">
+                <input class="metric-input" type="number" id="m5-val" min="0" max="100" placeholder="—">
+                <span class="metric-unit">%</span>
+              </div>
+            </div>
+            <div class="metric-unknown-row">
+              <label><input type="checkbox" id="m5-unknown" onchange="toggleUnknown(5)"> I do not have this data yet</label>
+            </div>
+            <div class="metric-benchmark">Benchmark: 50–80% is the target range. Below 30% means over-escalation. Above 90% means under-escalation.</div>
+          </div>
+
+          <!-- Metric 6: Maintenance window alignment -->
+          <div class="metric-card">
+            <div class="metric-card-header">
+              <span class="metric-card-title">Maintenance window alignment</span>
+              <span class="metric-card-num">06 / 06</span>
+            </div>
+            <div class="metric-card-desc">Percentage of OT alerts that fire during approved maintenance windows. High rates indicate suppression rules are insufficient.</div>
+            <div class="metric-input-row">
+              <span class="metric-input-label">Alerts during maintenance</span>
+              <div class="metric-input-wrap">
+                <input class="metric-input" type="number" id="m6-val" min="0" max="100" placeholder="—">
+                <span class="metric-unit">%</span>
+              </div>
+            </div>
+            <div class="metric-unknown-row">
+              <label><input type="checkbox" id="m6-unknown" onchange="toggleUnknown(6)"> I do not have this data yet</label>
+            </div>
+            <div class="metric-benchmark">Benchmark: below 20% is acceptable. Above 40% means maintenance activity is generating analyst noise.</div>
+          </div>
+
+          <button class="score-btn" onclick="scorecard()">Score my integration</button>
+
+        </div>
+
+        <!-- Results -->
+        <div class="results-shell" id="results-shell">
+          <div id="print-output">
+
+            <div class="print-bar">
+              <button class="print-btn" onclick="window.print()">Print scorecard</button>
+            </div>
+
+            <div class="score-hero" id="score-hero">
+              <div class="score-hero-left">
+                <div class="score-circle">
+                  <span class="score-circle-num" id="score-num"></span>
+                  <span class="score-circle-denom" id="score-denom"></span>
+                </div>
+                <div class="score-rating" id="score-rating"></div>
+              </div>
+              <div class="score-hero-right">
+                <span class="score-hero-label">Integration health</span>
+                <p class="score-summary" id="score-summary"></p>
+              </div>
+            </div>
+
+            <div class="priority-section" id="priority-section" style="display:none;">
+              <span class="priority-label">Priority actions</span>
+              <div id="priority-list"></div>
+            </div>
+
+            <div id="metric-results"></div>
+
+            <div style="font-size:11px; color:var(--faint); margin-top:16px; padding-top:12px; border-top:var(--hairline); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+              <span>OT SOC Integration Health Scorecard — otcybersecuritysoftware.com</span>
+              <span id="score-date"></span>
+            </div>
+
+          </div>
+
+          <button class="restart-link" onclick="restart()">Score again with new inputs</button>
+        </div>
+
+        <div class="callout" style="margin-top: 32px;">
+          <span class="callout-label">Related guide</span>
+          <p>The <a href="/guides/it-ot-soc-integration/">IT/OT SOC Integration Playbook</a> covers the translation layer, triage architecture, SOC model selection, and the eight-step implementation sequence that these metrics are designed to measure.</p>
+        </div>
+
+        <div class="newsletter-block">
+          <span class="page-label">Stay current</span>
+          <p>OT security operations guidance and field notes delivered when they matter.</p>
+          <div class="newsletter-form">
+            <input type="email" id="nl-email" placeholder="your@email.com" autocomplete="email">
+            <button id="nl-submit" type="button">Subscribe</button>
+          </div>
+          <div id="nl-msg" style="font-size:11px; color:var(--mid); margin-top:8px; min-height:16px;"></div>
+        </div>
+
+        <div class="page-footer">
+          <span class="page-label">Related</span>
+          <p><a href="/guides/it-ot-soc-integration/">IT/OT SOC Integration Playbook</a> — translation layer, triage architecture, and implementation sequence</p>
+          <p><a href="/tools/asset-scoping-tool/">Asset Scoping Decision Tool</a> — classify OT assets under NERC CIP or NIS2</p>
+          <p><a href="/tools/firewall-vs-diode-tco/">Firewall vs. Data Diode TCO Calculator</a> — build the business case for hardware isolation</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+  <script>
+    var metrics = [
+      {
+        id: 1, name: 'Detection coverage', unit: '% of assets',
+        higher_is_better: true, thresholds: { good: 80, fair: 60 },
+        findings: {
+          good: 'Coverage is strong. Most OT assets are generating telemetry that reaches the SIEM.',
+          fair: 'Coverage is partial. A significant portion of your OT environment has no visibility in the SIEM.',
+          poor: 'Coverage is critically low. You have major blind spots — the SIEM is seeing a fraction of your OT environment.',
+          unknown: 'Detection coverage has not been measured. This is the most fundamental metric — without it, all other scores are incomplete.'
+        },
+        actions: {
+          good: 'Review uncovered assets and confirm intentional exclusions are documented.',
+          fair: 'Audit which OT segments are not forwarding telemetry. Prioritize high-criticality assets first.',
+          poor: 'Stop tuning alerts until coverage improves. Incomplete coverage makes all other metrics misleading.',
+          unknown: 'Pull your OT asset inventory and compare it against assets generating SIEM events. Calculate the ratio.'
+        }
+      },
+      {
+        id: 2, name: 'False positive rate (highest-volume category)', unit: '%',
+        higher_is_better: false, thresholds: { good: 30, fair: 50 },
+        findings: {
+          good: 'False positive rate is manageable. Analysts are receiving mostly actionable alerts in this category.',
+          fair: 'False positive rate is elevated. Analysts are spending significant time on non-events.',
+          poor: 'False positive rate is critically high. Analysts have likely learned to ignore this alert category entirely.',
+          unknown: 'False positive rates are not being tracked by category. Aggregate rates hide the categories where the integration is failing.'
+        },
+        actions: {
+          good: 'Review suppression rules quarterly to confirm they are not hiding legitimate events.',
+          fair: 'Identify the top three event types driving false positives and tighten suppression rules for each.',
+          poor: 'Rebuild suppression rules for this category from the behavioral baseline. Tune the translation layer, not the SIEM.',
+          unknown: 'Tag the last 30 days of closed OT alerts as true or false positive by category and calculate per-category rates.'
+        }
+      },
+      {
+        id: 3, name: 'Mean time to detect (confirmed OT incidents)', unit: 'hours',
+        higher_is_better: false, thresholds: { good: 4, fair: 24 },
+        findings: {
+          good: 'Detection speed is strong. The integration is surfacing OT incidents quickly.',
+          fair: 'Detection speed is acceptable but leaves a meaningful window for attacker dwell time.',
+          poor: 'Detection speed is critically slow. Attackers can operate in your OT environment for extended periods before detection.',
+          unknown: 'Mean time to detect has not been measured. Without it, you cannot assess whether the integration achieves its security purpose.'
+        },
+        actions: {
+          good: 'Review the alert categories that detected each incident. Confirm coverage extends to adjacent attack paths.',
+          fair: 'Identify the lag between first indicator and detection in your most recent incidents. Target the alert category with the longest lag.',
+          poor: 'Review alert forwarding latency, triage queue depth, and escalation paths. The integration has a systemic failure somewhere in the chain.',
+          unknown: 'Establish an incident review process that captures first indicator timestamp vs. analyst detection timestamp for every confirmed OT incident.'
+        }
+      },
+      {
+        id: 4, name: 'Mean time to triage (OT alerts)', unit: 'minutes',
+        higher_is_better: false, thresholds: { good: 15, fair: 30 },
+        findings: {
+          good: 'Triage time is strong. Enrichment and playbooks are giving analysts sufficient context.',
+          fair: 'Triage time is acceptable but suggests enrichment or playbook gaps in some alert categories.',
+          poor: 'Triage time is high. Analysts are spending significant time researching OT context that should have been provided in the alert.',
+          unknown: 'Mean triage time is not being measured. This is a direct indicator of enrichment and playbook quality.'
+        },
+        actions: {
+          good: 'Identify the alert categories with the longest triage times and review their enrichment fields.',
+          fair: 'Survey analysts on which categories take longest to triage. Review enrichment and playbooks for those categories.',
+          poor: 'Audit enrichment fields for all forwarded alert categories. Add physical impact potential, asset criticality, and baseline deviation to every alert.',
+          unknown: 'Add triage timestamps to your alert workflow and measure time-to-triage for the next 30 days.'
+        }
+      },
+      {
+        id: 5, name: 'Escalation accuracy', unit: '%',
+        higher_is_better: null,
+        thresholds: { good_low: 50, good_high: 80, fair_low: 30, fair_high: 90 },
+        findings: {
+          good: 'Escalation accuracy is in the target range. Analysts are routing OT alerts to OT engineering at the right rate.',
+          over: 'Escalation rate is too high. Analysts are over-escalating — OT engineers are handling alerts IT analysts should close.',
+          under: 'Escalation rate is too low. Analysts are under-escalating — OT alerts that need specialist review are being closed without it.',
+          poor: 'Escalation rate is critically off-target. Playbook escalation criteria need review across all OT alert categories.',
+          unknown: 'Escalation accuracy is not being tracked. Without it, you cannot tell whether analysts are handling OT alerts correctly.'
+        },
+        actions: {
+          good: 'Review escalation criteria annually to confirm they reflect current OT engineering capacity and analyst capability.',
+          over: 'Identify which alert categories are being over-escalated and add more analyst-level decision guidance to those playbooks.',
+          under: 'Identify which categories are being closed without OT review and add mandatory escalation triggers to those playbooks.',
+          poor: 'Rebuild escalation criteria with OT engineering input. Define clear analyst-close vs. OT-escalation conditions for every alert category.',
+          unknown: 'Tag escalated alerts for the next 30 days as required or unnecessary OT involvement and calculate the accuracy rate.'
+        }
+      },
+      {
+        id: 6, name: 'Maintenance window alignment', unit: '%',
+        higher_is_better: false, thresholds: { good: 20, fair: 40 },
+        findings: {
+          good: 'Maintenance window suppression is working. Normal maintenance activity is not generating significant analyst noise.',
+          fair: 'A moderate portion of alerts fire during maintenance windows. Suppression rules are partially effective.',
+          poor: 'A high percentage of alerts fire during maintenance windows. Normal maintenance is generating significant analyst noise.',
+          unknown: 'Maintenance window alignment is not being tracked. This is a leading indicator of suppression rule quality.'
+        },
+        actions: {
+          good: 'Confirm maintenance window schedules in the OT monitoring platform are current and complete.',
+          fair: 'Review suppression rules for the alert categories with the highest maintenance window firing rates.',
+          poor: 'Audit maintenance window definitions in your OT monitoring platform. Rebuild suppression rules for maintenance-correlated alert categories.',
+          unknown: 'Pull your maintenance window schedule and correlate it against the last 30 days of OT alerts. Calculate the overlap percentage.'
+        }
+      }
+    ];
+
+    function toggleUnknown(n) {
+      var cb = document.getElementById('m' + n + '-unknown');
+      var inp = document.getElementById('m' + n + '-val');
+      inp.disabled = cb.checked;
+      if (cb.checked) inp.value = '';
+    }
+
+    function getScore(m, val) {
+      if (val === null) return { grade: 'unknown', points: 0 };
+      if (m.higher_is_better === null) {
+        if (val >= m.thresholds.good_low && val <= m.thresholds.good_high) return { grade: 'good', points: 2 };
+        if (val < m.thresholds.fair_low) return { grade: 'over', points: 1 };
+        if (val > m.thresholds.fair_high) return { grade: 'under', points: 1 };
+        return { grade: 'poor', points: 0 };
+      }
+      if (m.higher_is_better) {
+        if (val >= m.thresholds.good) return { grade: 'good', points: 2 };
+        if (val >= m.thresholds.fair) return { grade: 'fair', points: 1 };
+        return { grade: 'poor', points: 0 };
+      } else {
+        if (val <= m.thresholds.good) return { grade: 'good', points: 2 };
+        if (val <= m.thresholds.fair) return { grade: 'fair', points: 1 };
+        return { grade: 'poor', points: 0 };
+      }
+    }
+
+    function scorecard() {
+      var scores = [], totalPoints = 0, maxPoints = 0, priorities = [];
+
+      metrics.forEach(function(m) {
+        var unknown = document.getElementById('m' + m.id + '-unknown').checked;
+        var raw = document.getElementById('m' + m.id + '-val').value;
+        var val = unknown ? null : (raw === '' ? null : parseFloat(raw));
+        var result = getScore(m, val);
+        if (!unknown && val !== null) maxPoints += 2;
+        totalPoints += result.points;
+        scores.push({ metric: m, val: val, result: result, unknown: unknown });
+        if (result.grade !== 'good') {
+          priorities.push({ name: m.name + (unknown ? ' (not measured)' : ''), action: m.actions[result.grade] || m.actions['poor'] });
+        }
+      });
+
+      var pct = maxPoints > 0 ? (totalPoints / maxPoints) * 100 : 0;
+      var rating, ratingColor, summary;
+      if (maxPoints === 0) {
+        rating = 'Not measured'; ratingColor = 'var(--mid)';
+        summary = 'None of your metrics have been measured. Start with detection coverage — it is the foundation of everything else.';
+      } else if (pct >= 75) {
+        rating = 'Healthy'; ratingColor = '#2e7d32';
+        summary = 'Your OT SOC integration is performing well across most dimensions. Focus on the flagged areas to close remaining gaps.';
+      } else if (pct >= 50) {
+        rating = 'Developing'; ratingColor = '#b45309';
+        summary = 'Your integration has meaningful gaps in one or more dimensions. Address the priority actions before the next assessment cycle.';
+      } else {
+        rating = 'At risk'; ratingColor = '#a03020';
+        summary = 'Your integration has critical gaps affecting analyst effectiveness and detection capability. The priority actions below need immediate attention.';
+      }
+
+      document.getElementById('score-num').textContent = totalPoints;
+      document.getElementById('score-denom').textContent = '/ ' + maxPoints;
+      var ratingEl = document.getElementById('score-rating');
+      ratingEl.textContent = rating;
+      ratingEl.style.color = ratingColor;
+      document.getElementById('score-summary').textContent = summary;
+      document.getElementById('score-hero').style.borderTopColor = ratingColor;
+      document.getElementById('score-date').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      document.querySelector('.score-circle').style.borderColor = ratingColor;
+
+      var prioritySection = document.getElementById('priority-section');
+      var priorityList = document.getElementById('priority-list');
+      priorityList.innerHTML = '';
+      if (priorities.length > 0) {
+        prioritySection.style.display = 'block';
+        priorities.slice(0, 3).forEach(function(p, i) {
+          var div = document.createElement('div');
+          div.style.cssText = 'font-size:var(--small); padding:8px 0; border-bottom:var(--hairline); display:flex; gap:12px; align-items:flex-start;';
+          div.innerHTML = '<span style="font-size:11px;font-weight:700;color:#a03020;flex-shrink:0;width:20px;">' + String(i+1).padStart(2,'0') + '</span><span><strong>' + p.name + ':</strong> ' + p.action + '</span>';
+          priorityList.appendChild(div);
+        });
+      } else {
+        prioritySection.style.display = 'none';
+      }
+
+      var resultsEl = document.getElementById('metric-results');
+      resultsEl.innerHTML = '';
+      scores.forEach(function(s) {
+        var grade = s.result.grade;
+        var badgeClass = grade === 'good' ? 'badge-good' : (grade === 'poor' || grade === 'over' || grade === 'under') ? 'badge-poor' : grade === 'fair' ? 'badge-fair' : 'badge-unknown';
+        var badgeText = { good: 'Good', fair: 'Fair', poor: 'Needs work', over: 'Over-escalating', under: 'Under-escalating', unknown: 'Not measured' }[grade] || 'Not measured';
+        var finding = s.metric.findings[grade] || s.metric.findings['poor'];
+        var action  = s.metric.actions[grade]  || s.metric.actions['poor'];
+        var valDisplay = (s.unknown || s.val === null) ? 'No data' : s.val + ' ' + s.metric.unit;
+        var div = document.createElement('div');
+        div.className = 'metric-result';
+        div.innerHTML =
+          '<div>' +
+            '<div class="metric-result-name">' + s.metric.name + ' <span style="font-weight:400;color:var(--mid);font-size:11px;">(' + valDisplay + ')</span></div>' +
+            '<div class="metric-result-finding">' + finding + '</div>' +
+            '<div class="metric-result-action">Action: ' + action + '</div>' +
+          '</div>' +
+          '<span class="metric-score-badge ' + badgeClass + '">' + badgeText + '</span>';
+        resultsEl.appendChild(div);
+      });
+
+      document.getElementById('results-shell').classList.add('visible');
+      setTimeout(function() {
+        document.getElementById('results-shell').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+
+    function restart() {
+      metrics.forEach(function(m) {
+        document.getElementById('m' + m.id + '-val').value = '';
+        document.getElementById('m' + m.id + '-val').disabled = false;
+        document.getElementById('m' + m.id + '-unknown').checked = false;
+      });
+      document.getElementById('results-shell').classList.remove('visible');
+      window.scrollTo(0, 0);
+    }
+  </script>
+
+</body>
+</html>

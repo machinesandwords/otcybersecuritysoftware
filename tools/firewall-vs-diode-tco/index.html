@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>Firewall vs. Data Diode TCO Calculator | OT Cybersecurity Software</title>
+  <meta name="description" content="Calculate the true total cost of ownership for industrial firewalls vs. data diodes. Identifies the break-even month where diode CapEx is recovered by firewall OpEx savings. Produces a CFO-ready output.">
+  <link rel="canonical" href="https://otcybersecuritysoftware.com/tools/firewall-vs-diode-tco/">
+
+  <meta property="og:title" content="Firewall vs. Data Diode TCO Calculator">
+  <meta property="og:description" content="Find the exact month where data diode CapEx is recovered by firewall OpEx savings. CFO-ready output included.">
+  <meta property="og:url" content="https://otcybersecuritysoftware.com/tools/firewall-vs-diode-tco/">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+  <style>
+    /* ── Phase sections ─────────────────────────────────────── */
+    .phase {
+      border: var(--hairline);
+      background: var(--surface);
+      margin-bottom: 16px;
+    }
+    .phase-header {
+      padding: 14px 20px;
+      border-bottom: var(--hairline);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--bg);
+    }
+    .phase-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .phase-title {
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+    .phase-body { padding: 20px; }
+
+    /* ── Input rows ─────────────────────────────────────────── */
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 180px;
+      gap: 12px 24px;
+      padding: 10px 0;
+      border-bottom: var(--hairline);
+      align-items: center;
+    }
+    .input-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .input-row:first-child { padding-top: 0; }
+    .input-label {
+      font-size: var(--small);
+      color: var(--charcoal);
+      line-height: 1.5;
+    }
+    .input-hint {
+      font-size: 11px;
+      color: var(--faint);
+      font-style: italic;
+      margin-top: 2px;
+    }
+    .input-field {
+      font-family: 'Space Mono', monospace;
+      font-size: var(--small);
+      padding: 8px 10px;
+      border: var(--hairline);
+      background: var(--bg);
+      color: var(--charcoal);
+      outline: none;
+      width: 100%;
+      text-align: right;
+    }
+    .input-field:focus { border-color: var(--accent); }
+    .input-prefix {
+      position: relative;
+    }
+    .input-prefix::before {
+      content: attr(data-prefix);
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Space Mono', monospace;
+      font-size: var(--small);
+      color: var(--mid);
+      pointer-events: none;
+    }
+    .input-prefix input { padding-left: 22px; }
+
+    /* ── Toggle row ─────────────────────────────────────────── */
+    .toggle-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px 24px;
+      padding: 10px 0;
+      border-bottom: var(--hairline);
+      align-items: center;
+    }
+    .toggle-row:last-child { border-bottom: none; }
+    .toggle-group {
+      display: flex;
+      gap: 1px;
+      background: var(--border);
+      border: var(--hairline);
+    }
+    .toggle-btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 6px 14px;
+      background: var(--bg);
+      border: none;
+      color: var(--mid);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .toggle-btn.active { background: var(--accent); color: #fff; }
+
+    /* ── Horizon selector ───────────────────────────────────── */
+    .horizon-group {
+      display: flex;
+      gap: 1px;
+      background: var(--border);
+      border: var(--hairline);
+    }
+    .horizon-btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 6px 16px;
+      background: var(--bg);
+      border: none;
+      color: var(--mid);
+      cursor: pointer;
+    }
+    .horizon-btn.active { background: var(--accent); color: #fff; }
+
+    /* ── Calculate button ───────────────────────────────────── */
+    .calc-btn {
+      font-family: 'Space Mono', monospace;
+      font-size: var(--small);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 12px 32px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 8px;
+    }
+    .calc-btn:hover { background: var(--accent-dim); }
+
+    /* ── Results shell ──────────────────────────────────────── */
+    .results-shell {
+      display: none;
+      margin-top: 32px;
+    }
+    .results-shell.visible { display: block; }
+
+    /* ── Break-even hero ────────────────────────────────────── */
+    .breakeven-hero {
+      border: var(--hairline);
+      border-top: 3px solid var(--accent);
+      background: var(--surface);
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .breakeven-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+      display: block;
+    }
+    .breakeven-value {
+      font-size: 40px;
+      font-weight: 700;
+      color: var(--charcoal);
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+    .breakeven-sub {
+      font-size: var(--small);
+      color: var(--mid);
+    }
+    .breakeven-never {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--mid);
+    }
+
+    /* ── Summary cards ──────────────────────────────────────── */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: var(--hairline);
+      margin-bottom: 24px;
+    }
+    .summary-col {
+      background: var(--surface);
+      padding: 16px 20px;
+    }
+    .summary-col-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .summary-col-label.fw { color: var(--mid); }
+    .summary-col-label.diode { color: var(--accent); }
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--small);
+      padding: 5px 0;
+      border-bottom: var(--hairline);
+    }
+    .summary-line:last-child { border-bottom: none; font-weight: 700; color: var(--charcoal); }
+    .summary-line-label { color: var(--mid); }
+    .summary-line-value { color: var(--charcoal); font-weight: 700; }
+    .summary-line.total .summary-line-label { color: var(--charcoal); }
+
+    /* ── Chart container ────────────────────────────────────── */
+    .chart-container {
+      background: var(--surface);
+      border: var(--hairline);
+      padding: 20px;
+      margin-bottom: 24px;
+      position: relative;
+      height: 320px;
+    }
+
+    /* ── CFO print block ────────────────────────────────────── */
+    .cfo-print-block {
+      border: var(--hairline);
+      border-top: 3px solid var(--accent);
+      background: var(--surface);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .cfo-print-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .print-btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    .print-btn:hover { background: var(--accent-dim); }
+
+    /* ── Compliance note ────────────────────────────────────── */
+    .compliance-note {
+      display: none;
+      background: var(--accent-pale);
+      border: 1px solid var(--accent);
+      padding: 12px 16px;
+      margin-top: 12px;
+      font-size: var(--small);
+      color: var(--charcoal);
+    }
+    .compliance-note.visible { display: block; }
+
+    /* ── Print styles ───────────────────────────────────────── */
+    @media print {
+      * { visibility: hidden; }
+      #print-output, #print-output * { visibility: visible; }
+      #print-output {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%;
+        padding: 32px;
+        background: white;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .input-row { grid-template-columns: 1fr; }
+      .input-field { text-align: left; }
+      .summary-grid { grid-template-columns: 1fr; }
+      .breakeven-value { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">OT Cybersecurity <span>Software</span></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for OT and ICS security practitioners</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/tools/">Tools</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>Firewall vs. Data Diode TCO Calculator</span>
+        </div>
+
+        <span class="page-label">Tool</span>
+        <h1>Firewall vs. Data Diode TCO Calculator</h1>
+
+        <p class="lead">Enter your environment parameters across three phases. The calculator identifies the exact month where the data diode's higher upfront cost is recovered by firewall OpEx savings — and produces a CFO-ready output you can take directly to a budget conversation.</p>
+
+        <div class="callout" style="margin-bottom: 32px;">
+          <span class="callout-label">How to use this tool</span>
+          <p>Work through the three phases in order. Defaults are populated based on typical OT environments — adjust them to match your situation. The comparison assumes one firewall and one diode pair per protected network segment. Scale using the segment count in Phase 1.</p>
+        </div>
+
+        <!-- Phase 1 -->
+        <div class="phase">
+          <div class="phase-header">
+            <span class="phase-num">Phase 1</span>
+            <span class="phase-title">Environmental scale</span>
+          </div>
+          <div class="phase-body">
+
+            <div class="input-row">
+              <div>
+                <div class="input-label">Number of network segments requiring protection</div>
+                <div class="input-hint">Count the chokepoints where a firewall or diode would sit, not individual assets</div>
+              </div>
+              <input class="input-field" type="number" id="segments" value="3" min="1" max="50">
+            </div>
+
+            <div class="input-row">
+              <div>
+                <div class="input-label">Internal fully burdened labor rate</div>
+                <div class="input-hint">Include salary, benefits, and overhead</div>
+              </div>
+              <div class="input-prefix" data-prefix="$">
+                <input class="input-field" type="number" id="labor-rate" value="125" min="50" max="500">
+              </div>
+            </div>
+
+            <div class="toggle-row">
+              <div>
+                <div class="input-label">Projection horizon</div>
+                <div class="input-hint">Years of ownership to compare</div>
+              </div>
+              <div class="horizon-group">
+                <button class="horizon-btn" onclick="setHorizon(3, this)">3 yr</button>
+                <button class="horizon-btn active" onclick="setHorizon(5, this)">5 yr</button>
+                <button class="horizon-btn" onclick="setHorizon(7, this)">7 yr</button>
+              </div>
+            </div>
+
+            <div class="toggle-row">
+              <div>
+                <div class="input-label">Compliance requirements</div>
+                <div class="input-hint">Affects audit documentation savings calculation for diode scenario</div>
+              </div>
+              <div class="toggle-group">
+                <button class="toggle-btn active" id="compliance-none" onclick="setCompliance('none', this)">None</button>
+                <button class="toggle-btn" id="compliance-nerc" onclick="setCompliance('nerc', this)">NERC CIP</button>
+                <button class="toggle-btn" id="compliance-nis2" onclick="setCompliance('nis2', this)">NIS2</button>
+              </div>
+            </div>
+
+            <div class="compliance-note" id="compliance-note">
+              Compliance mode adds estimated annual audit documentation hours to the firewall scenario (firewall rule sets require ongoing audit evidence) and subtracts hours saved from the diode scenario (diodes produce simpler, more defensible audit evidence).
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Phase 2 -->
+        <div class="phase">
+          <div class="phase-header">
+            <span class="phase-num">Phase 2</span>
+            <span class="phase-title">Firewall scenario</span>
+          </div>
+          <div class="phase-body">
+
+            <div class="input-row">
+              <div>
+                <div class="input-label">Average hardware cost per firewall appliance</div>
+                <div class="input-hint">Industrial-grade NGFW; typical range $8,000–$25,000</div>
+              </div>
+              <div class="input-prefix" data-prefix="$">
+                <input class="input-field" type="number" id="fw-hardware" value="15000" min="1000">
+              </div>
+            </div>
+
+            <div class="input-row">
+              <div>
+                <div class="input-label">Annual subscription fee per firewall</div>
+                <div class="input-hint">IPS/IDS, threat feeds, support; typically 20–30% of hardware cost annually</div>
+              </div>
+              <div class="input-prefix" data-prefix="$">
+                <input class="input-field" type="number" id="fw-subscription" value="3500" min="0">
+              </div>
+            </div>
+
+            <div class="input-row">
+              <div>
+                <div class="input-label">Average patch cycles per year</div>
+                <div class="input-hint">Major firmware updates requiring staging and validation; typically 2–4</div>
+              </div>
+              <input class="input-field" type="number" id="fw-patch-cycles" value="3" min="0" max="12">
+            </div>
+
+            <div class="input-row">
+              <div>
+                <div class="input-label">Hours per patch cycle per firewall</div>
+                <div class="input-hint">Staging, vendor validation, plant maintenance window coordination</div>
+              </div>
+              <input class="input-field" type="number" id="fw-patch-hours" value="8" min="1" max="40">
+            </div>
+
+            <div class="input-row">
+              <div>
+                <div class="input-label">Annual rule audit and maintenance hours per firewall</div>
+                <div class="input-hint">Rule review, cleanup, change requests</div>
+              </div>
+              <input class="input-field" type="number" id="fw-audit-hours" value="16" min="0" max="200">
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Phase 3 -->
+        <div class="phase">
+          <div class="phase-header">
+            <span class="phase-num">Phase 3</span>
+            <span class="phase-title">Data diode scenario</span>
+          </div>
+          <div class="phase-body">
+
+            <div class="input-row">
+              <div>
+                <div class="input-label">Upfront hardware cost per diode pair / gateway</div>
+                <div class="input-hint">Including protocol replication appliance; typical range $20,000–$60,000</div>
+              </div>
+              <div class="input-prefix" data-prefix="$">
+                <input class="input-field" type="number" id="diode-hardware" value="35000" min="5000">
+              </div>
+            </div>
+
+            <div class="input-row">
+              <div>
+                <div class="input-label">One-time engineering hours for protocol replication setup</div>
+                <div class="input-hint">Per diode pair; historian configuration, testing, validation</div>
+              </div>
+              <input class="input-field" type="number" id="diode-setup-hours" value="40" min="8" max="200">
+            </div>
+
+            <div class="input-row">
+              <div>
+                <div class="input-label">Annual hardware maintenance and support fee per diode</div>
+                <div class="input-hint">Vendor support contract; typically 10–15% of hardware cost</div>
+              </div>
+              <div class="input-prefix" data-prefix="$">
+                <input class="input-field" type="number" id="diode-maintenance" value="4000" min="0">
+              </div>
+            </div>
+
+            <div class="input-row" id="compliance-savings-row" style="display:none;">
+              <div>
+                <div class="input-label">Annual audit documentation hours saved per diode</div>
+                <div class="input-hint">Hours saved vs. firewall rule set audit (diodes have no rule set to audit)</div>
+              </div>
+              <input class="input-field" type="number" id="diode-audit-savings" value="12" min="0" max="100">
+            </div>
+
+          </div>
+        </div>
+
+        <button class="calc-btn" onclick="calculate()">Calculate TCO</button>
+
+        <!-- Results -->
+        <div class="results-shell" id="results-shell">
+
+          <!-- Break-even hero -->
+          <div class="breakeven-hero">
+            <span class="breakeven-label">OpEx break-even crossover</span>
+            <div class="breakeven-value" id="breakeven-display"></div>
+            <div class="breakeven-sub" id="breakeven-sub"></div>
+          </div>
+
+          <!-- Chart -->
+          <div class="chart-container">
+            <canvas id="tco-chart"></canvas>
+          </div>
+
+          <!-- Summary cards -->
+          <div class="summary-grid">
+            <div class="summary-col">
+              <span class="summary-col-label fw">Firewall scenario</span>
+              <div class="summary-line">
+                <span class="summary-line-label">CapEx (hardware)</span>
+                <span class="summary-line-value" id="fw-capex"></span>
+              </div>
+              <div class="summary-line">
+                <span class="summary-line-label">Subscriptions</span>
+                <span class="summary-line-value" id="fw-subs"></span>
+              </div>
+              <div class="summary-line">
+                <span class="summary-line-label">Patch labor</span>
+                <span class="summary-line-value" id="fw-patch-cost"></span>
+              </div>
+              <div class="summary-line">
+                <span class="summary-line-label">Rule maintenance labor</span>
+                <span class="summary-line-value" id="fw-rule-cost"></span>
+              </div>
+              <div class="summary-line" id="fw-compliance-line" style="display:none;">
+                <span class="summary-line-label">Compliance audit labor</span>
+                <span class="summary-line-value" id="fw-compliance-cost"></span>
+              </div>
+              <div class="summary-line total">
+                <span class="summary-line-label" id="fw-total-label">Total</span>
+                <span class="summary-line-value" id="fw-total"></span>
+              </div>
+            </div>
+            <div class="summary-col">
+              <span class="summary-col-label diode">Data diode scenario</span>
+              <div class="summary-line">
+                <span class="summary-line-label">CapEx (hardware + setup)</span>
+                <span class="summary-line-value" id="diode-capex"></span>
+              </div>
+              <div class="summary-line">
+                <span class="summary-line-label">Annual maintenance</span>
+                <span class="summary-line-value" id="diode-maint-cost"></span>
+              </div>
+              <div class="summary-line" id="diode-savings-line" style="display:none;">
+                <span class="summary-line-label">Compliance labor savings</span>
+                <span class="summary-line-value" id="diode-savings-cost"></span>
+              </div>
+              <div class="summary-line total">
+                <span class="summary-line-label" id="diode-total-label">Total</span>
+                <span class="summary-line-value" id="diode-total"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CFO print block -->
+          <div class="cfo-print-block" id="print-output">
+            <div class="cfo-print-label">
+              <span>CFO-Ready Results</span>
+              <button class="print-btn" onclick="window.print()">Print business case</button>
+            </div>
+
+            <div style="font-size: 11px; color: var(--mid); margin-bottom: 16px; padding-bottom: 12px; border-bottom: var(--hairline); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+              <span>OT Cybersecurity Software — otcybersecuritysoftware.com</span>
+              <span id="print-date"></span>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+              <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--mid); margin-bottom: 8px;">Environment</div>
+              <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1px; background: var(--border); border: var(--hairline);">
+                <div style="background: var(--surface); padding: 10px 14px;">
+                  <div style="font-size: 11px; color: var(--faint); margin-bottom: 2px;">Segments</div>
+                  <div style="font-size: var(--small); font-weight: 700;" id="print-segments"></div>
+                </div>
+                <div style="background: var(--surface); padding: 10px 14px;">
+                  <div style="font-size: 11px; color: var(--faint); margin-bottom: 2px;">Projection</div>
+                  <div style="font-size: var(--small); font-weight: 700;" id="print-horizon"></div>
+                </div>
+                <div style="background: var(--surface); padding: 10px 14px;">
+                  <div style="font-size: 11px; color: var(--faint); margin-bottom: 2px;">Labor rate</div>
+                  <div style="font-size: var(--small); font-weight: 700;" id="print-labor"></div>
+                </div>
+                <div style="background: var(--surface); padding: 10px 14px;">
+                  <div style="font-size: 11px; color: var(--faint); margin-bottom: 2px;">Compliance</div>
+                  <div style="font-size: var(--small); font-weight: 700;" id="print-compliance"></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 20px; padding: 16px; background: var(--accent-pale); border: 1px solid var(--accent); text-align: center;">
+              <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px;">Break-even crossover</div>
+              <div style="font-size: 28px; font-weight: 700; color: var(--charcoal);" id="print-breakeven"></div>
+              <div style="font-size: var(--small); color: var(--mid); margin-top: 4px;" id="print-breakeven-sub"></div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: var(--hairline); margin-bottom: 16px;">
+              <div style="background: var(--surface); padding: 14px 16px;">
+                <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--mid); margin-bottom: 8px;">Firewall total</div>
+                <div style="font-size: 20px; font-weight: 700; color: var(--charcoal);" id="print-fw-total"></div>
+                <div style="font-size: 11px; color: var(--faint); margin-top: 2px;" id="print-fw-label"></div>
+              </div>
+              <div style="background: var(--surface); padding: 14px 16px;">
+                <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px;">Data diode total</div>
+                <div style="font-size: 20px; font-weight: 700; color: var(--charcoal);" id="print-diode-total"></div>
+                <div style="font-size: 11px; color: var(--faint); margin-top: 2px;" id="print-diode-label"></div>
+              </div>
+            </div>
+
+            <div style="font-size: 11px; color: var(--faint); line-height: 1.6; border-top: var(--hairline); padding-top: 12px;">
+              Generated by the Firewall vs. Data Diode TCO Calculator at otcybersecuritysoftware.com. Figures are estimates based on user-supplied inputs. This output is intended as a decision-support tool and does not substitute for vendor quotes or procurement review.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Guide link -->
+        <div class="callout" style="margin-top: 32px;">
+          <span class="callout-label">Related guide</span>
+          <p>The <a href="/guides/firewalls-vs-data-diodes/">Firewalls vs. Data Diodes guide</a> covers placement logic across the Purdue model, vendor landscape, common deployment mistakes, and how to frame the business case for a COO or CFO.</p>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="newsletter-block">
+          <span class="page-label">Stay current</span>
+          <p>OT architecture guidance, vendor updates, and field notes delivered when they matter.</p>
+          <div class="newsletter-form">
+            <input type="email" id="nl-email" placeholder="your@email.com" autocomplete="email">
+            <button id="nl-submit" type="button">Subscribe</button>
+          </div>
+          <div id="nl-msg" style="font-size:11px; color:var(--mid); margin-top:8px; min-height:16px;"></div>
+        </div>
+
+        <div class="page-footer">
+          <span class="page-label">Related</span>
+          <p><a href="/guides/firewalls-vs-data-diodes/">Firewalls vs. Data Diodes guide</a> — placement logic, vendor landscape, and deployment mistakes</p>
+          <p><a href="/tools/asset-scoping-tool/">Asset Scoping Decision Tool</a> — classify OT assets under NERC CIP or NIS2</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+  <script>
+    // ── State ──────────────────────────────────────────────────
+    var horizon = 5;
+    var compliance = 'none';
+    var chartInstance = null;
+
+    // ── Helpers ────────────────────────────────────────────────
+    function fmt(n) {
+      return '$' + Math.round(n).toLocaleString('en-US');
+    }
+    function val(id) {
+      return parseFloat(document.getElementById(id).value) || 0;
+    }
+
+    // ── Controls ───────────────────────────────────────────────
+    function setHorizon(y, btn) {
+      horizon = y;
+      document.querySelectorAll('.horizon-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+    }
+
+    function setCompliance(mode, btn) {
+      compliance = mode;
+      document.querySelectorAll('.toggle-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var note = document.getElementById('compliance-note');
+      var row = document.getElementById('compliance-savings-row');
+      if (mode === 'none') {
+        note.classList.remove('visible');
+        row.style.display = 'none';
+      } else {
+        note.classList.add('visible');
+        row.style.display = 'grid';
+      }
+    }
+
+    // ── Calculation ────────────────────────────────────────────
+    function calculate() {
+      var segs       = val('segments');
+      var laborRate  = val('labor-rate');
+      var years      = horizon;
+      var months     = years * 12;
+
+      // Firewall inputs
+      var fwHardware     = val('fw-hardware') * segs;
+      var fwSubscription = val('fw-subscription') * segs;
+      var fwPatchCycles  = val('fw-patch-cycles');
+      var fwPatchHours   = val('fw-patch-hours');
+      var fwAuditHours   = val('fw-audit-hours');
+
+      // Diode inputs
+      var diodeHardware  = val('diode-hardware') * segs;
+      var diodeSetupHrs  = val('diode-setup-hours') * segs;
+      var diodeMaint     = val('diode-maintenance') * segs;
+      var diodeSavings   = (compliance !== 'none') ? val('diode-audit-savings') * segs * laborRate : 0;
+
+      // Compliance audit overhead for firewall
+      var fwComplianceHours = 0;
+      if (compliance === 'nerc') fwComplianceHours = 40 * segs;
+      if (compliance === 'nis2') fwComplianceHours = 32 * segs;
+
+      // Annual costs
+      var fwAnnualOpex = fwSubscription
+        + (fwPatchCycles * fwPatchHours * segs * laborRate)
+        + (fwAuditHours * segs * laborRate)
+        + (fwComplianceHours * laborRate);
+
+      var diodeAnnualOpex = diodeMaint - diodeSavings;
+      if (diodeAnnualOpex < 0) diodeAnnualOpex = 0;
+
+      // Setup costs
+      var diodeSetupCost = diodeSetupHrs * laborRate;
+
+      // Cumulative by month
+      var fwCumulative   = [];
+      var diodeCumulative = [];
+      var breakEvenMonth = null;
+
+      for (var m = 0; m <= months; m++) {
+        var fwTotal    = fwHardware + (fwAnnualOpex * m / 12);
+        var diodeTotal = diodeHardware + diodeSetupCost + (diodeAnnualOpex * m / 12);
+        fwCumulative.push(fwTotal);
+        diodeCumulative.push(diodeTotal);
+        if (breakEvenMonth === null && m > 0 && diodeTotal <= fwTotal) {
+          breakEvenMonth = m;
+        }
+      }
+
+      // Period totals
+      var fwPeriodTotal    = fwCumulative[months];
+      var diodePeriodTotal = diodeCumulative[months];
+
+      // ── Render break-even ──────────────────────────────────
+      var beDisplay = document.getElementById('breakeven-display');
+      var beSub     = document.getElementById('breakeven-sub');
+
+      if (breakEvenMonth !== null) {
+        var beYears  = Math.floor(breakEvenMonth / 12);
+        var beMos    = breakEvenMonth % 12;
+        var beStr    = '';
+        if (beYears > 0) beStr += beYears + ' yr' + (beYears > 1 ? 's' : '');
+        if (beYears > 0 && beMos > 0) beStr += ' ';
+        if (beMos > 0) beStr += beMos + ' mo' + (beMos > 1 ? 's' : '');
+        if (beYears === 0 && beMos === 0) beStr = 'Month 0';
+        beDisplay.textContent = beStr;
+        beSub.textContent = 'The data diode\'s higher upfront cost is fully recovered at month ' + breakEvenMonth + '. Every month after this point, the diode scenario costs less.';
+      } else {
+        beDisplay.innerHTML = '<span class="breakeven-never">Beyond ' + years + '-year horizon</span>';
+        beSub.textContent = 'At your current inputs, the diode\'s upfront cost is not recovered within ' + years + ' years. Extend the projection horizon or adjust inputs.';
+      }
+
+      // ── Render summary cards ───────────────────────────────
+      var fwPatchCostTotal = fwPatchCycles * fwPatchHours * segs * laborRate * years;
+      var fwRuleCostTotal  = fwAuditHours * segs * laborRate * years;
+      var fwSubsTotal      = fwSubscription * years;
+      var fwCompTotal      = fwComplianceHours * laborRate * years;
+      var diodeMaintTotal  = diodeMaint * years;
+      var diodeSavTotal    = diodeSavings * years;
+
+      document.getElementById('fw-capex').textContent         = fmt(fwHardware);
+      document.getElementById('fw-subs').textContent          = fmt(fwSubsTotal);
+      document.getElementById('fw-patch-cost').textContent    = fmt(fwPatchCostTotal);
+      document.getElementById('fw-rule-cost').textContent     = fmt(fwRuleCostTotal);
+      document.getElementById('fw-total-label').textContent   = years + '-year total';
+      document.getElementById('fw-total').textContent         = fmt(fwPeriodTotal);
+
+      document.getElementById('diode-capex').textContent      = fmt(diodeHardware + diodeSetupCost);
+      document.getElementById('diode-maint-cost').textContent = fmt(diodeMaintTotal);
+      document.getElementById('diode-total-label').textContent = years + '-year total';
+      document.getElementById('diode-total').textContent      = fmt(diodePeriodTotal);
+
+      var fwCompLine    = document.getElementById('fw-compliance-line');
+      var diodeSavLine  = document.getElementById('diode-savings-line');
+      if (compliance !== 'none') {
+        fwCompLine.style.display = 'flex';
+        diodeSavLine.style.display = 'flex';
+        document.getElementById('fw-compliance-cost').textContent  = fmt(fwCompTotal);
+        document.getElementById('diode-savings-cost').textContent  = '-' + fmt(diodeSavTotal);
+      } else {
+        fwCompLine.style.display = 'none';
+        diodeSavLine.style.display = 'none';
+      }
+
+      // ── Render chart ───────────────────────────────────────
+      var labels = [];
+      for (var i = 0; i <= months; i++) {
+        if (i % 6 === 0) labels.push('Mo ' + i);
+        else labels.push('');
+      }
+
+      var accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#B5570A';
+      var midColor    = getComputedStyle(document.documentElement).getPropertyValue('--mid').trim() || '#6b6b68';
+
+      if (chartInstance) { chartInstance.destroy(); }
+
+      chartInstance = new Chart(document.getElementById('tco-chart'), {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Firewall (cumulative)',
+              data: fwCumulative,
+              borderColor: midColor,
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              pointRadius: 0,
+              tension: 0.1
+            },
+            {
+              label: 'Data diode (cumulative)',
+              data: diodeCumulative,
+              borderColor: accentColor,
+              backgroundColor: 'transparent',
+              borderWidth: 2,
+              pointRadius: 0,
+              tension: 0.1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: {
+              labels: {
+                font: { family: 'Space Mono', size: 11 },
+                color: midColor,
+                boxWidth: 16,
+                padding: 16
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  return ctx.dataset.label + ': ' + fmt(ctx.parsed.y);
+                }
+              },
+              titleFont: { family: 'Space Mono', size: 11 },
+              bodyFont: { family: 'Space Mono', size: 11 }
+            }
+          },
+          scales: {
+            x: {
+              ticks: {
+                font: { family: 'Space Mono', size: 10 },
+                color: midColor,
+                maxRotation: 0
+              },
+              grid: { color: 'rgba(0,0,0,0.05)' }
+            },
+            y: {
+              ticks: {
+                font: { family: 'Space Mono', size: 10 },
+                color: midColor,
+                callback: function(v) { return '$' + (v/1000).toFixed(0) + 'k'; }
+              },
+              grid: { color: 'rgba(0,0,0,0.05)' }
+            }
+          }
+        }
+      });
+
+      // Add break-even annotation line if within horizon
+      if (breakEvenMonth !== null) {
+        var canvas = document.getElementById('tco-chart');
+        var ctx2 = canvas.getContext('2d');
+        chartInstance.options.plugins.annotation = {};
+        // Simple post-render line — drawn on plugin afterDraw
+        Chart.register({
+          id: 'breakEvenLine',
+          afterDraw: function(chart) {
+            if (breakEvenMonth === null) return;
+            var xScale = chart.scales.x;
+            var yScale = chart.scales.y;
+            var x = xScale.getPixelForValue(breakEvenMonth);
+            var ctx3 = chart.ctx;
+            ctx3.save();
+            ctx3.beginPath();
+            ctx3.moveTo(x, yScale.top);
+            ctx3.lineTo(x, yScale.bottom);
+            ctx3.strokeStyle = accentColor;
+            ctx3.lineWidth = 1;
+            ctx3.setLineDash([4, 4]);
+            ctx3.stroke();
+            ctx3.restore();
+          }
+        });
+      }
+
+      // ── Populate CFO print block ───────────────────────────
+      document.getElementById('print-date').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      document.getElementById('print-segments').textContent = segs + ' segment' + (segs > 1 ? 's' : '');
+      document.getElementById('print-horizon').textContent = years + ' years';
+      document.getElementById('print-labor').textContent = fmt(laborRate) + '/hr';
+      document.getElementById('print-compliance').textContent = compliance === 'none' ? 'None' : compliance.toUpperCase();
+      document.getElementById('print-fw-total').textContent = fmt(fwPeriodTotal);
+      document.getElementById('print-fw-label').textContent = years + '-year total cost';
+      document.getElementById('print-diode-total').textContent = fmt(diodePeriodTotal);
+      document.getElementById('print-diode-label').textContent = years + '-year total cost';
+
+      var printBe = document.getElementById('print-breakeven');
+      var printBeSub = document.getElementById('print-breakeven-sub');
+      if (breakEvenMonth !== null) {
+        var beY2 = Math.floor(breakEvenMonth / 12);
+        var beM2 = breakEvenMonth % 12;
+        var beStr2 = '';
+        if (beY2 > 0) beStr2 += beY2 + ' year' + (beY2 > 1 ? 's' : '');
+        if (beY2 > 0 && beM2 > 0) beStr2 += ', ';
+        if (beM2 > 0) beStr2 += beM2 + ' month' + (beM2 > 1 ? 's' : '');
+        printBe.textContent = beStr2;
+        printBeSub.textContent = 'Data diode CapEx fully recovered at month ' + breakEvenMonth + ' — every subsequent month favors the diode scenario.';
+      } else {
+        printBe.textContent = 'Beyond ' + years + '-year horizon';
+        printBeSub.textContent = 'Extend the projection horizon or adjust inputs to find the crossover point.';
+      }
+
+      // ── Show results ───────────────────────────────────────
+      document.getElementById('results-shell').classList.add('visible');
+      setTimeout(function() {
+        document.getElementById('results-shell').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  </script>
+
+</body>
+</html>

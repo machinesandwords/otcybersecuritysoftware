@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>IT/OT SOC Integration Playbook | OT Cybersecurity Software</title>
+  <meta name="description" content="A practical playbook for integrating OT monitoring into an enterprise SIEM. Covers translation layers, alert triage architecture, SOC model selection, implementation sequence, and metrics.">
+  <link rel="canonical" href="https://otcybersecuritysoftware.com/guides/it-ot-soc-integration/">
+
+  <meta property="og:title" content="IT/OT SOC Integration Playbook">
+  <meta property="og:description" content="Build a translation and filtering layer that converts OT telemetry into security-relevant context. Covers triage architecture, SOC model options, and implementation sequence.">
+  <meta property="og:url" content="https://otcybersecuritysoftware.com/guides/it-ot-soc-integration/">
+  <meta property="og:type" content="article">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js"></script>
+
+  <style>
+    /* ── Translation table ──────────────────────────────────── */
+    .translation-table td:first-child { font-weight: 700; font-size: 11px; color: var(--charcoal); }
+    .translation-table td:nth-child(2) { color: var(--mid); font-style: italic; }
+    .translation-table td:nth-child(3) { color: var(--charcoal); }
+
+    /* ── Layer blocks ───────────────────────────────────────── */
+    .layer-block {
+      border: var(--hairline);
+      background: var(--surface);
+      padding: 20px 24px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .layer-block-header {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+    .layer-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .layer-title {
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+    .layer-block p { font-size: var(--small); margin-bottom: 10px; }
+    .layer-block p:last-child { margin-bottom: 0; }
+    .layer-block ul { padding-left: 18px; margin-bottom: 10px; }
+    .layer-block li { font-size: var(--small); margin-bottom: 4px; }
+
+    /* ── SOC model cards ────────────────────────────────────── */
+    .soc-model {
+      border: var(--hairline);
+      background: var(--surface);
+      padding: 20px 24px;
+      margin-bottom: 12px;
+    }
+    .soc-model-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .soc-model-title {
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 10px;
+    }
+    .soc-model p { font-size: var(--small); margin-bottom: 8px; }
+    .soc-model p:last-child { margin-bottom: 0; }
+    .soc-model .fit {
+      font-size: 11px;
+      color: #2e7d32;
+      font-style: italic;
+      border-top: var(--hairline);
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+    .soc-model .risk {
+      font-size: 11px;
+      color: #a03020;
+      font-style: italic;
+    }
+
+    /* ── Implementation steps ───────────────────────────────── */
+    .impl-step {
+      display: flex;
+      gap: 20px;
+      padding: 16px 0;
+      border-bottom: var(--hairline);
+      align-items: flex-start;
+    }
+    .impl-step:last-child { border-bottom: none; }
+    .impl-step-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+      width: 48px;
+      padding-top: 2px;
+    }
+    .impl-step-body { flex: 1; }
+    .impl-step-title {
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 6px;
+    }
+    .impl-step-body p { font-size: var(--small); color: var(--mid); margin-bottom: 0; line-height: 1.6; }
+
+    /* ── Metrics blocks ─────────────────────────────────────── */
+    .metric-block {
+      border: var(--hairline);
+      border-left: 3px solid var(--accent);
+      background: var(--surface);
+      padding: 14px 18px;
+      margin-bottom: 10px;
+    }
+    .metric-name {
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 4px;
+    }
+    .metric-desc {
+      font-size: var(--small);
+      color: var(--mid);
+      margin-bottom: 0;
+      line-height: 1.6;
+    }
+
+    /* ── Enrichment field table ─────────────────────────────── */
+    .enrich-table td:first-child { font-weight: 700; white-space: nowrap; width: 180px; }
+
+    /* ── Scorecard CTA ──────────────────────────────────────── */
+    .scorecard-cta {
+      background: var(--surface);
+      border: var(--hairline);
+      border-top: 3px solid var(--accent);
+      padding: 20px 24px;
+      margin: 32px 0;
+    }
+    .scorecard-cta-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .scorecard-cta-title {
+      font-size: var(--h3);
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 6px;
+    }
+    .scorecard-cta p {
+      font-size: var(--small);
+      color: var(--mid);
+      margin-bottom: 12px;
+    }
+    .scorecard-cta-link {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+    }
+    .scorecard-cta-link:hover { background: var(--accent-dim); text-decoration: none; color: #fff; }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">OT Cybersecurity <span>Software</span></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for OT and ICS security practitioners</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/guides/">Guides</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>IT/OT SOC Integration Playbook</span>
+        </div>
+
+        <span class="page-label">Guide</span>
+        <h1>IT/OT SOC Integration Playbook</h1>
+
+        <p class="lead">Getting OT visibility into an enterprise SOC sounds straightforward until you try it. Raw industrial telemetry fed into an IT SIEM produces one of two failure modes: alert fatigue from normal engineering activity that looks like attacks to an analyst who has never seen a Modbus write command, or silence because someone filtered the OT data too aggressively to avoid the noise. Neither produces useful detections. This guide covers the full integration arc — translating OT protocol behavior into security-relevant context, building triage logic that distinguishes maintenance from malicious, choosing the right SOC model for your environment, and measuring whether the integration is actually working.</p>
+
+        <!-- TOC -->
+        <div style="background: var(--surface); border: var(--hairline); border-left: 3px solid var(--accent); padding: 16px 20px; margin-bottom: 40px;">
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px;">Contents</div>
+          <ol style="padding-left: 18px; margin: 0;">
+            <li style="font-size: var(--small); margin-bottom: 6px;"><a href="#why-fails">Why direct OT-to-SIEM integration fails</a></li>
+            <li style="font-size: var(--small); margin-bottom: 6px;"><a href="#translation">The jargon translation layer</a></li>
+            <li style="font-size: var(--small); margin-bottom: 6px;"><a href="#triage">Alert triage architecture</a></li>
+            <li style="font-size: var(--small); margin-bottom: 6px;"><a href="#soc-models">SOC model options</a></li>
+            <li style="font-size: var(--small); margin-bottom: 6px;"><a href="#implementation">Implementation sequence</a></li>
+            <li style="font-size: var(--small); margin-bottom: 0;"><a href="#metrics">Metrics that matter</a></li>
+          </ol>
+        </div>
+
+        <!-- Section 1 -->
+        <h2 id="why-fails">Why direct OT-to-SIEM integration fails</h2>
+
+        <p>Most OT monitoring platforms can forward syslog or CEF events to a SIEM. The challenge is context.</p>
+
+        <p>An IT analyst looking at a SIEM alert sees an event type, a source, a destination, and a severity score. They apply learned pattern recognition: this looks like lateral movement, this looks like credential stuffing, this looks like a port scan. That pattern recognition was built on IT network behavior.</p>
+
+        <p>OT networks behave differently in ways that break IT pattern recognition at every level. A PLC that sends the same command to the same register every 100 milliseconds is not executing a brute force attack — it is running a control loop. A historian that polls 400 devices simultaneously is not conducting reconnaissance — it is doing its job. An engineering workstation that connects to 30 PLCs in sequence is not spreading malware — it is running a maintenance script.</p>
+
+        <p>Every one of those behaviors generates alerts in an IT SIEM with default rules. Every one of those alerts is a false positive that erodes analyst trust in the OT data feed. Within weeks, analysts learn to ignore OT alerts entirely — which means the integration has made your security posture worse, not better.</p>
+
+        <p>Tuning the SIEM won't help. The solution is to build a translation and filtering layer between OT monitoring and the SIEM that converts raw industrial telemetry into security-relevant context before it ever reaches an analyst queue.</p>
+
+        <!-- Section 2 -->
+        <h2 id="translation">The jargon translation layer</h2>
+
+        <p>The translation layer maps OT protocol behavior to the security event taxonomy your analysts already understand. Without it, an analyst seeing a raw OT alert has no framework for deciding whether it matters.</p>
+
+        <h3>Protocol anomaly to security alert mapping</h3>
+        <div class="table-wrap">
+          <table class="translation-table">
+            <thead>
+              <tr>
+                <th>OT event</th>
+                <th>Raw SIEM interpretation</th>
+                <th>Correct security framing</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Modbus FC 05 — Force Single Coil</td>
+                <td>Unknown write command to field device</td>
+                <td>Unauthorized actuator command — potential physical impact</td>
+              </tr>
+              <tr>
+                <td>Modbus FC 08 — Diagnostics</td>
+                <td>Diagnostic query to PLC</td>
+                <td>Reconnaissance of device capabilities</td>
+              </tr>
+              <tr>
+                <td>DNP3 Unsolicited Response outside normal cycle</td>
+                <td>Unexpected outbound communication from RTU</td>
+                <td>Possible C2 callback or device compromise</td>
+              </tr>
+              <tr>
+                <td>EtherNet/IP — Unconnected Message to new device</td>
+                <td>Connection attempt to unregistered asset</td>
+                <td>Asset discovery or lateral movement attempt</td>
+              </tr>
+              <tr>
+                <td>Multiple failed auth attempts to HMI</td>
+                <td>Brute force</td>
+                <td>Brute force — same interpretation, but physical access impact</td>
+              </tr>
+              <tr>
+                <td>Engineering workstation connecting to PLC outside maintenance window</td>
+                <td>Lateral movement</td>
+                <td>Unauthorized configuration access — requires immediate triage</td>
+              </tr>
+              <tr>
+                <td>New device appearing on OT segment</td>
+                <td>Rogue device</td>
+                <td>Rogue device — same interpretation, elevated severity given OT context</td>
+              </tr>
+              <tr>
+                <td>Firmware download to field device</td>
+                <td>Software installation</td>
+                <td>Firmware modification — potential persistent implant</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Building the baseline</h3>
+
+        <p>The translation layer requires a behavioral baseline for your specific environment. You cannot distinguish a malicious Modbus write from a legitimate one without knowing what legitimate looks like in your environment.</p>
+
+        <p>Baseline collection requires a minimum of four weeks of passive monitoring before any alerting is configured. During that period:</p>
+        <ul>
+          <li>Document every device, every communication pair, and every protocol in use</li>
+          <li>Map scheduled maintenance windows and the engineering activity that occurs during them</li>
+          <li>Identify every historian poll, every control loop, and every vendor connection</li>
+          <li>Note anomalies that appear during baseline — these are candidates for immediate investigation before alerting goes live</li>
+        </ul>
+
+        <p>The baseline is the foundation of your suppression rules. Any event that matches a baselined behavior pattern is a candidate for suppression or reduced severity. Any event that deviates from the baseline is a candidate for escalation.</p>
+
+        <!-- Section 3 -->
+        <h2 id="triage">Alert triage architecture</h2>
+
+        <p>The triage architecture defines what the SIEM receives, what analysts see, and what gets automatically suppressed or escalated. It has three layers.</p>
+
+        <div class="layer-block">
+          <div class="layer-block-header">
+            <span class="layer-num">Layer 1</span>
+            <span class="layer-title">Suppression at source</span>
+          </div>
+          <p>Events that are definitively normal OT behavior with no security relevance are suppressed at the OT monitoring platform before they are forwarded to the SIEM. These are not logged at reduced severity — they are not forwarded at all.</p>
+          <p>Suppression candidates:</p>
+          <ul>
+            <li>Scheduled historian polls matching the baseline pattern</li>
+            <li>Control loop traffic on known good communication pairs</li>
+            <li>Vendor connections during approved maintenance windows</li>
+            <li>Routine diagnostic traffic from known engineering workstations to known assets</li>
+          </ul>
+          <p>Suppression rules require regular review. A suppressed communication pair that changes behavior — new timing, new destination, new protocol — should trigger a rule exception and forward the anomaly.</p>
+        </div>
+
+        <div class="layer-block">
+          <div class="layer-block-header">
+            <span class="layer-num">Layer 2</span>
+            <span class="layer-title">Context enrichment before forwarding</span>
+          </div>
+          <p>Events that are forwarded to the SIEM carry enrichment that gives analysts the context to triage without OT expertise. At minimum, every forwarded OT event should include:</p>
+          <div class="table-wrap" style="margin-top: 12px;">
+            <table class="enrich-table">
+              <thead>
+                <tr><th>Field</th><th>Content</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Asset criticality</td>
+                  <td>High / Medium / Low — based on your asset classification</td>
+                </tr>
+                <tr>
+                  <td>Physical impact potential</td>
+                  <td>Yes / No — does compromise of this asset affect the physical process?</td>
+                </tr>
+                <tr>
+                  <td>Baseline deviation</td>
+                  <td>First seen / Rare / Common — how often does this event type occur?</td>
+                </tr>
+                <tr>
+                  <td>Maintenance window status</td>
+                  <td>In window / Out of window — is this during an approved maintenance period?</td>
+                </tr>
+                <tr>
+                  <td>Owning team</td>
+                  <td>OT engineering / IT security / Vendor — who should be notified?</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="margin-top: 12px;">An analyst who sees "EtherNet/IP connection to High criticality PLC, physical impact: Yes, out of maintenance window, first seen" has enough context to triage correctly without understanding EtherNet/IP.</p>
+        </div>
+
+        <div class="layer-block">
+          <div class="layer-block-header">
+            <span class="layer-num">Layer 3</span>
+            <span class="layer-title">Playbook-driven triage</span>
+          </div>
+          <p>Every OT alert category that reaches the analyst queue needs a playbook. The playbook defines:</p>
+          <ul>
+            <li>What the event means in OT context</li>
+            <li>What questions to ask before escalating</li>
+            <li>Who to contact for OT-specific expertise</li>
+            <li>What constitutes a confirmed incident versus a false positive</li>
+            <li>What the response action is</li>
+          </ul>
+          <p>The most important playbook element is the escalation path to OT engineering. IT analysts should be able to identify and triage OT alerts, but confirmation of whether an alert represents malicious behavior versus legitimate OT activity requires an OT engineer in the loop. The IT analyst should never be the final decision-maker on an OT alert.</p>
+        </div>
+
+        <!-- Section 4 -->
+        <h2 id="soc-models">SOC model options</h2>
+
+        <p>Three models exist for OT security operations. None is universally correct.</p>
+
+        <div class="soc-model">
+          <span class="soc-model-label">Model 01</span>
+          <div class="soc-model-title">Converged IT/OT SOC</div>
+          <p>OT alerts flow into the enterprise SIEM alongside IT alerts. A single analyst team handles both, supported by OT-specific playbooks and an on-call OT engineering escalation path.</p>
+          <p class="fit">Best fit: organizations with a mature IT SOC, limited OT security budget, and OT environments that are already well-segmented and baselined.</p>
+          <p class="risk">Risk: IT analysts who are not trained on OT context will mishandle OT alerts regardless of playbook quality. This model requires sustained training investment and clear escalation discipline.</p>
+        </div>
+
+        <div class="soc-model">
+          <span class="soc-model-label">Model 02</span>
+          <div class="soc-model-title">Dedicated OT SOC</div>
+          <p>A separate SOC function handles OT alerts exclusively, with OT-trained analysts and OT-specific tooling. May share infrastructure with the IT SOC but operates with separate queues, separate playbooks, and separate escalation paths.</p>
+          <p class="fit">Best fit: large industrial operators with significant OT footprint, high-consequence environments (nuclear, utilities, critical manufacturing), and organizations under strict compliance frameworks requiring segregated evidence chains.</p>
+          <p class="risk">Risk: dedicated OT SOC teams are expensive and difficult to staff. The skills gap in OT security operations is real. Most organizations that attempt a dedicated OT SOC end up with a team of one or two people who are overwhelmed.</p>
+        </div>
+
+        <div class="soc-model">
+          <span class="soc-model-label">Model 03</span>
+          <div class="soc-model-title">Co-managed MDR</div>
+          <p>A managed detection and response provider with OT specialization handles OT alert monitoring and initial triage. Internal team handles escalations and response. Examples: Dragos Managed Services, Claroty MDR, Fortinet FortiGuard OT MDR.</p>
+          <p class="fit">Best fit: organizations that need OT SOC coverage but cannot staff it internally. Particularly useful during the transition period when OT monitoring is first deployed and alert volumes are high and unpredictable.</p>
+          <p class="risk">Risk: MDR providers vary significantly in OT depth. A provider with strong IT MDR capabilities but limited OT protocol knowledge produces the same context gap problem you were trying to solve. Require OT-specific references and ask about analyst training on industrial protocols before contracting.</p>
+        </div>
+
+        <h3>Decision framework</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Factor</th>
+                <th>Converged SOC</th>
+                <th>Dedicated OT SOC</th>
+                <th>Co-managed MDR</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Budget</td>
+                <td>Low</td>
+                <td>High</td>
+                <td>Medium</td>
+              </tr>
+              <tr>
+                <td>OT environment complexity</td>
+                <td>Low-medium</td>
+                <td>High</td>
+                <td>Any</td>
+              </tr>
+              <tr>
+                <td>Compliance requirements</td>
+                <td>Standard</td>
+                <td>Strict (NERC CIP High/Medium)</td>
+                <td>Any</td>
+              </tr>
+              <tr>
+                <td>Internal OT expertise</td>
+                <td>Available for escalation</td>
+                <td>Full team required</td>
+                <td>Minimal required</td>
+              </tr>
+              <tr>
+                <td>Time to operational</td>
+                <td>Fast</td>
+                <td>Slow</td>
+                <td>Fast</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Section 5 -->
+        <h2 id="implementation">Implementation sequence</h2>
+
+        <p>Stand up OT visibility in a SIEM in this order. Skipping steps is how you end up with alert fatigue or a failed integration.</p>
+
+        <div class="impl-step">
+          <span class="impl-step-num">Step 01</span>
+          <div class="impl-step-body">
+            <div class="impl-step-title">Asset inventory and classification</div>
+            <p>Before any monitoring is deployed, complete and classify your asset inventory. The translation layer and suppression rules cannot be built without knowing what is on the network and how critical each asset is. Use the asset scoping methodology as the starting point.</p>
+          </div>
+        </div>
+
+        <div class="impl-step">
+          <span class="impl-step-num">Step 02</span>
+          <div class="impl-step-body">
+            <div class="impl-step-title">Deploy OT monitoring in passive mode</div>
+            <p>Deploy your OT monitoring platform in passive, detection-only mode. No forwarding to SIEM yet. Run for a minimum of four weeks to build the behavioral baseline.</p>
+          </div>
+        </div>
+
+        <div class="impl-step">
+          <span class="impl-step-num">Step 03</span>
+          <div class="impl-step-body">
+            <div class="impl-step-title">Build the baseline and suppression rules</div>
+            <p>From the baseline data, define the normal behavior patterns for your environment. Build suppression rules for definitively normal traffic. Document every rule with the justification — suppression rules that cannot be justified are suppression rules that may be hiding real events.</p>
+          </div>
+        </div>
+
+        <div class="impl-step">
+          <span class="impl-step-num">Step 04</span>
+          <div class="impl-step-body">
+            <div class="impl-step-title">Build the translation and enrichment layer</div>
+            <p>Configure context enrichment for events that will be forwarded. Map OT event types to the security taxonomy your analysts use. Test enrichment output with your analyst team before go-live.</p>
+          </div>
+        </div>
+
+        <div class="impl-step">
+          <span class="impl-step-num">Step 05</span>
+          <div class="impl-step-body">
+            <div class="impl-step-title">Deploy playbooks before enabling forwarding</div>
+            <p>Every OT alert category that will reach the analyst queue needs a playbook before the first alert arrives. An analyst who receives an unfamiliar alert type with no playbook will either ignore it or escalate inappropriately. Both outcomes damage the integration.</p>
+          </div>
+        </div>
+
+        <div class="impl-step">
+          <span class="impl-step-num">Step 06</span>
+          <div class="impl-step-body">
+            <div class="impl-step-title">Pilot forwarding with limited alert categories</div>
+            <p>Enable forwarding for two or three high-confidence alert categories first — unauthorized firmware modifications, new devices on OT segments, connections outside maintenance windows. Validate that analysts are triaging correctly before expanding coverage.</p>
+          </div>
+        </div>
+
+        <div class="impl-step">
+          <span class="impl-step-num">Step 07</span>
+          <div class="impl-step-body">
+            <div class="impl-step-title">Expand coverage incrementally</div>
+            <p>Add alert categories one at a time. For each new category, validate the suppression rules, confirm the playbook, and review the first two weeks of alerts before treating the category as operational.</p>
+          </div>
+        </div>
+
+        <div class="impl-step">
+          <span class="impl-step-num">Step 08</span>
+          <div class="impl-step-body">
+            <div class="impl-step-title">Establish review cadence</div>
+            <p>Monthly review of suppression rules, false positive rates by alert category, and playbook effectiveness. The integration is not a one-time deployment — it requires ongoing tuning.</p>
+          </div>
+        </div>
+
+        <!-- Section 6 -->
+        <h2 id="metrics">Metrics that matter</h2>
+
+        <p>Most OT SOC integrations are declared successful at go-live and never measured again. These are the metrics that tell you whether the integration is actually working.</p>
+
+        <div class="metric-block">
+          <div class="metric-name">Detection coverage</div>
+          <p class="metric-desc">What percentage of your OT assets are generating telemetry that reaches the SIEM? An integration that covers 40% of your OT environment is not providing OT visibility — it is providing a false sense of it.</p>
+        </div>
+
+        <div class="metric-block">
+          <div class="metric-name">False positive rate by alert category</div>
+          <p class="metric-desc">Track false positives per alert category, not in aggregate. An aggregate false positive rate of 20% looks manageable. A false positive rate of 80% on your highest-volume alert category means analysts have learned to ignore that category entirely.</p>
+        </div>
+
+        <div class="metric-block">
+          <div class="metric-name">Mean time to triage</div>
+          <p class="metric-desc">How long does it take an analyst to make a triage decision on an OT alert? A mean time above 30 minutes suggests the enrichment and playbooks are insufficient — analysts are spending time researching OT context they should have been given.</p>
+        </div>
+
+        <div class="metric-block">
+          <div class="metric-name">Escalation accuracy</div>
+          <p class="metric-desc">Of alerts escalated to OT engineering, what percentage required OT engineering involvement? A low rate means analysts are over-escalating. A high rate means analysts are under-escalating — OT alerts that need specialist review are being closed without it.</p>
+        </div>
+
+        <div class="metric-block">
+          <div class="metric-name">Maintenance window alignment</div>
+          <p class="metric-desc">What percentage of alerts fire during approved maintenance windows? A high percentage suggests suppression rules are insufficient. Normal maintenance activity should not be generating analyst alerts.</p>
+        </div>
+
+        <div class="metric-block">
+          <div class="metric-name">Mean time to detect (OT-specific)</div>
+          <p class="metric-desc">For confirmed OT security incidents, how long between the first indicator in the OT monitoring data and analyst detection? This is the metric that tells you whether the integration is achieving its security purpose.</p>
+        </div>
+
+        <div class="scorecard-cta">
+          <span class="scorecard-cta-label">Companion tool</span>
+          <div class="scorecard-cta-title">OT SOC Integration Health Scorecard</div>
+          <p>Enter your current metrics across the six dimensions above. The scorecard benchmarks each one against typical OT SOC integration performance and identifies the specific areas where your integration needs improvement.</p>
+          <a href="/tools/ot-soc-scorecard/" class="scorecard-cta-link">Open the scorecard</a>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="newsletter-block">
+          <span class="page-label">Stay current</span>
+          <p>OT security operations guidance, vendor updates, and field notes delivered when they matter.</p>
+          <div class="newsletter-form">
+            <input type="email" id="nl-email" placeholder="your@email.com" autocomplete="email">
+            <button id="nl-submit" type="button">Subscribe</button>
+          </div>
+          <div id="nl-msg" style="font-size:11px; color:var(--mid); margin-top:8px; min-height:16px;"></div>
+        </div>
+
+        <div class="page-footer">
+          <span class="page-label">Related</span>
+          <p><a href="/tools/ot-soc-scorecard/">OT SOC Integration Health Scorecard</a> — benchmark your integration against six key metrics</p>
+          <p><a href="/guides/nis2-nerc-cip-audit-readiness/">NIS2 and NERC CIP Audit-Readiness Guide</a> — evidence collection and incident reporting timelines</p>
+          <p><a href="/guides/oem-remote-access/">OEM Remote Access Field Guide</a> — controlling vendor access to OT networks</p>
+          <p><a href="/guides/firewalls-vs-data-diodes/">Firewalls vs. Data Diodes</a> — placement logic and TCO comparison</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+</body>
+</html>

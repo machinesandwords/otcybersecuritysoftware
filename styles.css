@@ -204,6 +204,7 @@ h2 {
   padding-top: 32px;
   border-top: var(--hairline);
   letter-spacing: -0.01em;
+  scroll-margin-top: 60px;
 }
 h2:first-of-type { margin-top: 32px; }
 h3 {
@@ -212,6 +213,7 @@ h3 {
   color: var(--charcoal);
   margin-top: 24px;
   margin-bottom: 8px;
+  scroll-margin-top: 60px;
 }
 p { margin-bottom: 16px; }
 p:last-child { margin-bottom: 0; }
