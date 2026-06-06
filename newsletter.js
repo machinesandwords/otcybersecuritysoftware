@@ -1,351 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+/**
+ * newsletter.js — Shared newsletter signup handler
+ * otcybersecuritysoftware.com
+ * Wires up #nl-email / #nl-submit / #nl-msg on any page that includes this script.
+ */
 
-  <title>OT Security RFP Evaluation Kit — Free Download | OT Cybersecurity Software</title>
-  <meta name="description" content="A free downloadable PDF kit for evaluating OT and ICS security platforms. Includes vendor briefing template, PoC success criteria, protocol questionnaire, and evaluation decision tracker.">
-  <link rel="canonical" href="https://otcybersecuritysoftware.com/tools/rfp-evaluation-kit/">
+(function () {
+  var WORKER_URL = 'https://newsletter-otcybersecuritysoftware.whereismy328.workers.dev';
 
-  <meta property="og:title" content="OT Security RFP Evaluation Kit — Free Download">
-  <meta property="og:description" content="Four fillable PDF documents for evaluating OT and ICS security platforms. Vendor briefing template, PoC success criteria, protocol questionnaire, and evaluation decision tracker.">
-  <meta property="og:url" content="https://otcybersecuritysoftware.com/tools/rfp-evaluation-kit/">
-  <meta property="og:type" content="website">
+  var emailInput = document.getElementById('nl-email');
+  var submitBtn  = document.getElementById('nl-submit');
+  var msgEl      = document.getElementById('nl-msg');
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  if (!emailInput || !submitBtn) return;
 
-  <link rel="stylesheet" href="/styles.css">
-  <script src="/config.js"></script>
+  function attempt() {
+    var email = emailInput.value.trim();
 
-  <style>
-    .kit-hero {
-      border: var(--hairline);
-      border-top: 3px solid var(--accent);
-      background: var(--surface);
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .kit-hero-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 0.5rem;
-    }
-    .kit-hero h2 {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--charcoal);
-      margin-bottom: 0.75rem;
-      border-top: none;
-      padding-top: 0;
-      margin-top: 0;
-    }
-    .kit-contents {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      background: var(--border);
-      border: var(--hairline);
-      margin-bottom: 1.5rem;
-    }
-    .kit-doc {
-      background: var(--surface);
-      padding: 1rem 1.1rem;
-    }
-    .kit-doc-num {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 0.3rem;
-    }
-    .kit-doc-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--charcoal);
-      margin-bottom: 0.4rem;
-    }
-    .kit-doc-desc {
-      font-size: 12px;
-      color: var(--mid);
-      line-height: 1.5;
-    }
-    .gate-form {
-      border: var(--hairline);
-      border-left: 3px solid var(--accent);
-      background: var(--surface);
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      max-width: 480px;
-    }
-    .gate-form-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 0.5rem;
-    }
-    .gate-form p {
-      font-size: 13px;
-      color: var(--mid);
-      margin-bottom: 1rem;
-      line-height: 1.6;
-    }
-    .gate-input-row {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 0.5rem;
-    }
-    .gate-input-row input[type="email"] {
-      flex: 1;
-      font-family: var(--font);
-      font-size: 13px;
-      padding: 0.5rem 0.65rem;
-      border: var(--hairline);
-      background: var(--bg);
-      color: var(--charcoal);
-      outline: none;
-    }
-    .gate-input-row input[type="email"]:focus { border-color: var(--accent); }
-    .gate-input-row button {
-      font-family: var(--font);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      padding: 0.5rem 1.1rem;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .gate-input-row button:hover { background: var(--accent-dim); }
-    .gate-input-row button:disabled { opacity: 0.6; cursor: default; }
-    .gate-privacy {
-      font-size: 11px;
-      color: var(--faint);
-      line-height: 1.5;
-    }
-    .gate-msg {
-      font-size: 13px;
-      color: var(--mid);
-      margin-top: 0.5rem;
-      min-height: 20px;
-    }
-    .gate-msg.error { color: #a03020; }
-    .download-block {
-      display: none;
-      border: 1px solid var(--accent);
-      background: var(--accent-pale);
-      padding: 1.25rem 1.5rem;
-      margin-bottom: 1.5rem;
-      max-width: 480px;
-    }
-    .download-block.visible { display: block; }
-    .download-block-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 0.5rem;
-    }
-    .download-block p {
-      font-size: 13px;
-      color: var(--charcoal);
-      margin-bottom: 1rem;
-      line-height: 1.6;
-    }
-    .download-btn {
-      display: inline-block;
-      font-family: var(--font);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      padding: 0.55rem 1.25rem;
-      background: var(--accent);
-      color: #fff;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-    }
-    .download-btn:hover { background: var(--accent-dim); text-decoration: none; }
-    .usage-note {
-      font-size: 12px;
-      color: var(--mid);
-      border-top: var(--hairline);
-      padding-top: 1rem;
-      margin-top: 1rem;
-      line-height: 1.6;
-    }
-    @media (max-width: 600px) {
-      .kit-contents { grid-template-columns: 1fr; }
-    }
-  </style>
-</head>
-<body>
-
-  <header class="topbar">
-    <div class="topbar-brand">OT Cybersecurity <span>Software</span></div>
-    <div class="topbar-divider"></div>
-    <div class="topbar-tagline">an independent guide for OT and ICS security practitioners</div>
-    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
-  </header>
-
-  <div class="layout">
-    <nav class="sidebar" aria-label="Site navigation">
-      <div id="sidebar-nav"></div>
-    </nav>
-
-    <main class="main">
-      <div class="content">
-
-        <div class="breadcrumb">
-          <a href="/">Home</a>
-          <span class="breadcrumb-sep">/</span>
-          <a href="/tools/">Tools</a>
-          <span class="breadcrumb-sep">/</span>
-          <span>RFP Evaluation Kit</span>
-        </div>
-
-        <span class="page-label">Tools</span>
-        <h1>OT Security RFP Evaluation Kit</h1>
-
-        <p class="lead">Four fillable PDF documents covering the full OT security platform evaluation arc — from internal environment audit through vendor briefing, proof of concept, and final decision. Built for the <a href="/guides/security-platform-evaluation/">OT Security Platform Evaluation Guide</a>.</p>
-
-        <div class="kit-contents">
-          <div class="kit-doc">
-            <div class="kit-doc-num">Document 01</div>
-            <div class="kit-doc-title">Vendor Briefing Template</div>
-            <div class="kit-doc-desc">Send to shortlisted vendors before any demo. Includes key questions on protocol coverage, passive deployment claims, compliance evidence, and professional services requirements.</div>
-          </div>
-          <div class="kit-doc">
-            <div class="kit-doc-num">Document 02</div>
-            <div class="kit-doc-title">PoC Success Criteria Template</div>
-            <div class="kit-doc-desc">Define and document success criteria before the PoC begins. Share with the vendor. Record actual results at conclusion. Serves as the PoC audit trail.</div>
-          </div>
-          <div class="kit-doc">
-            <div class="kit-doc-num">Document 03</div>
-            <div class="kit-doc-title">Protocol & Asset Questionnaire</div>
-            <div class="kit-doc-desc">Three-part document: internal environment audit, vendor protocol response table, and comparison notes. Maps your asset stack against vendor coverage claims.</div>
-          </div>
-          <div class="kit-doc">
-            <div class="kit-doc-num">Document 04</div>
-            <div class="kit-doc-title">Evaluation Decision Tracker</div>
-            <div class="kit-doc-desc">Side-by-side vendor scoring matrix with weighted criteria, red flags checklist per vendor, tiebreaker notes, and sign-off fields for CISO, plant manager, and compliance.</div>
-          </div>
-        </div>
-
-        <div class="gate-form" id="gate-form">
-          <div class="gate-form-label">Download the kit</div>
-          <p>Enter your email address to download. We do not share your information with vendors or third parties.</p>
-          <div class="gate-input-row">
-            <input type="email" id="gate-email" placeholder="your@email.com" autocomplete="email" required>
-            <button id="gate-submit" type="button">Download</button>
-          </div>
-          <div class="gate-msg" id="gate-msg"></div>
-          <div class="gate-privacy">Version 1.0 — June 2026. Updated annually. We will notify you when a new version is available.</div>
-        </div>
-
-        <div class="download-block" id="download-block">
-          <div class="download-block-label">Your download is ready</div>
-          <p>The OT Security RFP Evaluation Kit — Version 1.0, June 2026. Open in Adobe Acrobat Reader for full interactive form support.</p>
-          <a href="/tools/rfp-evaluation-kit/OT-Security-RFP-Evaluation-Kit.pdf"
-             class="download-btn"
-             download="OT-Security-RFP-Evaluation-Kit.pdf"
-             id="download-link">
-            Download PDF
-          </a>
-          <div class="usage-note">
-            The kit is a companion to the <a href="/guides/security-platform-evaluation/">OT Security Platform Evaluation Guide</a>, which explains the context and intent behind each document. The <a href="/tools/vendor-comparison/">vendor comparison tool</a> lets you filter the market before you begin formal evaluation.
-          </div>
-        </div>
-
-      </div>
-    </main>
-  </div>
-
-  <footer>
-    <div class="footer-inner">
-      <span class="page-label">OT Cybersecurity Software</span>
-      <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
-    </div>
-  </footer>
-
-  <script src="/nav.js"></script>
-
-  <script>
-    var WORKER_URL  = 'https://newsletter-otcybersecuritysoftware.whereismy328.workers.dev';
-    var GROUP_ID    = '189440205919356679';
-    var STORAGE_KEY = 'rfp_kit_unlocked';
-
-    // If already downloaded this session, show download immediately
-    if (sessionStorage.getItem(STORAGE_KEY)) {
-      document.getElementById('gate-form').style.display = 'none';
-      document.getElementById('download-block').classList.add('visible');
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      msgEl.textContent = 'Please enter a valid email address.';
+      return;
     }
 
-    document.getElementById('gate-submit').addEventListener('click', function() {
-      var email   = document.getElementById('gate-email').value.trim();
-      var msg     = document.getElementById('gate-msg');
-      var btn     = document.getElementById('gate-submit');
+    submitBtn.disabled    = true;
+    submitBtn.textContent = 'Sending…';
+    msgEl.textContent     = '';
 
-      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        msg.textContent = 'Please enter a valid email address.';
-        msg.className   = 'gate-msg error';
-        return;
-      }
-
-      btn.disabled    = true;
-      btn.textContent = 'Sending...';
-      msg.textContent = '';
-      msg.className   = 'gate-msg';
-
-      fetch(WORKER_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, group_id: GROUP_ID }),
-      })
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
+    fetch(WORKER_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ email: email }),
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
         if (data.success) {
-          sessionStorage.setItem(STORAGE_KEY, '1');
-          document.getElementById('gate-form').style.display = 'none';
-          var dl = document.getElementById('download-block');
-          dl.classList.add('visible');
-          // Auto-trigger download
-          document.getElementById('download-link').click();
+          msgEl.textContent     = 'You’re subscribed. Check your inbox for a confirmation.';
+          emailInput.value      = '';
+          submitBtn.disabled    = false;
+          submitBtn.textContent = 'Subscribe';
         } else {
-          msg.textContent = 'Something went wrong. Please try again.';
-          msg.className   = 'gate-msg error';
-          btn.disabled    = false;
-          btn.textContent = 'Download';
+          msgEl.textContent     = 'Something went wrong. Please try again.';
+          submitBtn.disabled    = false;
+          submitBtn.textContent = 'Subscribe';
         }
       })
-      .catch(function() {
-        msg.textContent = 'Could not connect. Please try again.';
-        msg.className   = 'gate-msg error';
-        btn.disabled    = false;
-        btn.textContent = 'Download';
+      .catch(function () {
+        msgEl.textContent     = 'Could not connect. Please try again.';
+        submitBtn.disabled    = false;
+        submitBtn.textContent = 'Subscribe';
       });
-    });
+  }
 
-    // Allow Enter key submission
-    document.getElementById('gate-email').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') document.getElementById('gate-submit').click();
-    });
-  </script>
-
-</body>
-</html>
+  submitBtn.addEventListener('click', attempt);
+  emailInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') attempt();
+  });
+})();
