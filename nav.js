@@ -29,7 +29,7 @@
       <a href="/tools/vendor-comparison/" class="nav-item depth-1">├ Vendor comparison</a>
       <a href="/tools/rfp-evaluation-kit/" class="nav-item depth-1">├ RFP Evaluation Kit</a>
       <a href="/tools/asset-scoping-tool/" class="nav-item depth-1">├ Asset scoping tool</a>
-      <a href="/tools/index.html/" class="nav-item depth-1">└ more</a>
+      <a href="/tools/" class="nav-item depth-1">└ more</a>
     </div>
 
     <div class="nav-divider"></div>
@@ -40,7 +40,7 @@
       <a href="/comparisons/dragos-vs-claroty/" class="nav-item depth-1">├ Dragos vs. Claroty</a>
       <a href="/comparisons/nozomi-vs-claroty/" class="nav-item depth-1">├ Nozomi vs. Claroty</a>
       <a href="/comparisons/dragos-vs-nozomi/" class="nav-item depth-1">├ Dragos vs. Nozomi</a>
-      <a href="/comparisons/index.html/" class="nav-item depth-1">└ more</a>
+      <a href="/comparisons/" class="nav-item depth-1">└ more</a>
     </div>
 
     <div class="nav-divider"></div>
@@ -51,7 +51,7 @@
       <a href="/guides/security-platform-evaluation/" class="nav-item depth-1">├ Platform evaluation</a>
       <a href="/guides/nis2-nerc-cip-audit-readiness/" class="nav-item depth-1">├ NIS2 and NERC CIP</a>
       <a href="/guides/oem-remote-access/" class="nav-item depth-1">├ OEM remote access</a>
-      <a href="/guides/index.html/" class="nav-item depth-1">└ more</a>
+      <a href="/guides/" class="nav-item depth-1">└ more</a>
     </div>
 
     <div class="nav-divider"></div>
