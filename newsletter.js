@@ -1,11 +1,5 @@
-/**
- * newsletter.js — Shared newsletter signup handler
- * otcybersecuritysoftware.com
- * Wires up #nl-email / #nl-submit / #nl-msg on any page that includes this script.
- */
-
 (function () {
-  var WORKER_URL = 'https://newsletter-otcybersecuritysoftware.whereismy328.workers.dev';
+  var WORKER_URL = 'https://newsletter.otcybersecuritysoftware.com';
 
   var emailInput = document.getElementById('nl-email');
   var submitBtn  = document.getElementById('nl-submit');
@@ -23,19 +17,19 @@
     }
 
     submitBtn.disabled    = true;
-    submitBtn.textContent = 'Sending…';
+    submitBtn.textContent = 'Sending\u2026';
     msgEl.textContent     = '';
 
     fetch(WORKER_URL, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ email: email }),
+      body:    JSON.stringify({ email: email, group_id: '189858333791880417' }),
     })
       .then(function (r) { return r.json(); })
       .then(function (data) {
-        if (data.success) {
+        if (data.message === 'Subscribed') {
           msgEl.style.display   = 'block';
-          msgEl.textContent     = 'You\u2019re subscribed. Check your inbox for a confirmation.';
+          msgEl.textContent     = 'You\u2019re subscribed.';
           emailInput.value      = '';
           submitBtn.disabled    = false;
           submitBtn.textContent = 'Subscribe';
