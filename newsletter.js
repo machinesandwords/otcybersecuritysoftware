@@ -17,6 +17,7 @@
     var email = emailInput.value.trim();
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      msgEl.style.display = 'block';
       msgEl.textContent = 'Please enter a valid email address.';
       return;
     }
@@ -33,17 +34,20 @@
       .then(function (r) { return r.json(); })
       .then(function (data) {
         if (data.success) {
-          msgEl.textContent     = 'You’re subscribed. Check your inbox for a confirmation.';
+          msgEl.style.display   = 'block';
+          msgEl.textContent     = 'You\u2019re subscribed. Check your inbox for a confirmation.';
           emailInput.value      = '';
           submitBtn.disabled    = false;
           submitBtn.textContent = 'Subscribe';
         } else {
+          msgEl.style.display   = 'block';
           msgEl.textContent     = 'Something went wrong. Please try again.';
           submitBtn.disabled    = false;
           submitBtn.textContent = 'Subscribe';
         }
       })
       .catch(function () {
+        msgEl.style.display   = 'block';
         msgEl.textContent     = 'Could not connect. Please try again.';
         submitBtn.disabled    = false;
         submitBtn.textContent = 'Subscribe';
