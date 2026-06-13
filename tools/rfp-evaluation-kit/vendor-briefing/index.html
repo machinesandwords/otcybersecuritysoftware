@@ -48,224 +48,52 @@
   <script src="/config.js" defer></script>
 
   <style>
-    /* ── Form sections ── */
-    .form-section {
-      border: var(--hairline);
-      border-bottom: none;
-      margin-bottom: 0;
-    }
-    .form-section:last-of-type {
-      border-bottom: var(--hairline);
-      margin-bottom: 24px;
-    }
-    .form-section-header {
-      padding: 10px 16px;
-      background: var(--bg);
-      border-bottom: var(--hairline);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .form-section-num {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: white;
-      background: var(--accent);
-      padding: 1px 6px;
-      flex-shrink: 0;
-    }
-    .form-section-title {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--charcoal);
-    }
-    .form-section-note {
-      font-size: 11px;
-      color: var(--faint);
-      margin-left: auto;
-      font-style: italic;
-    }
+    .form-section { border: var(--hairline); border-bottom: none; margin-bottom: 0; }
+    .form-section:last-of-type { border-bottom: var(--hairline); margin-bottom: 24px; }
+    .form-section-header { padding: 10px 16px; background: var(--bg); border-bottom: var(--hairline); display: flex; align-items: center; gap: 10px; }
+    .form-section-num { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: white; background: var(--accent); padding: 1px 6px; flex-shrink: 0; }
+    .form-section-title { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--charcoal); }
+    .form-section-note { font-size: 11px; color: var(--faint); margin-left: auto; font-style: italic; }
     .form-body { padding: 20px; }
-
-    /* ── Field grid ── */
-    .field-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-    .field-grid.three { grid-template-columns: 1fr 1fr 1fr; }
-    .field-grid.full  { grid-template-columns: 1fr; }
+    .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .field-grid.full { grid-template-columns: 1fr; }
     .field-group { display: flex; flex-direction: column; gap: 4px; }
-    .field-group label {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--faint);
-    }
-    .field-group input[type="text"],
-    .field-group input[type="number"],
-    .field-group select,
-    .field-group textarea {
-      font-family: 'Space Mono', monospace;
-      font-size: var(--small);
-      font-weight: 700;
-      color: var(--charcoal);
-      background: var(--bg);
-      border: var(--hairline);
-      padding: 7px 10px;
-      outline: none;
-      border-radius: 0;
-      width: 100%;
-    }
-    .field-group input:focus,
-    .field-group select:focus,
-    .field-group textarea:focus { border-color: var(--accent); }
+    .field-group label { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
+    .field-group input[type="text"], .field-group input[type="number"], .field-group select, .field-group textarea { font-family: 'Space Mono', monospace; font-size: var(--small); font-weight: 700; color: var(--charcoal); background: var(--bg); border: var(--hairline); padding: 7px 10px; outline: none; border-radius: 0; width: 100%; }
+    .field-group input:focus, .field-group select:focus, .field-group textarea:focus { border-color: var(--accent); }
     .field-group textarea { resize: vertical; min-height: 72px; line-height: 1.6; }
-    .field-group select {
-      cursor: pointer;
-      -webkit-appearance: none;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b6b68'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 10px center;
-      padding-right: 28px;
-    }
-
-    /* ── Checkboxes ── */
+    .field-group select { cursor: pointer; -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b6b68'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
     .check-list { display: flex; flex-direction: column; gap: 8px; }
-    .check-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 8px 12px;
-      border: var(--hairline);
-      background: var(--bg);
-      cursor: pointer;
-      user-select: none;
-    }
+    .check-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 12px; border: var(--hairline); background: var(--bg); cursor: pointer; user-select: none; }
     .check-item:hover { border-color: var(--accent); background: var(--accent-pale); }
     .check-item.checked { border-color: var(--accent); background: var(--accent-pale); }
-    .check-box {
-      width: 14px; height: 14px;
-      border: var(--hairline);
-      flex-shrink: 0;
-      margin-top: 2px;
-      background: var(--surface);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 10px; font-weight: 700; color: var(--accent);
-    }
+    .check-box { width: 14px; height: 14px; border: var(--hairline); flex-shrink: 0; margin-top: 2px; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--accent); }
     .check-item.checked .check-box { border-color: var(--accent); background: var(--accent-pale); }
     .check-text { font-size: var(--small); color: var(--charcoal); line-height: 1.5; }
-
-    /* ── Protocol table ── */
-    .protocol-table {
-      border: var(--hairline);
-      margin-bottom: 12px;
-    }
-    .protocol-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr auto;
-      gap: 1px;
-      background: var(--border);
-      border-bottom: var(--hairline);
-    }
+    .protocol-table { border: var(--hairline); margin-bottom: 12px; }
+    .protocol-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 1px; background: var(--border); border-bottom: var(--hairline); }
     .protocol-row:last-child { border-bottom: none; }
     .protocol-row.header { background: var(--bg); gap: 0; }
-    .protocol-header-cell {
-      padding: 7px 12px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--faint);
-      border-right: var(--hairline);
-    }
+    .protocol-header-cell { padding: 7px 12px; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); border-right: var(--hairline); }
     .protocol-header-cell:last-child { border-right: none; }
-    .protocol-cell {
-      background: var(--surface);
-      padding: 0;
-    }
-    .protocol-cell input {
-      width: 100%;
-      font-family: 'Space Mono', monospace;
-      font-size: var(--small);
-      font-weight: 700;
-      color: var(--charcoal);
-      background: transparent;
-      border: none;
-      padding: 8px 12px;
-      outline: none;
-    }
+    .protocol-cell { background: var(--surface); padding: 0; }
+    .protocol-cell input { width: 100%; font-family: 'Space Mono', monospace; font-size: var(--small); font-weight: 700; color: var(--charcoal); background: transparent; border: none; padding: 8px 12px; outline: none; }
     .protocol-cell input:focus { background: var(--accent-pale); }
-    .protocol-cell-del {
-      background: var(--surface);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 10px;
-    }
-    .btn-del-row {
-      background: none; border: none;
-      font-family: 'Space Mono', monospace;
-      font-size: 14px; color: var(--faint);
-      cursor: pointer; padding: 0; line-height: 1;
-    }
+    .protocol-cell-del { background: var(--surface); display: flex; align-items: center; justify-content: center; padding: 0 10px; }
+    .btn-del-row { background: none; border: none; font-family: 'Space Mono', monospace; font-size: 14px; color: var(--faint); cursor: pointer; padding: 0; line-height: 1; }
     .btn-del-row:hover { color: #991b1b; }
-    .btn-add-row {
-      background: none; border: var(--hairline);
-      font-family: 'Space Mono', monospace;
-      font-size: 11px; font-weight: 700;
-      letter-spacing: 0.06em; text-transform: uppercase;
-      color: var(--accent); padding: 7px 14px;
-      cursor: pointer; border-radius: 0;
-    }
+    .btn-add-row { background: none; border: var(--hairline); font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); padding: 7px 14px; cursor: pointer; border-radius: 0; }
     .btn-add-row:hover { background: var(--accent-pale); }
-
-    /* ── Key questions (read-only) ── */
     .question-list { display: flex; flex-direction: column; gap: 8px; }
-    .question-item {
-      border: var(--hairline);
-      border-left: 3px solid var(--accent);
-      padding: 10px 14px;
-      background: var(--surface);
-    }
-    .question-label {
-      font-size: 10px; font-weight: 700;
-      letter-spacing: 0.06em; text-transform: uppercase;
-      color: var(--accent); margin-bottom: 4px;
-    }
+    .question-item { border: var(--hairline); border-left: 3px solid var(--accent); padding: 10px 14px; background: var(--surface); }
+    .question-label { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
     .question-text { font-size: var(--small); color: var(--charcoal); line-height: 1.6; }
-
-    /* ── Gate bar ── */
-    .gate-bar {
-      border: var(--hairline);
-      background: var(--accent-pale);
-      padding: 16px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-      margin-bottom: 24px;
-    }
+    .gate-bar { border: var(--hairline); background: var(--accent-pale); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
     .gate-bar-copy { font-size: var(--small); color: var(--mid); line-height: 1.6; }
     .gate-bar-copy strong { color: var(--charcoal); }
-    .gate-bar-buttons { display: flex; gap: 8px; flex-shrink: 0; }
-    .btn-export {
-      background: var(--accent); color: white; border: none;
-      font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      padding: 9px 16px; cursor: pointer; border-radius: 0; white-space: nowrap;
-    }
+    .btn-export { background: var(--accent); color: white; border: none; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 9px 16px; cursor: pointer; border-radius: 0; white-space: nowrap; }
     .btn-export:hover { background: var(--accent-dim); }
-
-
-    /* ── Modal ── */
+    .btn-export:disabled { opacity: 0.6; cursor: default; }
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(42,42,40,0.65); z-index: 200; align-items: center; justify-content: center; }
     .modal-overlay.open { display: flex; }
     .modal-box { background: var(--surface); border: var(--hairline); max-width: 460px; width: 90%; padding: 28px; }
@@ -283,13 +111,10 @@
     .modal-form button:hover { background: var(--accent); }
     .modal-confirm { display: none; font-size: var(--small); color: var(--accent); font-weight: 700; margin-bottom: 12px; }
     .modal-fine-print { font-size: 11px; color: var(--faint); line-height: 1.6; }
-
     @media (max-width: 640px) {
       .field-grid { grid-template-columns: 1fr; }
-      .field-grid.three { grid-template-columns: 1fr; }
       .gate-bar { flex-direction: column; align-items: flex-start; }
-      .gate-bar-buttons { flex-direction: column; width: 100%; }
-      .btn-export { text-align: center; }
+      .btn-export { width: 100%; text-align: center; }
     }
   </style>
 </head>
@@ -322,14 +147,14 @@
 
         <span class="page-label">Document 01 of 04</span>
         <h1>Vendor Briefing Template</h1>
-        <p class="lead">Fill in your environment details below. Export your internal record for your own files, or export the vendor briefing version to send to shortlisted vendors before any demo. A vendor who does not read your briefing has told you something.</p>
+        <p class="lead">Fill in your environment details below. Clicking Export PDFs downloads a zip file containing your internal record and a clean vendor briefing to send to shortlisted vendors. A vendor who does not read your briefing has told you something.</p>
 
         <div class="callout" style="margin-bottom:24px;">
           <span class="callout-label">How to use this document</span>
-          <p>Complete all sections before vendor contact. Use <strong>Export Internal Record</strong> to save your working copy. Use <strong>Export Vendor Briefing</strong> to generate the document you send to vendors — it omits your internal contact details and asset counts.</p>
+          <p>Complete all sections before vendor contact. The zip contains two files: your internal working copy (with all details) and the vendor briefing version (which omits your internal contact details and asset counts, and includes a blank vendor response section).</p>
         </div>
 
-        <!-- Section 1: Organization -->
+        <!-- Section 1 -->
         <div class="form-section">
           <div class="form-section-header">
             <span class="form-section-num">01</span>
@@ -338,30 +163,15 @@
           </div>
           <div class="form-body">
             <div class="field-grid">
-              <div class="field-group">
-                <label>Organization Name</label>
-                <input type="text" id="org-name" placeholder="Acme Industrial Corp">
-              </div>
-              <div class="field-group">
-                <label>Date Prepared</label>
-                <input type="text" id="org-date" placeholder="e.g. June 2026">
-              </div>
+              <div class="field-group"><label>Organization Name</label><input type="text" id="org-name" placeholder="Acme Industrial Corp"></div>
+              <div class="field-group"><label>Date Prepared</label><input type="text" id="org-date" placeholder="e.g. June 2026"></div>
             </div>
             <div class="field-grid">
-              <div class="field-group">
-                <label>Prepared By</label>
-                <input type="text" id="org-preparedby" placeholder="Name and title">
-              </div>
-              <div class="field-group">
-                <label>Evaluation Timeline</label>
-                <input type="text" id="org-timeline" placeholder="e.g. Q3 2026 decision">
-              </div>
+              <div class="field-group"><label>Prepared By</label><input type="text" id="org-preparedby" placeholder="Name and title"></div>
+              <div class="field-group"><label>Evaluation Timeline</label><input type="text" id="org-timeline" placeholder="e.g. Q3 2026 decision"></div>
             </div>
             <div class="field-grid full">
-              <div class="field-group">
-                <label>Primary Contact for Vendor Questions</label>
-                <input type="text" id="org-contact" placeholder="Name, email, phone">
-              </div>
+              <div class="field-group"><label>Primary Contact for Vendor Questions</label><input type="text" id="org-contact" placeholder="Name, email, phone"></div>
             </div>
             <div class="field-grid">
               <div class="field-group">
@@ -380,16 +190,10 @@
                   <option>Other</option>
                 </select>
               </div>
-              <div class="field-group">
-                <label>Number of OT Network Segments</label>
-                <input type="number" id="org-segments" placeholder="e.g. 4" min="1">
-              </div>
+              <div class="field-group"><label>Number of OT Network Segments</label><input type="number" id="org-segments" placeholder="e.g. 4" min="1"></div>
             </div>
             <div class="field-grid">
-              <div class="field-group">
-                <label>Approximate Known Asset Count</label>
-                <input type="number" id="org-assets" placeholder="e.g. 340" min="1">
-              </div>
+              <div class="field-group"><label>Approximate Known Asset Count</label><input type="number" id="org-assets" placeholder="e.g. 340" min="1"></div>
               <div class="field-group">
                 <label>Air-Gapped Segments Present</label>
                 <select id="org-airgap">
@@ -401,15 +205,12 @@
               </div>
             </div>
             <div class="field-grid full">
-              <div class="field-group">
-                <label>Brief Description of OT Environment</label>
-                <textarea id="org-description" placeholder="e.g. Three manufacturing sites, primary protocols are EtherNet/IP and Modbus TCP, mix of legacy PLCs and newer HMIs..."></textarea>
-              </div>
+              <div class="field-group"><label>Brief Description of OT Environment</label><textarea id="org-description" placeholder="e.g. Three manufacturing sites, primary protocols are EtherNet/IP and Modbus TCP..."></textarea></div>
             </div>
           </div>
         </div>
 
-        <!-- Section 2: Protocol Stack -->
+        <!-- Section 2 -->
         <div class="form-section">
           <div class="form-section-header">
             <span class="form-section-num">02</span>
@@ -429,7 +230,7 @@
           </div>
         </div>
 
-        <!-- Section 3: Deployment Constraints -->
+        <!-- Section 3 -->
         <div class="form-section">
           <div class="form-section-header">
             <span class="form-section-num">03</span>
@@ -439,31 +240,16 @@
           <div class="form-body">
             <p style="font-size:var(--small);color:var(--mid);margin-bottom:16px;line-height:1.6;">Check all that apply. Vendors must confirm compliance with each selected constraint.</p>
             <div class="check-list" style="margin-bottom:16px;">
-              <div class="check-item" id="c-passive" onclick="toggleCheck('c-passive')">
-                <div class="check-box">&#10003;</div>
-                <div class="check-text">Active scanning NOT acceptable — passive monitoring only required</div>
-              </div>
-              <div class="check-item" id="c-noagent" onclick="toggleCheck('c-noagent')">
-                <div class="check-box">&#10003;</div>
-                <div class="check-text">Agent installation on legacy assets NOT acceptable</div>
-              </div>
-              <div class="check-item" id="c-nocloud" onclick="toggleCheck('c-nocloud')">
-                <div class="check-box">&#10003;</div>
-                <div class="check-text">Cloud connectivity from OT network NOT permitted</div>
-              </div>
-              <div class="check-item" id="c-noaccess" onclick="toggleCheck('c-noaccess')">
-                <div class="check-box">&#10003;</div>
-                <div class="check-text">Vendor remote access to OT network NOT permitted during deployment</div>
-              </div>
+              <div class="check-item" id="c-passive" onclick="toggleCheck('c-passive')"><div class="check-box">&#10003;</div><div class="check-text">Active scanning NOT acceptable — passive monitoring only required</div></div>
+              <div class="check-item" id="c-noagent" onclick="toggleCheck('c-noagent')"><div class="check-box">&#10003;</div><div class="check-text">Agent installation on legacy assets NOT acceptable</div></div>
+              <div class="check-item" id="c-nocloud" onclick="toggleCheck('c-nocloud')"><div class="check-box">&#10003;</div><div class="check-text">Cloud connectivity from OT network NOT permitted</div></div>
+              <div class="check-item" id="c-noaccess" onclick="toggleCheck('c-noaccess')"><div class="check-box">&#10003;</div><div class="check-text">Vendor remote access to OT network NOT permitted during deployment</div></div>
             </div>
-            <div class="field-group">
-              <label>Additional Deployment Constraints</label>
-              <textarea id="constraint-other" placeholder="Any additional constraints not listed above..."></textarea>
-            </div>
+            <div class="field-group"><label>Additional Deployment Constraints</label><textarea id="constraint-other" placeholder="Any additional constraints not listed above..."></textarea></div>
           </div>
         </div>
 
-        <!-- Section 4: Compliance Obligations -->
+        <!-- Section 4 -->
         <div class="form-section">
           <div class="form-section-header">
             <span class="form-section-num">04</span>
@@ -472,16 +258,12 @@
           </div>
           <div class="form-body">
             <p style="font-size:var(--small);color:var(--mid);margin-bottom:16px;line-height:1.6;">Check all that apply and note the specific standard or subsection where relevant.</p>
-            <div id="compliance-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
-            </div>
-            <div class="field-group">
-              <label>Other Compliance Requirements</label>
-              <textarea id="compliance-other" placeholder="Any frameworks or standards not listed above..."></textarea>
-            </div>
+            <div id="compliance-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
+            <div class="field-group"><label>Other Compliance Requirements</label><textarea id="compliance-other" placeholder="Any frameworks or standards not listed above..."></textarea></div>
           </div>
         </div>
 
-        <!-- Section 5: Evaluation Criteria -->
+        <!-- Section 5 -->
         <div class="form-section">
           <div class="form-section-header">
             <span class="form-section-num">05</span>
@@ -490,28 +272,13 @@
           </div>
           <div class="form-body">
             <p style="font-size:var(--small);color:var(--mid);margin-bottom:16px;line-height:1.6;">Vendors should address these explicitly in their response and demo.</p>
-            <div class="field-grid full">
-              <div class="field-group">
-                <label>Criterion 1</label>
-                <input type="text" id="criteria-1" placeholder="e.g. Passive-only deployment with no active scanning">
-              </div>
-            </div>
-            <div class="field-grid full">
-              <div class="field-group">
-                <label>Criterion 2</label>
-                <input type="text" id="criteria-2" placeholder="e.g. Coverage for Modbus RTU on legacy PLCs">
-              </div>
-            </div>
-            <div class="field-grid full">
-              <div class="field-group">
-                <label>Criterion 3</label>
-                <input type="text" id="criteria-3" placeholder="e.g. NERC CIP-015 compliance evidence package">
-              </div>
-            </div>
+            <div class="field-grid full"><div class="field-group"><label>Criterion 1</label><input type="text" id="criteria-1" placeholder="e.g. Passive-only deployment with no active scanning"></div></div>
+            <div class="field-grid full"><div class="field-group"><label>Criterion 2</label><input type="text" id="criteria-2" placeholder="e.g. Coverage for Modbus RTU on legacy PLCs"></div></div>
+            <div class="field-grid full"><div class="field-group"><label>Criterion 3</label><input type="text" id="criteria-3" placeholder="e.g. NERC CIP-015 compliance evidence package"></div></div>
           </div>
         </div>
 
-        <!-- Section 6: Key Questions -->
+        <!-- Section 6 -->
         <div class="form-section">
           <div class="form-section-header">
             <span class="form-section-num">06</span>
@@ -521,42 +288,21 @@
           <div class="form-body">
             <p style="font-size:var(--small);color:var(--mid);margin-bottom:16px;line-height:1.6;">These questions are included in the vendor briefing export. Use them in vendor conversations and demos.</p>
             <div class="question-list">
-              <div class="question-item">
-                <div class="question-label">Protocol Coverage</div>
-                <div class="question-text">Walk through exactly how your platform handles [specific protocol from our environment]. What function codes do you decode, and how was that coverage validated in a production environment?</div>
-              </div>
-              <div class="question-item">
-                <div class="question-label">Passive Deployment</div>
-                <div class="question-text">If your sensor is deployed in passive-only mode with no active queries permitted, what capabilities are unavailable or degraded?</div>
-              </div>
-              <div class="question-item">
-                <div class="question-label">Legacy Assets</div>
-                <div class="question-text">What does your platform do when it encounters an asset it cannot identify or decode?</div>
-              </div>
-              <div class="question-item">
-                <div class="question-label">Compliance Evidence</div>
-                <div class="question-text">Show the exact evidence package your platform generates for a NERC CIP-015 audit. What format is it in, and has it been accepted by a NERC auditor?</div>
-              </div>
-              <div class="question-item">
-                <div class="question-label">Professional Services</div>
-                <div class="question-text">What is the minimum professional services engagement required to deploy and tune this platform in an environment like ours? What is the typical timeline?</div>
-              </div>
-              <div class="question-item">
-                <div class="question-label">Reference Customers</div>
-                <div class="question-text">Provide two reference customers in our industry who have been audited under our compliance framework and are willing to speak about their experience with your evidence package.</div>
-              </div>
+              <div class="question-item"><div class="question-label">Protocol Coverage</div><div class="question-text">Walk through exactly how your platform handles [specific protocol from our environment]. What function codes do you decode, and how was that coverage validated in a production environment?</div></div>
+              <div class="question-item"><div class="question-label">Passive Deployment</div><div class="question-text">If your sensor is deployed in passive-only mode with no active queries permitted, what capabilities are unavailable or degraded?</div></div>
+              <div class="question-item"><div class="question-label">Legacy Assets</div><div class="question-text">What does your platform do when it encounters an asset it cannot identify or decode?</div></div>
+              <div class="question-item"><div class="question-label">Compliance Evidence</div><div class="question-text">Show the exact evidence package your platform generates for a NERC CIP-015 audit. What format is it in, and has it been accepted by a NERC auditor?</div></div>
+              <div class="question-item"><div class="question-label">Professional Services</div><div class="question-text">What is the minimum professional services engagement required to deploy and tune this platform in an environment like ours? What is the typical timeline?</div></div>
+              <div class="question-item"><div class="question-label">Reference Customers</div><div class="question-text">Provide two reference customers in our industry who have been audited under our compliance framework and are willing to speak about their experience with your evidence package.</div></div>
             </div>
           </div>
         </div>
 
-        <!-- Gate bar -->
-    <div class="gate-bar">
+        <div class="gate-bar">
           <div class="gate-bar-copy">
             <strong>Export your documents.</strong> Export an internal record for your files and a clean vendor briefing to send to shortlisted vendors.
           </div>
-          <div class="gate-bar-buttons">
-            <button class="btn-export" onclick="openModal()">Export PDFs</button>
-          </div>
+          <button class="btn-export" id="export-btn" onclick="openModal()">Export PDFs</button>
         </div>
 
       </article>
@@ -570,7 +316,6 @@
     </div>
   </footer>
 
-  <!-- Modal -->
   <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
     <div class="modal-box">
       <div class="modal-top">
@@ -578,10 +323,10 @@
         <button class="modal-close" onclick="closeModal()">&#215;</button>
       </div>
       <div class="modal-badge">Free Export</div>
-      <p>Enter your email to download. You will also receive buyer briefings and market intelligence for OT and ICS security practitioners.</p>
+      <p>Enter your email to download a zip file containing both documents. You will also receive buyer briefings and market intelligence for OT and ICS security practitioners.</p>
       <div class="modal-form" id="modal-form">
         <input type="email" id="modal-email" placeholder="your@email.com">
-        <button onclick="submitEmail()">Get PDF</button>
+        <button onclick="submitEmail()">Get PDFs</button>
       </div>
       <div class="modal-confirm" id="modal-confirm" style="display:none;"></div>
       <p class="modal-fine-print">No spam. Unsubscribe any time. OT Cybersecurity Software is published by Machines &amp; Words.</p>
@@ -589,104 +334,18 @@
   </div>
 
   <script>
-   var emailCaptured = false;
+    var emailCaptured = false;
 
     var FRAMEWORKS = [
-      { id: 'nerc-cip',    label: 'NERC CIP',              placeholder: 'e.g. CIP-002 through CIP-013' },
-      { id: 'nerc-cip015', label: 'NERC CIP-015 (INSM)',   placeholder: 'Effective 2026' },
-      { id: 'iec62443',    label: 'ISA/IEC 62443',         placeholder: 'e.g. IEC 62443-3-3' },
-      { id: 'nis2',        label: 'EU NIS2',               placeholder: 'Specific article or annex' },
+      { id: 'nerc-cip',    label: 'NERC CIP',               placeholder: 'e.g. CIP-002 through CIP-013' },
+      { id: 'nerc-cip015', label: 'NERC CIP-015 (INSM)',    placeholder: 'Effective 2026' },
+      { id: 'iec62443',    label: 'ISA/IEC 62443',          placeholder: 'e.g. IEC 62443-3-3' },
+      { id: 'nis2',        label: 'EU NIS2',                placeholder: 'Specific article or annex' },
       { id: 'cra',         label: 'EU Cyber Resilience Act', placeholder: 'Specific requirement' },
       { id: 'tsa',         label: 'TSA Security Directives', placeholder: 'Specific directive' },
-      { id: 'uk-nis',      label: 'UK NIS Regulations',    placeholder: 'Specific regulation' },
-      { id: 'au-soci',     label: 'Australia SOCI Act',    placeholder: 'Specific obligation' }
+      { id: 'uk-nis',      label: 'UK NIS Regulations',     placeholder: 'Specific regulation' },
+      { id: 'au-soci',     label: 'Australia SOCI Act',     placeholder: 'Specific obligation' }
     ];
-
-    var complianceList = document.getElementById('compliance-list');
-    FRAMEWORKS.forEach(function(fw) {
-      var row = document.createElement('div');
-      row.style.cssText = 'display:flex;align-items:flex-start;gap:10px;border:var(--hairline);background:var(--bg);padding:8px 12px;';
-      row.innerHTML =
-        '<div class="check-item" id="fw-'+fw.id+'" onclick="toggleCheck(\'fw-'+fw.id+'\')" style="border:none;background:none;padding:0;flex-shrink:0;">'+
-          '<div class="check-box" style="margin-top:2px;">&#10003;</div>'+
-          '<div class="check-text" style="white-space:nowrap;">'+fw.label+'</div>'+
-        '</div>'+
-        '<input type="text" id="fw-note-'+fw.id+'" placeholder="'+fw.placeholder+'" '+
-          'style="flex:1;font-family:\'Space Mono\',monospace;font-size:11px;color:var(--charcoal);background:transparent;border:none;border-left:var(--hairline);padding:0 0 0 10px;outline:none;">'+
-      '</div>';
-      complianceList.appendChild(row);
-    });
-
-    var protocolRows = 0;
-    function addProtocolRow() {
-      var tbl = document.getElementById('protocol-table');
-      var row = document.createElement('div');
-      row.className = 'protocol-row';
-      row.id = 'prow-' + protocolRows;
-      row.innerHTML =
-        '<div class="protocol-cell"><input type="text" placeholder="e.g. Modbus TCP" id="proto-name-'+protocolRows+'"></div>'+
-        '<div class="protocol-cell"><input type="text" placeholder="e.g. Assembly line PLCs, Segment B" id="proto-seg-'+protocolRows+'"></div>'+
-        '<div class="protocol-cell-del"><button class="btn-del-row" onclick="delProtocolRow('+protocolRows+')">&#215;</button></div>';
-      tbl.appendChild(row);
-      protocolRows++;
-    }
-    function delProtocolRow(idx) {
-      var row = document.getElementById('prow-' + idx);
-      if (row) row.remove();
-    }
-
-    addProtocolRow(); addProtocolRow(); addProtocolRow();
-
-    function toggleCheck(id) {
-      var el = document.getElementById(id);
-      if (!el) return;
-      el.classList.toggle('checked');
-    }
-
-    function isChecked(id) {
-      var el = document.getElementById(id);
-      return el && el.classList.contains('checked');
-    }
-
-    function gv(id) {
-      var el = document.getElementById(id);
-      return el ? el.value.trim() : '';
-    }
-
-    function getProtocols() {
-      var rows = [];
-      var tbl = document.getElementById('protocol-table');
-      tbl.querySelectorAll('.protocol-row:not(.header)').forEach(function(row) {
-        var inputs = row.querySelectorAll('input');
-        if (inputs.length >= 2) {
-          var n = inputs[0].value.trim();
-          var s = inputs[1].value.trim();
-          if (n) rows.push({ name: n, segment: s });
-        }
-      });
-      return rows;
-    }
-
-    function getCompliance() {
-      var results = [];
-      FRAMEWORKS.forEach(function(fw) {
-        if (isChecked('fw-' + fw.id)) {
-          results.push({ label: fw.label, note: gv('fw-note-' + fw.id) });
-        }
-      });
-      return results;
-    }
-
-    function getConstraints() {
-      var list = [];
-      if (isChecked('c-passive'))  list.push('Active scanning NOT acceptable — passive monitoring only required');
-      if (isChecked('c-noagent'))  list.push('Agent installation on legacy assets NOT acceptable');
-      if (isChecked('c-nocloud'))  list.push('Cloud connectivity from OT network NOT permitted');
-      if (isChecked('c-noaccess')) list.push('Vendor remote access to OT network NOT permitted during deployment');
-      var other = gv('constraint-other');
-      if (other) list.push(other);
-      return list;
-    }
 
     var KEY_QUESTIONS = [
       { label: 'Protocol Coverage', text: 'Walk through exactly how your platform handles [specific protocol from our environment]. What function codes do you decode, and how was that coverage validated in a production environment?' },
@@ -697,17 +356,85 @@
       { label: 'Reference Customers', text: 'Provide two reference customers in our industry who have been audited under our compliance framework and are willing to speak about their experience with your evidence package.' }
     ];
 
+    // Build compliance list
+    var complianceList = document.getElementById('compliance-list');
+    FRAMEWORKS.forEach(function(fw) {
+      var row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:flex-start;gap:10px;border:var(--hairline);background:var(--bg);padding:8px 12px;';
+      row.innerHTML =
+        '<div class="check-item" id="fw-'+fw.id+'" onclick="toggleCheck(\'fw-'+fw.id+'\')" style="border:none;background:none;padding:0;flex-shrink:0;">'+
+          '<div class="check-box" style="margin-top:2px;">&#10003;</div>'+
+          '<div class="check-text" style="white-space:nowrap;">'+fw.label+'</div>'+
+        '</div>'+
+        '<input type="text" id="fw-note-'+fw.id+'" placeholder="'+fw.placeholder+'" style="flex:1;font-family:\'Space Mono\',monospace;font-size:11px;color:var(--charcoal);background:transparent;border:none;border-left:var(--hairline);padding:0 0 0 10px;outline:none;">';
+      complianceList.appendChild(row);
+    });
+
+    // Protocol table
+    var protocolRows = 0;
+    function addProtocolRow() {
+      var tbl = document.getElementById('protocol-table');
+      var row = document.createElement('div');
+      row.className = 'protocol-row';
+      row.id = 'prow-' + protocolRows;
+      row.innerHTML =
+        '<div class="protocol-cell"><input type="text" placeholder="e.g. Modbus TCP"></div>'+
+        '<div class="protocol-cell"><input type="text" placeholder="e.g. Assembly line PLCs, Segment B"></div>'+
+        '<div class="protocol-cell-del"><button class="btn-del-row" onclick="delProtocolRow('+protocolRows+')">&#215;</button></div>';
+      tbl.appendChild(row);
+      protocolRows++;
+    }
+    function delProtocolRow(idx) {
+      var row = document.getElementById('prow-' + idx);
+      if (row) row.remove();
+    }
+    addProtocolRow(); addProtocolRow(); addProtocolRow();
+
+    function toggleCheck(id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.toggle('checked');
+    }
+    function isChecked(id) {
+      var el = document.getElementById(id);
+      return el && el.classList.contains('checked');
+    }
+    function gv(id) {
+      var el = document.getElementById(id);
+      return el ? el.value.trim() : '';
+    }
+    function getProtocols() {
+      var rows = [];
+      document.getElementById('protocol-table').querySelectorAll('.protocol-row:not(.header)').forEach(function(row) {
+        var inputs = row.querySelectorAll('input');
+        if (inputs.length >= 2) {
+          var n = inputs[0].value.trim();
+          if (n) rows.push({ name: n, segment: inputs[1].value.trim() });
+        }
+      });
+      return rows;
+    }
+    function getCompliance() {
+      return FRAMEWORKS.filter(function(fw) { return isChecked('fw-'+fw.id); })
+        .map(function(fw) { return { label: fw.label, note: gv('fw-note-'+fw.id) }; });
+    }
+    function getConstraints() {
+      var list = [];
+      if (isChecked('c-passive'))  list.push('Active scanning NOT acceptable \u2014 passive monitoring only required');
+      if (isChecked('c-noagent'))  list.push('Agent installation on legacy assets NOT acceptable');
+      if (isChecked('c-nocloud'))  list.push('Cloud connectivity from OT network NOT permitted');
+      if (isChecked('c-noaccess')) list.push('Vendor remote access to OT network NOT permitted during deployment');
+      var other = gv('constraint-other');
+      if (other) list.push(other);
+      return list;
+    }
+
+    // Modal
     function openModal() {
-      if (emailCaptured) { generateBoth(); return; }
+      if (emailCaptured) { generateZip(); return; }
       document.getElementById('modal-overlay').classList.add('open');
     }
     function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
     function handleOverlayClick(e) { if (e.target === document.getElementById('modal-overlay')) closeModal(); }
-
-    function generateBoth() {
-      generatePDF('internal');
-      setTimeout(function() { generatePDF('vendor'); }, 1500);
-    }
 
     function submitEmail() {
       var email = document.getElementById('modal-email').value.trim();
@@ -726,9 +453,9 @@
           emailCaptured = true;
           document.getElementById('modal-form').style.display = 'none';
           confirmEl.style.display = 'block';
-          confirmEl.textContent = 'You\u2019re subscribed. Your PDFs are opening now.';
+          confirmEl.textContent = 'You\u2019re subscribed. Your download is starting now.';
           closeModal();
-          generateBoth();
+          generateZip();
         } else {
           confirmEl.style.display = 'block';
           confirmEl.textContent = 'Something went wrong. Please try again.';
@@ -742,271 +469,229 @@
       });
     }
 
-    // ── PDF Generation ──
-    function generatePDF(mode) {
-      var script = document.createElement('script');
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-      script.onload = function() {
-        var doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'letter' });
-        var margin = 48;
-        var pageW  = 612;
-        var pageH  = 792;
-        var col    = pageW - margin * 2;
-        var y      = margin;
-        var isVendor = mode === 'vendor';
+    // Load libraries then generate zip
+    function generateZip() {
+      var exportBtn = document.getElementById('export-btn');
+      exportBtn.disabled = true;
+      exportBtn.textContent = 'Generating...';
 
-        function checkPage(needed) {
-          if (y + needed > pageH - margin) { doc.addPage(); y = margin; }
-        }
+      function loadScript(src, cb) {
+        if (document.querySelector('script[src="'+src+'"]')) { cb(); return; }
+        var s = document.createElement('script');
+        s.src = src; s.onload = cb;
+        document.head.appendChild(s);
+      }
 
-        function sectionHeader(num, title, note) {
-          checkPage(40);
-          doc.setFillColor(181, 87, 10);
-          doc.rect(margin, y - 12, col, 22, 'F');
-          doc.setFont('helvetica', 'bold');
-          doc.setFontSize(8);
-          doc.setTextColor(255, 255, 255);
-          doc.text(num + '  ' + title.toUpperCase(), margin + 8, y + 2);
-          if (note) {
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(8);
-            doc.setTextColor(255, 220, 180);
-            doc.text(note, pageW - margin - 8, y + 2, { align: 'right' });
-          }
-          y += 24;
-        }
-
-        function fieldRow(label, value, fullWidth) {
-          checkPage(30);
-          doc.setFillColor(248, 248, 246);
-          doc.rect(margin, y - 12, fullWidth ? col : col / 2, 20, 'F');
-          doc.setFont('helvetica', 'bold');
-          doc.setFontSize(8);
-          doc.setTextColor(140, 140, 136);
-          doc.text(label.toUpperCase(), margin + 8, y - 1);
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(9);
-          doc.setTextColor(30, 30, 28);
-          var lines = doc.splitTextToSize(value || '\u2014', (fullWidth ? col : col / 2) - 16);
-          doc.text(lines, margin + 8, y + 10);
-          y += Math.max(20, lines.length * 13) + 4;
-        }
-
-        function twoFields(label1, val1, label2, val2) {
-          checkPage(36);
-          var hw = (col - 8) / 2;
-          [0, 1].forEach(function(i) {
-            var x = margin + i * (hw + 8);
-            var lbl = i === 0 ? label1 : label2;
-            var val = i === 0 ? val1 : val2;
-            doc.setFillColor(248, 248, 246);
-            doc.rect(x, y - 12, hw, 28, 'F');
-            doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(140, 140, 136);
-            doc.text(lbl.toUpperCase(), x + 8, y - 1);
-            doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(30, 30, 28);
-            doc.text(val || '\u2014', x + 8, y + 12);
+      loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', function() {
+        loadScript('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js', function() {
+          var internalPdf = buildPDF(false);
+          var vendorPdf   = buildPDF(true);
+          var zip = new JSZip();
+          zip.file('OT-Security-Vendor-Briefing-Internal.pdf', internalPdf.output('arraybuffer'));
+          zip.file('OT-Security-Vendor-Briefing-SendToVendor.pdf', vendorPdf.output('arraybuffer'));
+          zip.generateAsync({ type: 'blob' }).then(function(blob) {
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'OT-Security-Vendor-Briefing-Kit.zip';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            exportBtn.disabled = false;
+            exportBtn.textContent = 'Export PDFs';
           });
-          y += 36;
-        }
-
-        // ── Header ──
-        doc.setFillColor(181, 87, 10);
-        doc.rect(0, 0, pageW, 60, 'F');
-        doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(255, 255, 255);
-        doc.text('OT CYBERSECURITY SOFTWARE', margin, 26);
-        doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(255, 220, 180);
-        doc.text('An independent guide for OT and ICS security practitioners', margin, 42);
-        doc.text('otcybersecuritysoftware.com', pageW - margin, 42, { align: 'right' });
-
-        y = 92;
-        doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(181, 87, 10);
-        doc.text('OT SECURITY RFP EVALUATION KIT  \u2014  DOCUMENT 01 OF 04', margin, y);
-        y += 20;
-        doc.setFont('helvetica', 'bold'); doc.setFontSize(20); doc.setTextColor(30, 30, 28);
-        doc.text('Vendor Briefing Template', margin, y);
-        y += 20;
-        doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(100, 100, 96);
-        var docType = isVendor ? 'Vendor Briefing — send to shortlisted vendors before any demo' : 'Internal Record — your working copy';
-        doc.text(docType + '  \u00b7  Generated ' + new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), margin, y);
-        y += 28;
-        doc.setDrawColor(220, 220, 216); doc.setLineWidth(0.5); doc.line(margin, y, pageW - margin, y); y += 24;
-
-        // ── Section 1: Org ──
-        if (!isVendor) {
-          sectionHeader('01', 'Organization & Environment', 'Internal only');
-          twoFields('Organization', gv('org-name'), 'Date Prepared', gv('org-date'));
-          twoFields('Prepared By', gv('org-preparedby'), 'Evaluation Timeline', gv('org-timeline'));
-          fieldRow('Primary Contact for Vendor Questions', gv('org-contact'), true);
-          twoFields('Industry / Sector', gv('org-industry'), 'OT Network Segments', gv('org-segments'));
-          twoFields('Approximate Asset Count', gv('org-assets'), 'Air-Gapped Segments', gv('org-airgap'));
-          fieldRow('Environment Description', gv('org-description'), true);
-          y += 8;
-        } else {
-          // Vendor version: include industry and environment description only
-          sectionHeader('01', 'Environment Summary', 'For vendor reference');
-          twoFields('Industry / Sector', gv('org-industry'), 'Evaluation Timeline', gv('org-timeline'));
-          fieldRow('Brief Description of OT Environment', gv('org-description'), true);
-          y += 8;
-        }
-
-        // ── Section 2: Protocols ──
-        sectionHeader('02', 'Protocol Stack', 'Vendors must confirm coverage for each');
-        var protocols = getProtocols();
-
-        // Table header
-        checkPage(24);
-        doc.setFillColor(235, 235, 233);
-        doc.rect(margin, y - 12, col, 18, 'F');
-        doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(100, 100, 96);
-        doc.text('PROTOCOL', margin + 8, y - 1);
-        doc.text('EQUIPMENT / SEGMENT', margin + col / 2 + 8, y - 1);
-        if (!isVendor) { doc.text('VENDOR COVERAGE', margin + col * 0.8 + 8, y - 1); }
-        y += 14;
-
-        if (protocols.length === 0) {
-          checkPage(20);
-          doc.setFont('helvetica', 'italic'); doc.setFontSize(9); doc.setTextColor(160, 160, 156);
-          doc.text('No protocols entered.', margin + 8, y); y += 20;
-        } else {
-          protocols.forEach(function(p) {
-            checkPage(22);
-            doc.setFillColor(248, 248, 248);
-            doc.rect(margin, y - 12, col, 20, 'F');
-            doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(30, 30, 28);
-            doc.text(p.name, margin + 8, y);
-            doc.text(p.segment || '\u2014', margin + col / 2 + 8, y);
-            if (!isVendor) {
-              doc.setTextColor(160, 160, 156);
-              doc.text('\u2014', margin + col * 0.8 + 8, y);
-            }
-            y += 22;
-          });
-        }
-        y += 8;
-
-        // ── Section 3: Constraints ──
-        sectionHeader('03', 'Deployment Constraints', 'Vendors must confirm compliance');
-        var constraints = getConstraints();
-        if (constraints.length === 0) {
-          checkPage(20);
-          doc.setFont('helvetica', 'italic'); doc.setFontSize(9); doc.setTextColor(160, 160, 156);
-          doc.text('No constraints selected.', margin + 8, y); y += 20;
-        } else {
-          constraints.forEach(function(c) {
-            checkPage(24);
-            doc.setFillColor(250, 240, 230);
-            doc.rect(margin, y - 10, 4, 16, 'F');
-            doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(30, 30, 28);
-            var lines = doc.splitTextToSize(c, col - 16);
-            doc.text(lines, margin + 12, y);
-            y += lines.length * 13 + 6;
-          });
-        }
-        y += 8;
-
-        // ── Section 4: Compliance ──
-        sectionHeader('04', 'Compliance Obligations', 'Vendors must confirm evidence capability');
-        var compliance = getCompliance();
-        var compOther = gv('compliance-other');
-        if (compliance.length === 0 && !compOther) {
-          checkPage(20);
-          doc.setFont('helvetica', 'italic'); doc.setFontSize(9); doc.setTextColor(160, 160, 156);
-          doc.text('No compliance frameworks selected.', margin + 8, y); y += 20;
-        } else {
-          compliance.forEach(function(c) {
-            checkPage(24);
-            doc.setFillColor(248, 248, 248);
-            doc.rect(margin, y - 10, col, 20, 'F');
-            doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(181, 87, 10);
-            doc.text(c.label, margin + 8, y);
-            if (c.note) {
-              doc.setFont('helvetica', 'normal'); doc.setTextColor(80, 80, 76);
-              doc.text(c.note, margin + 8 + 120, y);
-            }
-            y += 22;
-          });
-          if (compOther) {
-            checkPage(24);
-            doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(30, 30, 28);
-            var otherLines = doc.splitTextToSize(compOther, col - 16);
-            doc.text(otherLines, margin + 8, y);
-            y += otherLines.length * 13 + 6;
-          }
-        }
-        y += 8;
-
-        // ── Section 5: Criteria ──
-        sectionHeader('05', 'Top Three Evaluation Criteria', 'Vendors must address explicitly');
-        var c1 = gv('criteria-1'), c2 = gv('criteria-2'), c3 = gv('criteria-3');
-        [[1, c1], [2, c2], [3, c3]].forEach(function(item) {
-          checkPage(28);
-          doc.setFillColor(250, 240, 230);
-          doc.rect(margin, y - 12, 20, 20, 'F');
-          doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(181, 87, 10);
-          doc.text(String(item[0]), margin + 7, y);
-          doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(30, 30, 28);
-          var lines = doc.splitTextToSize(item[1] || '\u2014', col - 32);
-          doc.text(lines, margin + 28, y);
-          y += Math.max(20, lines.length * 13) + 6;
         });
-        y += 8;
-
-        // ── Section 6: Key Questions ──
-        sectionHeader('06', 'Key Questions to Ask Vendors', 'Use in briefings and demos');
-        KEY_QUESTIONS.forEach(function(q) {
-          checkPage(48);
-          doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(181, 87, 10);
-          doc.text(q.label.toUpperCase(), margin, y);
-          y += 12;
-          doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(30, 30, 28);
-          var lines = doc.splitTextToSize(q.text, col);
-          doc.text(lines, margin, y);
-          y += lines.length * 13 + 10;
-        });
-
-        // ── Vendor Response section (vendor version only) ──
-        if (isVendor) {
-          doc.addPage(); y = margin;
-          sectionHeader('07', 'Vendor Response', 'Completed by vendor');
-          twoFields('Vendor Name and Product', '', 'Date Submitted', '');
-          y += 8;
-
-          function responseField(label, hint) {
-            checkPage(80);
-            doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(140, 140, 136);
-            doc.text(label.toUpperCase(), margin, y); y += 12;
-            if (hint) {
-              doc.setFont('helvetica', 'italic'); doc.setFontSize(8); doc.setTextColor(160, 160, 156);
-              doc.text(hint, margin, y); y += 12;
-            }
-            doc.setDrawColor(220, 220, 216);
-            doc.rect(margin, y, col, 60);
-            y += 72;
-          }
-
-          responseField('Protocol Coverage Response', 'Confirm coverage for each protocol listed in Section 02. Note any limitations.');
-          responseField('Deployment Constraints Response', 'Confirm compliance with each constraint checked in Section 03. Note any exceptions.');
-          responseField('Compliance Obligations Response', 'Describe the evidence package your platform generates for each framework in Section 04.');
-          responseField('Response to Evaluation Criteria', 'Address each of the three criteria listed in Section 05 directly.');
-          responseField('Professional Services Requirements', 'Describe the minimum PS engagement required to deploy in an environment like ours.');
-        }
-
-        // ── Footer ──
-        var pageCount = doc.internal.getNumberOfPages();
-        for (var p = 1; p <= pageCount; p++) {
-          doc.setPage(p);
-          doc.setDrawColor(181, 87, 10); doc.setLineWidth(1);
-          doc.line(margin, 752, pageW - margin, 752);
-          doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(140, 140, 136);
-          doc.text('OT Cybersecurity Software  \u00b7  otcybersecuritysoftware.com  \u00b7  Independent. Not affiliated with any vendor.', margin, 768);
-          doc.text('Page ' + p + ' of ' + pageCount, pageW - margin, 768, { align: 'right' });
-        }
-
-doc.save(isVendor ? 'OT-Security-Vendor-Briefing.pdf' : 'OT-Security-Vendor-Briefing-Internal.pdf');
-      };
-      document.head.appendChild(script);
+      });
     }
 
+    function buildPDF(isVendor) {
+      var doc    = new window.jspdf.jsPDF({ unit: 'pt', format: 'letter' });
+      var margin = 48, pageW = 612, pageH = 792, col = pageW - margin * 2, y = margin;
+
+      function checkPage(needed) {
+        if (y + needed > pageH - margin) { doc.addPage(); y = margin; }
+      }
+      function sectionHeader(num, title, note) {
+        checkPage(40);
+        doc.setFillColor(181,87,10); doc.rect(margin, y-12, col, 22, 'F');
+        doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(255,255,255);
+        doc.text(num+'  '+title.toUpperCase(), margin+8, y+2);
+        if (note) { doc.setFont('helvetica','normal'); doc.setTextColor(255,220,180); doc.text(note, pageW-margin-8, y+2, {align:'right'}); }
+        y += 24;
+      }
+      function fieldRow(label, value, full) {
+        checkPage(30);
+        doc.setFillColor(248,248,246); doc.rect(margin, y-12, full?col:col/2, 20, 'F');
+        doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(140,140,136);
+        doc.text(label.toUpperCase(), margin+8, y-1);
+        doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(30,30,28);
+        var lines = doc.splitTextToSize(value||'\u2014', (full?col:col/2)-16);
+        doc.text(lines, margin+8, y+10);
+        y += Math.max(20, lines.length*13)+4;
+      }
+      function twoFields(l1,v1,l2,v2) {
+        checkPage(36);
+        var hw = (col-8)/2;
+        [0,1].forEach(function(i){
+          var x=margin+i*(hw+8), lbl=i===0?l1:l2, val=i===0?v1:v2;
+          doc.setFillColor(248,248,246); doc.rect(x, y-12, hw, 28, 'F');
+          doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(140,140,136);
+          doc.text(lbl.toUpperCase(), x+8, y-1);
+          doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(30,30,28);
+          doc.text(val||'\u2014', x+8, y+12);
+        });
+        y += 36;
+      }
+
+      // Header
+      doc.setFillColor(181,87,10); doc.rect(0,0,pageW,60,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(255,255,255);
+      doc.text('OT CYBERSECURITY SOFTWARE', margin, 26);
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(255,220,180);
+      doc.text('An independent guide for OT and ICS security practitioners', margin, 42);
+      doc.text('otcybersecuritysoftware.com', pageW-margin, 42, {align:'right'});
+      y = 92;
+      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(181,87,10);
+      doc.text('OT SECURITY RFP EVALUATION KIT  \u2014  DOCUMENT 01 OF 04', margin, y); y+=20;
+      doc.setFont('helvetica','bold'); doc.setFontSize(20); doc.setTextColor(30,30,28);
+      doc.text('Vendor Briefing Template', margin, y); y+=20;
+      doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(100,100,96);
+      var docType = isVendor ? 'Vendor Briefing \u2014 send to shortlisted vendors before any demo' : 'Internal Record \u2014 your working copy';
+      doc.text(docType+'  \u00b7  Generated '+new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}), margin, y);
+      y+=28; doc.setDrawColor(220,220,216); doc.setLineWidth(0.5); doc.line(margin,y,pageW-margin,y); y+=24;
+
+      // Org section
+      if (!isVendor) {
+        sectionHeader('01','Organization & Environment','Internal only');
+        twoFields('Organization',gv('org-name'),'Date Prepared',gv('org-date'));
+        twoFields('Prepared By',gv('org-preparedby'),'Evaluation Timeline',gv('org-timeline'));
+        fieldRow('Primary Contact for Vendor Questions',gv('org-contact'),true);
+        twoFields('Industry / Sector',gv('org-industry'),'OT Network Segments',gv('org-segments'));
+        twoFields('Approximate Asset Count',gv('org-assets'),'Air-Gapped Segments',gv('org-airgap'));
+        fieldRow('Environment Description',gv('org-description'),true);
+      } else {
+        sectionHeader('01','Environment Summary','For vendor reference');
+        twoFields('Industry / Sector',gv('org-industry'),'Evaluation Timeline',gv('org-timeline'));
+        fieldRow('Brief Description of OT Environment',gv('org-description'),true);
+      }
+      y+=8;
+
+      // Protocols
+      sectionHeader('02','Protocol Stack','Vendors must confirm coverage for each');
+      var protocols = getProtocols();
+      checkPage(24);
+      doc.setFillColor(235,235,233); doc.rect(margin,y-12,col,18,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(100,100,96);
+      doc.text('PROTOCOL', margin+8, y-1);
+      doc.text('EQUIPMENT / SEGMENT', margin+col/2+8, y-1);
+      y+=14;
+      if (!protocols.length) {
+        doc.setFont('helvetica','italic'); doc.setFontSize(9); doc.setTextColor(160,160,156);
+        doc.text('No protocols entered.', margin+8, y); y+=20;
+      } else {
+        protocols.forEach(function(p){
+          checkPage(22);
+          doc.setFillColor(248,248,248); doc.rect(margin,y-12,col,20,'F');
+          doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(30,30,28);
+          doc.text(p.name, margin+8, y);
+          doc.text(p.segment||'\u2014', margin+col/2+8, y);
+          y+=22;
+        });
+      }
+      y+=8;
+
+      // Constraints
+      sectionHeader('03','Deployment Constraints','Vendors must confirm compliance');
+      var constraints = getConstraints();
+      if (!constraints.length) {
+        doc.setFont('helvetica','italic'); doc.setFontSize(9); doc.setTextColor(160,160,156);
+        doc.text('No constraints selected.', margin+8, y); y+=20;
+      } else {
+        constraints.forEach(function(c){
+          checkPage(24);
+          doc.setFillColor(250,240,230); doc.rect(margin,y-10,4,16,'F');
+          doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(30,30,28);
+          var lines = doc.splitTextToSize(c, col-16);
+          doc.text(lines, margin+12, y); y+=lines.length*13+6;
+        });
+      }
+      y+=8;
+
+      // Compliance
+      sectionHeader('04','Compliance Obligations','Vendors must confirm evidence capability');
+      var compliance = getCompliance(), compOther = gv('compliance-other');
+      if (!compliance.length && !compOther) {
+        doc.setFont('helvetica','italic'); doc.setFontSize(9); doc.setTextColor(160,160,156);
+        doc.text('No compliance frameworks selected.', margin+8, y); y+=20;
+      } else {
+        compliance.forEach(function(c){
+          checkPage(24);
+          doc.setFillColor(248,248,248); doc.rect(margin,y-10,col,20,'F');
+          doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(181,87,10);
+          doc.text(c.label, margin+8, y);
+          if (c.note) { doc.setFont('helvetica','normal'); doc.setTextColor(80,80,76); doc.text(c.note, margin+8+120, y); }
+          y+=22;
+        });
+        if (compOther) {
+          checkPage(24); doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(30,30,28);
+          var ol = doc.splitTextToSize(compOther, col-16); doc.text(ol, margin+8, y); y+=ol.length*13+6;
+        }
+      }
+      y+=8;
+
+      // Criteria
+      sectionHeader('05','Top Three Evaluation Criteria','Vendors must address explicitly');
+      [[1,gv('criteria-1')],[2,gv('criteria-2')],[3,gv('criteria-3')]].forEach(function(item){
+        checkPage(28);
+        doc.setFillColor(250,240,230); doc.rect(margin,y-12,20,20,'F');
+        doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(181,87,10);
+        doc.text(String(item[0]), margin+7, y);
+        doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(30,30,28);
+        var lines = doc.splitTextToSize(item[1]||'\u2014', col-32);
+        doc.text(lines, margin+28, y); y+=Math.max(20,lines.length*13)+6;
+      });
+      y+=8;
+
+      // Key questions
+      sectionHeader('06','Key Questions to Ask Vendors','Use in briefings and demos');
+      KEY_QUESTIONS.forEach(function(q){
+        checkPage(48);
+        doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(181,87,10);
+        doc.text(q.label.toUpperCase(), margin, y); y+=12;
+        doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(30,30,28);
+        var lines = doc.splitTextToSize(q.text, col);
+        doc.text(lines, margin, y); y+=lines.length*13+10;
+      });
+
+      // Vendor response (vendor version only)
+      if (isVendor) {
+        doc.addPage(); y = margin;
+        sectionHeader('07','Vendor Response','Completed by vendor');
+        twoFields('Vendor Name and Product','','Date Submitted',''); y+=8;
+        function responseField(label, hint) {
+          checkPage(80);
+          doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(140,140,136);
+          doc.text(label.toUpperCase(), margin, y); y+=12;
+          if (hint) { doc.setFont('helvetica','italic'); doc.setFontSize(8); doc.setTextColor(160,160,156); doc.text(hint, margin, y); y+=12; }
+          doc.setDrawColor(220,220,216); doc.rect(margin, y, col, 60); y+=72;
+        }
+        responseField('Protocol Coverage Response','Confirm coverage for each protocol listed in Section 02. Note any limitations.');
+        responseField('Deployment Constraints Response','Confirm compliance with each constraint checked in Section 03. Note any exceptions.');
+        responseField('Compliance Obligations Response','Describe the evidence package your platform generates for each framework in Section 04.');
+        responseField('Response to Evaluation Criteria','Address each of the three criteria listed in Section 05 directly.');
+        responseField('Professional Services Requirements','Describe the minimum PS engagement required to deploy in an environment like ours.');
+      }
+
+      // Footer
+      var pageCount = doc.internal.getNumberOfPages();
+      for (var p=1; p<=pageCount; p++) {
+        doc.setPage(p);
+        doc.setDrawColor(181,87,10); doc.setLineWidth(1); doc.line(margin,752,pageW-margin,752);
+        doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(140,140,136);
+        doc.text('OT Cybersecurity Software  \u00b7  otcybersecuritysoftware.com  \u00b7  Independent. Not affiliated with any vendor.', margin, 768);
+        doc.text('Page '+p+' of '+pageCount, pageW-margin, 768, {align:'right'});
+      }
+      return doc;
+    }
   </script>
 
   <script src="/nav.js"></script>
