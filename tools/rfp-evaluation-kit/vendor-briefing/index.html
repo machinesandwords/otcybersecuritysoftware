@@ -1002,9 +1002,10 @@
           doc.text('Page ' + p + ' of ' + pageCount, pageW - margin, 768, { align: 'right' });
         }
 
-        var filename = isVendor ? 'OT-Security-Vendor-Briefing.pdf' : 'OT-Security-Vendor-Briefing-Internal.pdf';
-var filename = isVendor ? 'OT-Security-Vendor-Briefing.pdf' : 'OT-Security-Vendor-Briefing-Internal.pdf';
-        doc.save(filename);
+doc.save(isVendor ? 'OT-Security-Vendor-Briefing.pdf' : 'OT-Security-Vendor-Briefing-Internal.pdf');
+      };
+      document.head.appendChild(script);
+    }
       };
       document.head.appendChild(script);
     }
