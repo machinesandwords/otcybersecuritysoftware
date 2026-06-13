@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OT Security RFP Evaluation Kit — Doc 02: PoC Success Criteria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --accent: #B5570A;
+    --pale: #faf0e6;
+    --ink: #1a1a1a;
+    --mid: #666;
+    --rule: #c8b8a2;
+    --rule-light: #e0d0bc;
+    --pass-bg: #f0f7f0;
+    --fail-bg: #fdf0f0;
+    --cond-bg: #fffbf0;
+    --font: 'Space Mono', monospace;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--pale);
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .site-header {
+    border-bottom: 2px solid var(--ink);
+    padding: 18px 40px;
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+  }
+  .kit-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .doc-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .doc-num {
+    color: var(--accent);
+  }
+  .breadcrumb {
+    margin-left: auto;
+    font-size: 10px;
+    color: var(--mid);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ── Main layout ── */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 40px 80px;
+  }
+
+  /* ── Section blocks ── */
+  .section {
+    border: 1px solid var(--rule);
+    margin-bottom: 28px;
+  }
+  .section-header {
+    background: var(--ink);
+    color: var(--pale);
+    padding: 8px 16px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-header .sec-num {
+    color: var(--accent);
+    font-size: 13px;
+  }
+  .section-body {
+    padding: 20px 16px;
+  }
+
+  /* ── Field grid ── */
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 24px;
+  }
+  .field-grid.three-col {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .field-grid.full {
+    grid-template-columns: 1fr;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .field label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+  .field input[type="text"],
+  .field input[type="date"],
+  .field textarea,
+  .field select {
+    font-family: var(--font);
+    font-size: 13px;
+    background: #fff;
+    border: 1px solid var(--rule);
+    padding: 7px 10px;
+    outline: none;
+    border-radius: 0;
+    color: var(--ink);
+    width: 100%;
+    transition: border-color 0.15s;
+  }
+  .field input:focus,
+  .field textarea:focus,
+  .field select:focus {
+    border-color: var(--accent);
+  }
+  .field textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  /* ── Criteria table ── */
+  .criteria-table-wrap {
+    overflow-x: auto;
+  }
+  .criteria-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .criteria-table th {
+    background: #f0e8df;
+    border: 1px solid var(--rule);
+    padding: 7px 10px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-align: left;
+    white-space: nowrap;
+  }
+  .criteria-table td {
+    border: 1px solid var(--rule-light);
+    padding: 4px 6px;
+    vertical-align: middle;
+  }
+  .criteria-table tr:nth-child(even) td {
+    background: rgba(255,255,255,0.5);
+  }
+  .criteria-table td input[type="text"] {
+    font-family: var(--font);
+    font-size: 12px;
+    width: 100%;
+    border: none;
+    background: transparent;
+    outline: none;
+    padding: 4px 4px;
+    color: var(--ink);
+  }
+  .criteria-table td input[type="text"]:focus {
+    background: #fff;
+    outline: 1px solid var(--accent);
+  }
+  .criteria-table td select {
+    font-family: var(--font);
+    font-size: 12px;
+    width: 100%;
+    border: none;
+    background: transparent;
+    outline: none;
+    padding: 4px 4px;
+    color: var(--ink);
+    cursor: pointer;
+    border-radius: 0;
+    -webkit-appearance: none;
+  }
+  .criteria-table td select:focus {
+    background: #fff;
+    outline: 1px solid var(--accent);
+  }
+  .criteria-table td.pass { background: var(--pass-bg); }
+  .criteria-table td.fail { background: var(--fail-bg); }
+  .criteria-table td.cond { background: var(--cond-bg); }
+  .criteria-table td.row-num {
+    color: var(--mid);
+    font-size: 10px;
+    text-align: center;
+    width: 32px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .criteria-table td.row-num:hover { color: #c00; }
+
+  .row-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  /* ── Overall result ── */
+  .result-options {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--rule);
+  }
+  .result-option {
+    flex: 1;
+    text-align: center;
+    padding: 14px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-right: 1px solid var(--rule);
+    transition: background 0.15s, color 0.15s;
+    color: var(--mid);
+    background: #fff;
+  }
+  .result-option:last-child { border-right: none; }
+  .result-option:hover { background: #f5e8da; }
+  .result-option.selected-pass {
+    background: var(--pass-bg);
+    color: #2a7a2a;
+    border-bottom: 3px solid #2a7a2a;
+  }
+  .result-option.selected-conditions {
+    background: var(--cond-bg);
+    color: #8a6000;
+    border-bottom: 3px solid #c89000;
+  }
+  .result-option.selected-fail {
+    background: var(--fail-bg);
+    color: #c00;
+    border-bottom: 3px solid #c00;
+  }
+
+  /* ── Sign-off table ── */
+  .signoff-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .signoff-table th {
+    background: #f0e8df;
+    border: 1px solid var(--rule);
+    padding: 7px 12px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: left;
+  }
+  .signoff-table td {
+    border: 1px solid var(--rule-light);
+    padding: 6px 8px;
+    vertical-align: middle;
+  }
+  .signoff-table td input {
+    font-family: var(--font);
+    font-size: 13px;
+    width: 100%;
+    border: none;
+    background: transparent;
+    outline: none;
+    padding: 4px;
+    color: var(--ink);
+  }
+  .signoff-table td input:focus {
+    background: #fff;
+    outline: 1px solid var(--accent);
+  }
+
+  /* ── Buttons ── */
+  .btn {
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    padding: 9px 18px;
+    border-radius: 0;
+    transition: background 0.15s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: #8e420a; }
+  .btn-ghost {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+  }
+  .btn-ghost:hover { background: #f5e0d0; }
+  .btn-small {
+    font-size: 10px;
+    padding: 5px 10px;
+  }
+
+  /* ── Export panel ── */
+  .export-panel {
+    border: 2px solid var(--accent);
+    padding: 24px;
+    margin-top: 40px;
+  }
+  .export-panel h3 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .export-note {
+    font-size: 11px;
+    color: var(--mid);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .export-email-row {
+    display: flex;
+    gap: 0;
+    margin-bottom: 12px;
+  }
+  .export-email-row input {
+    font-family: var(--font);
+    font-size: 13px;
+    flex: 1;
+    border: 1px solid var(--rule);
+    border-right: none;
+    padding: 9px 12px;
+    outline: none;
+    border-radius: 0;
+    background: #fff;
+  }
+  .export-email-row input:focus { border-color: var(--accent); }
+  .export-btn-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .export-status {
+    margin-top: 12px;
+    font-size: 11px;
+    min-height: 18px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .export-status.error { color: #c00; }
+  .export-status.ok { color: #2a7a2a; }
+
+  /* ── Progress bar ── */
+  .progress-bar-wrap {
+    height: 3px;
+    background: var(--rule-light);
+    margin-bottom: 32px;
+  }
+  .progress-bar {
+    height: 3px;
+    background: var(--accent);
+    width: 50%; /* doc 02 of 04 */
+    transition: width 0.4s;
+  }
+
+  /* ── Utility ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 20px 0;
+  }
+  .hint {
+    font-size: 10px;
+    color: var(--mid);
+    margin-top: 3px;
+    font-style: italic;
+  }
+  .required-star { color: var(--accent); }
+
+  @media (max-width: 640px) {
+    .container { padding: 20px 16px 60px; }
+    .site-header { padding: 14px 16px; flex-wrap: wrap; }
+    .breadcrumb { display: none; }
+    .field-grid { grid-template-columns: 1fr; }
+    .field-grid.three-col { grid-template-columns: 1fr; }
+    .result-options { flex-direction: column; }
+    .result-option { border-right: none; border-bottom: 1px solid var(--rule); }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="kit-label">OT Security RFP Evaluation Kit</span>
+  <span class="doc-title"><span class="doc-num">02 /</span> PoC Success Criteria</span>
+  <span class="breadcrumb">otcybersecuritysoftware.com</span>
+</header>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar"></div>
+</div>
+
+<main class="container">
+
+  <!-- Section 1: Engagement Header -->
+  <div class="section">
+    <div class="section-header">
+      <span class="sec-num">01</span> Engagement Information
+    </div>
+    <div class="section-body">
+      <div class="field-grid">
+        <div class="field">
+          <label>Vendor / Product Name <span class="required-star">*</span></label>
+          <input type="text" id="vendor-name" placeholder="e.g., Claroty Platform 4.x">
+        </div>
+        <div class="field">
+          <label>PoC Environment Segment</label>
+          <input type="text" id="poc-segment" placeholder="e.g., Zone 2 — Refinery Control Network">
+        </div>
+        <div class="field">
+          <label>PoC Start Date</label>
+          <input type="date" id="poc-start">
+        </div>
+        <div class="field">
+          <label>PoC End Date</label>
+          <input type="date" id="poc-end">
+        </div>
+        <div class="field">
+          <label>Internal PoC Lead</label>
+          <input type="text" id="internal-lead" placeholder="Name, title">
+        </div>
+        <div class="field">
+          <label>Vendor PoC Lead</label>
+          <input type="text" id="vendor-lead" placeholder="Name, email">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Criteria Table -->
+  <div class="section">
+    <div class="section-header">
+      <span class="sec-num">02</span> Success Criteria
+      <span style="margin-left:auto;font-size:10px;font-weight:400;letter-spacing:0;text-transform:none;color:#c8b8a2;">Enter criteria, thresholds, and results. Click a row number to remove it.</span>
+    </div>
+    <div class="section-body">
+      <div class="criteria-table-wrap">
+        <table class="criteria-table" id="criteria-table">
+          <thead>
+            <tr>
+              <th style="width:32px">#</th>
+              <th style="min-width:220px">Criterion</th>
+              <th style="min-width:160px">Minimum Threshold</th>
+              <th style="min-width:160px">Actual Result</th>
+              <th style="width:110px">Pass / Fail</th>
+            </tr>
+          </thead>
+          <tbody id="criteria-tbody">
+            <!-- rows injected by JS -->
+          </tbody>
+        </table>
+      </div>
+      <div class="row-controls">
+        <button class="btn btn-ghost btn-small" onclick="addCriteriaRow()">+ Add Criterion</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Observations -->
+  <div class="section">
+    <div class="section-header">
+      <span class="sec-num">03</span> Observations & Notes
+    </div>
+    <div class="section-body">
+      <div class="field-grid full" style="gap:16px;">
+        <div class="field">
+          <label>Deployment &amp; Integration Notes</label>
+          <textarea id="obs-deployment" placeholder="Describe any installation friction, integration issues, or configuration requirements that emerged during the PoC..."></textarea>
+        </div>
+        <div class="field">
+          <label>Performance &amp; Detection Quality</label>
+          <textarea id="obs-performance" placeholder="Note detection accuracy, false positive rates, latency, asset coverage, or protocol parsing observations..."></textarea>
+        </div>
+        <div class="field">
+          <label>Vendor Support &amp; Responsiveness</label>
+          <textarea id="obs-support" placeholder="Evaluate vendor responsiveness, quality of technical assistance, escalation handling..."></textarea>
+        </div>
+        <div class="field">
+          <label>Gaps or Concerns</label>
+          <textarea id="obs-gaps" placeholder="Any functionality gaps, missing protocol support, licensing concerns, or open questions..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: Overall Result -->
+  <div class="section">
+    <div class="section-header">
+      <span class="sec-num">04</span> Overall PoC Result
+    </div>
+    <div class="section-body">
+      <p class="hint" style="margin-bottom:14px;">Select the outcome that reflects the aggregate performance against success criteria.</p>
+      <div class="result-options" id="result-options">
+        <div class="result-option" data-value="pass" onclick="selectResult(this)">✓ Pass</div>
+        <div class="result-option" data-value="conditions" onclick="selectResult(this)">◐ Pass with Conditions</div>
+        <div class="result-option" data-value="fail" onclick="selectResult(this)">✕ Fail</div>
+      </div>
+      <div class="field" style="margin-top:18px;">
+        <label>Result Rationale</label>
+        <textarea id="result-rationale" style="min-height:64px;" placeholder="Summarize why this result was reached, especially if conditions apply..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: Conditions (shown conditionally) -->
+  <div class="section" id="conditions-section" style="display:none;">
+    <div class="section-header">
+      <span class="sec-num">05</span> Conditions for Advancement
+    </div>
+    <div class="section-body">
+      <div class="field">
+        <label>Conditions Required Before Full Approval</label>
+        <textarea id="conditions-text" style="min-height:96px;" placeholder="List each condition as a discrete, verifiable commitment. Include owner name and resolution deadline where applicable..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5/6: Summary -->
+  <div class="section">
+    <div class="section-header">
+      <span class="sec-num" id="summary-sec-num">05</span> Executive Summary
+    </div>
+    <div class="section-body">
+      <div class="field">
+        <label>Summary for Stakeholders</label>
+        <textarea id="exec-summary" style="min-height:120px;" placeholder="Provide a 3–5 sentence summary suitable for CISO or plant management review. State what was tested, the outcome, and the recommended next step..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 6/7: Sign-off -->
+  <div class="section">
+    <div class="section-header">
+      <span class="sec-num" id="signoff-sec-num">06</span> Sign-off
+    </div>
+    <div class="section-body">
+      <table class="signoff-table">
+        <thead>
+          <tr>
+            <th>Role</th>
+            <th>Name</th>
+            <th>Signature / Initials</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color:var(--mid);font-size:11px;padding:8px 10px;white-space:nowrap;">Internal PoC Lead</td>
+            <td><input type="text" data-role="internal-lead-name"></td>
+            <td><input type="text" data-role="internal-lead-sig" placeholder="Initials or typed signature"></td>
+            <td><input type="text" data-role="internal-lead-date" placeholder="YYYY-MM-DD"></td>
+          </tr>
+          <tr>
+            <td style="color:var(--mid);font-size:11px;padding:8px 10px;white-space:nowrap;">Security Architect / SME</td>
+            <td><input type="text" data-role="arch-name"></td>
+            <td><input type="text" data-role="arch-sig" placeholder="Initials or typed signature"></td>
+            <td><input type="text" data-role="arch-date" placeholder="YYYY-MM-DD"></td>
+          </tr>
+          <tr>
+            <td style="color:var(--mid);font-size:11px;padding:8px 10px;white-space:nowrap;">Vendor PoC Lead</td>
+            <td><input type="text" data-role="vendor-sig-name"></td>
+            <td><input type="text" data-role="vendor-sig-sig" placeholder="Initials or typed signature"></td>
+            <td><input type="text" data-role="vendor-sig-date" placeholder="YYYY-MM-DD"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Export panel -->
+  <div class="export-panel">
+    <h3>Export Document</h3>
+    <p class="export-note">
+      Enter your work email to receive the OT cybersecurity newsletter and download your completed PoC Success Criteria document as a print-ready HTML file.
+    </p>
+    <div class="export-email-row">
+      <input type="email" id="export-email" placeholder="your@email.com">
+    </div>
+    <div class="export-btn-group">
+      <button class="btn btn-primary" onclick="handleExport()">Download PoC Criteria Document</button>
+    </div>
+    <div class="export-status" id="export-status"></div>
+  </div>
+
+</main>
+
+<script>
+  // ── State ──────────────────────────────────────────────────────────────────
+  let overallResult = null;
+  let criteriaRows = [];
+  let rowIdCounter = 0;
+
+  const DEFAULT_CRITERIA = [
+    { criterion: 'Asset discovery coverage (passive)', threshold: '≥ 95% of known OT assets identified within 72 hrs', result: '', status: '' },
+    { criterion: 'False positive rate — critical alerts', threshold: '≤ 5% over 30-day window', result: '', status: '' },
+    { criterion: 'Protocol parsing (target protocols)', threshold: 'Accurate decode of all in-scope protocols', result: '', status: '' },
+    { criterion: 'Time-to-alert (anomaly detection)', threshold: '≤ 60 seconds from event to console alert', result: '', status: '' },
+    { criterion: 'Integration with existing SIEM', threshold: 'Syslog / CEF export validated end-to-end', result: '', status: '' },
+    { criterion: 'Impact on network / no active traffic', threshold: 'Zero disruption to production OT traffic', result: '', status: '' },
+  ];
+
+  // ── Criteria table ─────────────────────────────────────────────────────────
+  function initTable() {
+    DEFAULT_CRITERIA.forEach(r => addCriteriaRow(r));
+  }
+
+  function addCriteriaRow(data) {
+    const id = ++rowIdCounter;
+    criteriaRows.push(id);
+    renderTable();
+    if (data) {
+      const row = document.getElementById('cr-row-' + id);
+      if (!row) return;
+      row.querySelector('.cr-criterion').value = data.criterion || '';
+      row.querySelector('.cr-threshold').value = data.threshold || '';
+      row.querySelector('.cr-result').value = data.result || '';
+      row.querySelector('.cr-status').value = data.status || '';
+      updateRowColor(id);
+    }
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById('criteria-tbody');
+    tbody.innerHTML = '';
+    criteriaRows.forEach((id, idx) => {
+      const tr = document.createElement('tr');
+      tr.id = 'cr-row-' + id;
+      tr.innerHTML = `
+        <td class="row-num" title="Click to remove row" onclick="removeRow(${id})">${idx + 1}</td>
+        <td><input type="text" class="cr-criterion" placeholder="e.g., Asset discovery coverage" oninput=""></td>
+        <td><input type="text" class="cr-threshold" placeholder="Minimum acceptable value"></td>
+        <td><input type="text" class="cr-result" placeholder="Observed result"></td>
+        <td>
+          <select class="cr-status" onchange="updateRowColor(${id})">
+            <option value="">—</option>
+            <option value="pass">Pass</option>
+            <option value="conditions">Conditional</option>
+            <option value="fail">Fail</option>
+            <option value="n/a">N/A</option>
+          </select>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function updateRowColor(id) {
+    const row = document.getElementById('cr-row-' + id);
+    if (!row) return;
+    const sel = row.querySelector('.cr-status');
+    const td = sel.closest('td');
+    td.className = '';
+    if (sel.value === 'pass') td.className = 'pass';
+    else if (sel.value === 'fail') td.className = 'fail';
+    else if (sel.value === 'conditions') td.className = 'cond';
+  }
+
+  function removeRow(id) {
+    if (criteriaRows.length <= 1) return;
+    criteriaRows = criteriaRows.filter(r => r !== id);
+    renderTable();
+  }
+
+  // ── Overall result ─────────────────────────────────────────────────────────
+  function selectResult(el) {
+    document.querySelectorAll('.result-option').forEach(o => {
+      o.className = 'result-option';
+    });
+    const val = el.dataset.value;
+    overallResult = val;
+    if (val === 'pass') el.classList.add('selected-pass');
+    else if (val === 'conditions') el.classList.add('selected-conditions');
+    else if (val === 'fail') el.classList.add('selected-fail');
+
+    const condSection = document.getElementById('conditions-section');
+    if (val === 'conditions') {
+      condSection.style.display = '';
+      document.getElementById('summary-sec-num').textContent = '06';
+      document.getElementById('signoff-sec-num').textContent = '07';
+    } else {
+      condSection.style.display = 'none';
+      document.getElementById('summary-sec-num').textContent = '05';
+      document.getElementById('signoff-sec-num').textContent = '06';
+    }
+  }
+
+  // ── Data collection ────────────────────────────────────────────────────────
+  function collectData() {
+    const criteria = criteriaRows.map(id => {
+      const row = document.getElementById('cr-row-' + id);
+      if (!row) return null;
+      return {
+        criterion: row.querySelector('.cr-criterion').value,
+        threshold: row.querySelector('.cr-threshold').value,
+        result: row.querySelector('.cr-result').value,
+        status: row.querySelector('.cr-status').value,
+      };
+    }).filter(Boolean);
+
+    const signoffs = [];
+    document.querySelectorAll('.signoff-table tbody tr').forEach(tr => {
+      const cells = tr.querySelectorAll('td');
+      if (cells.length < 4) return;
+      signoffs.push({
+        role: cells[0].textContent.trim(),
+        name: cells[1].querySelector('input').value,
+        sig: cells[2].querySelector('input').value,
+        date: cells[3].querySelector('input').value,
+      });
+    });
+
+    return {
+      vendor: document.getElementById('vendor-name').value,
+      segment: document.getElementById('poc-segment').value,
+      startDate: document.getElementById('poc-start').value,
+      endDate: document.getElementById('poc-end').value,
+      internalLead: document.getElementById('internal-lead').value,
+      vendorLead: document.getElementById('vendor-lead').value,
+      criteria,
+      obsDeployment: document.getElementById('obs-deployment').value,
+      obsPerformance: document.getElementById('obs-performance').value,
+      obsSupport: document.getElementById('obs-support').value,
+      obsGaps: document.getElementById('obs-gaps').value,
+      overallResult,
+      resultRationale: document.getElementById('result-rationale').value,
+      conditions: document.getElementById('conditions-text') ? document.getElementById('conditions-text').value : '',
+      execSummary: document.getElementById('exec-summary').value,
+      signoffs,
+    };
+  }
+
+  // ── HTML generation ────────────────────────────────────────────────────────
+  function buildDocHTML(data) {
+    const resultLabel = data.overallResult === 'pass' ? 'PASS'
+      : data.overallResult === 'conditions' ? 'PASS WITH CONDITIONS'
+      : data.overallResult === 'fail' ? 'FAIL'
+      : '(Not Selected)';
+
+    const resultColor = data.overallResult === 'pass' ? '#2a7a2a'
+      : data.overallResult === 'conditions' ? '#8a6000'
+      : data.overallResult === 'fail' ? '#c00'
+      : '#666';
+
+    const criteriaRows = data.criteria.map((r, i) => {
+      const statusLabel = r.status === 'pass' ? 'Pass'
+        : r.status === 'fail' ? 'Fail'
+        : r.status === 'conditions' ? 'Conditional'
+        : r.status === 'n/a' ? 'N/A'
+        : '—';
+      const statusColor = r.status === 'pass' ? '#2a7a2a' : r.status === 'fail' ? '#c00' : r.status === 'conditions' ? '#8a6000' : '#666';
+      return `
+        <tr>
+          <td style="padding:7px 10px;border:1px solid #e0d0bc;color:#999;font-size:11px;text-align:center;">${i + 1}</td>
+          <td style="padding:7px 10px;border:1px solid #e0d0bc;">${esc(r.criterion)}</td>
+          <td style="padding:7px 10px;border:1px solid #e0d0bc;">${esc(r.threshold)}</td>
+          <td style="padding:7px 10px;border:1px solid #e0d0bc;">${esc(r.result)}</td>
+          <td style="padding:7px 10px;border:1px solid #e0d0bc;font-weight:700;color:${statusColor};">${statusLabel}</td>
+        </tr>`;
+    }).join('');
+
+    const signoffRows = data.signoffs.map(s => `
+      <tr>
+        <td style="padding:8px 12px;border:1px solid #e0d0bc;color:#666;font-size:11px;">${esc(s.role)}</td>
+        <td style="padding:8px 12px;border:1px solid #e0d0bc;">${esc(s.name)}</td>
+        <td style="padding:8px 12px;border:1px solid #e0d0bc;">${esc(s.sig)}</td>
+        <td style="padding:8px 12px;border:1px solid #e0d0bc;">${esc(s.date)}</td>
+      </tr>`).join('');
+
+    const conditionsBlock = data.conditions ? `
+      <h2 style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:#1a1a1a;color:#faf0e6;padding:8px 16px;margin:32px 0 0;">05 — Conditions for Advancement</h2>
+      <div style="border:1px solid #c8b8a2;border-top:none;padding:16px 18px;">
+        <p style="white-space:pre-wrap;line-height:1.65;">${esc(data.conditions)}</p>
+      </div>` : '';
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PoC Success Criteria — ${esc(data.vendor)}</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Space Mono', monospace; background: #faf0e6; color: #1a1a1a; font-size: 13px; line-height: 1.6; max-width: 860px; margin: 0 auto; padding: 40px 32px 80px; }
+  table { border-collapse: collapse; width: 100%; }
+  th { background: #f0e8df; border: 1px solid #c8b8a2; padding: 8px 10px; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; text-align: left; }
+  @media print { body { background: #fff; } }
+</style>
+</head>
+<body>
+<div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #1a1a1a;padding-bottom:14px;margin-bottom:28px;">
+  <div>
+    <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#B5570A;font-weight:700;margin-bottom:4px;">OT Security RFP Evaluation Kit</div>
+    <div style="font-size:20px;font-weight:700;letter-spacing:-0.02em;"><span style="color:#B5570A;">02 /</span> PoC Success Criteria</div>
+  </div>
+  <div style="font-size:10px;color:#666;text-align:right;">otcybersecuritysoftware.com<br>Generated ${new Date().toISOString().slice(0,10)}</div>
+</div>
+
+<h2 style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:#1a1a1a;color:#faf0e6;padding:8px 16px;margin:0 0 0;">01 — Engagement Information</h2>
+<div style="border:1px solid #c8b8a2;border-top:none;padding:16px 18px;margin-bottom:28px;">
+  <table style="width:100%;border:none;">
+    <tr>
+      <td style="border:none;padding:4px 0;width:50%;"><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#666;">Vendor / Product</span><br><strong>${esc(data.vendor) || '—'}</strong></td>
+      <td style="border:none;padding:4px 0;"><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#666;">PoC Environment Segment</span><br><strong>${esc(data.segment) || '—'}</strong></td>
+    </tr>
+    <tr>
+      <td style="border:none;padding:4px 0;"><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#666;">PoC Start Date</span><br>${esc(data.startDate) || '—'}</td>
+      <td style="border:none;padding:4px 0;"><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#666;">PoC End Date</span><br>${esc(data.endDate) || '—'}</td>
+    </tr>
+    <tr>
+      <td style="border:none;padding:4px 0;"><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#666;">Internal PoC Lead</span><br>${esc(data.internalLead) || '—'}</td>
+      <td style="border:none;padding:4px 0;"><span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#666;">Vendor PoC Lead</span><br>${esc(data.vendorLead) || '—'}</td>
+    </tr>
+  </table>
+</div>
+
+<h2 style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:#1a1a1a;color:#faf0e6;padding:8px 16px;margin:0 0 0;">02 — Success Criteria</h2>
+<div style="border:1px solid #c8b8a2;border-top:none;margin-bottom:28px;">
+  <table>
+    <thead>
+      <tr>
+        <th style="width:32px;">#</th>
+        <th>Criterion</th>
+        <th>Minimum Threshold</th>
+        <th>Actual Result</th>
+        <th style="width:110px;">Pass / Fail</th>
+      </tr>
+    </thead>
+    <tbody>${criteriaRows}</tbody>
+  </table>
+</div>
+
+<h2 style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:#1a1a1a;color:#faf0e6;padding:8px 16px;margin:0 0 0;">03 — Observations</h2>
+<div style="border:1px solid #c8b8a2;border-top:none;padding:16px 18px;margin-bottom:28px;">
+  ${obs('Deployment &amp; Integration', data.obsDeployment)}
+  ${obs('Performance &amp; Detection Quality', data.obsPerformance)}
+  ${obs('Vendor Support &amp; Responsiveness', data.obsSupport)}
+  ${obs('Gaps or Concerns', data.obsGaps)}
+</div>
+
+<h2 style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:#1a1a1a;color:#faf0e6;padding:8px 16px;margin:0 0 0;">04 — Overall Result</h2>
+<div style="border:1px solid #c8b8a2;border-top:none;padding:16px 18px;margin-bottom:28px;">
+  <div style="font-size:20px;font-weight:700;color:${resultColor};margin-bottom:12px;">${resultLabel}</div>
+  ${data.resultRationale ? `<p style="white-space:pre-wrap;">${esc(data.resultRationale)}</p>` : ''}
+</div>
+
+${conditionsBlock}
+
+<h2 style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:#1a1a1a;color:#faf0e6;padding:8px 16px;margin:${data.conditions ? '28px' : '0'} 0 0;">Executive Summary</h2>
+<div style="border:1px solid #c8b8a2;border-top:none;padding:16px 18px;margin-bottom:28px;">
+  <p style="white-space:pre-wrap;line-height:1.65;">${esc(data.execSummary) || '—'}</p>
+</div>
+
+<h2 style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:#1a1a1a;color:#faf0e6;padding:8px 16px;margin:0 0 0;">Sign-off</h2>
+<div style="border:1px solid #c8b8a2;border-top:none;margin-bottom:28px;">
+  <table>
+    <thead>
+      <tr>
+        <th>Role</th>
+        <th>Name</th>
+        <th>Signature / Initials</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>${signoffRows}</tbody>
+  </table>
+</div>
+
+<div style="border-top:1px solid #c8b8a2;padding-top:12px;font-size:10px;color:#999;">
+  OT Security RFP Evaluation Kit · otcybersecuritysoftware.com · Document 02 of 04
+</div>
+</body>
+</html>`;
+  }
+
+  function obs(label, text) {
+    if (!text) return '';
+    return `<div style="margin-bottom:14px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#666;margin-bottom:4px;">${label}</div>
+      <p style="white-space:pre-wrap;line-height:1.65;">${esc(text)}</p>
+    </div>`;
+  }
+
+  function esc(str) {
+    if (!str) return '';
+    return str.toString()
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // ── Email gate + export ────────────────────────────────────────────────────
+  async function subscribeEmail(email) {
+    const res = await fetch('https://newsletter.otcybersecuritysoftware.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email,
+        group_id: '189858333791880417',
+      }),
+    });
+    const data = await res.json();
+    return data.message === 'Subscribed';
+  }
+
+  async function handleExport() {
+    const statusEl = document.getElementById('export-status');
+    const email = document.getElementById('export-email').value.trim();
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      statusEl.textContent = 'Please enter a valid work email address.';
+      statusEl.className = 'export-status error';
+      return;
+    }
+
+    statusEl.textContent = 'Subscribing…';
+    statusEl.className = 'export-status';
+
+    try {
+      await subscribeEmail(email);
+    } catch (e) {
+      // Non-blocking — proceed to export even if subscribe fails
+    }
+
+    statusEl.textContent = 'Building document…';
+
+    const data = collectData();
+    const html = buildDocHTML(data);
+    const vendorSlug = (data.vendor || 'poc-criteria').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const filename = `ot-rfp-doc02-poc-criteria-${vendorSlug}.html`;
+
+    try {
+      const zip = new JSZip();
+      zip.file(filename, html);
+      const blob = await zip.generateAsync({ type: 'blob' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ot-rfp-doc02-poc-criteria-${vendorSlug}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      statusEl.textContent = 'Download started.';
+      statusEl.className = 'export-status ok';
+    } catch (e) {
+      statusEl.textContent = 'Export failed. Please try again.';
+      statusEl.className = 'export-status error';
+    }
+  }
+
+  // ── Init ───────────────────────────────────────────────────────────────────
+  initTable();
+</script>
+</body>
+</html>

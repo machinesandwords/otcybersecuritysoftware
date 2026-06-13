@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OT Security RFP Evaluation Kit — Doc 03: Protocol & Asset Questionnaire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --accent: #B5570A;
+    --pale: #faf0e6;
+    --ink: #1a1a1a;
+    --mid: #666;
+    --rule: #c8b8a2;
+    --rule-light: #e0d0bc;
+    --font: 'Space Mono', monospace;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--pale);
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .site-header {
+    border-bottom: 2px solid var(--ink);
+    padding: 18px 40px;
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+  }
+  .kit-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .doc-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .doc-num { color: var(--accent); }
+  .breadcrumb {
+    margin-left: auto;
+    font-size: 10px;
+    color: var(--mid);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ── Progress ── */
+  .progress-bar-wrap { height: 3px; background: var(--rule-light); }
+  .progress-bar { height: 3px; background: var(--accent); width: 75%; }
+
+  /* ── Layout ── */
+  .container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 40px 40px 80px;
+  }
+
+  /* ── Part tabs ── */
+  .part-tabs {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--rule);
+    margin-bottom: 28px;
+  }
+  .part-tab {
+    flex: 1;
+    padding: 12px 8px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-right: 1px solid var(--rule);
+    background: #fff;
+    color: var(--mid);
+    transition: background 0.12s, color 0.12s;
+  }
+  .part-tab:last-child { border-right: none; }
+  .part-tab:hover { background: #f5e8da; }
+  .part-tab.active {
+    background: var(--ink);
+    color: var(--pale);
+  }
+  .part-tab .tab-sub {
+    display: block;
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+    opacity: 0.7;
+    text-transform: none;
+  }
+
+  /* ── Section blocks ── */
+  .section {
+    border: 1px solid var(--rule);
+    margin-bottom: 24px;
+  }
+  .section-header {
+    background: var(--ink);
+    color: var(--pale);
+    padding: 8px 16px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-header .sec-num { color: var(--accent); font-size: 13px; }
+  .section-header .sec-note {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    color: #c8b8a2;
+  }
+  .section-body { padding: 16px; }
+
+  /* ── Preamble fields ── */
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 24px;
+  }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+  .field input[type="text"],
+  .field input[type="date"],
+  .field textarea,
+  .field select {
+    font-family: var(--font);
+    font-size: 13px;
+    background: #fff;
+    border: 1px solid var(--rule);
+    padding: 7px 10px;
+    outline: none;
+    border-radius: 0;
+    color: var(--ink);
+    width: 100%;
+  }
+  .field input:focus,
+  .field textarea:focus,
+  .field select:focus { border-color: var(--accent); }
+  .field textarea { resize: vertical; min-height: 72px; }
+
+  /* ── Data tables ── */
+  .data-table-wrap { overflow-x: auto; }
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    min-width: 700px;
+  }
+  .data-table th {
+    background: #f0e8df;
+    border: 1px solid var(--rule);
+    padding: 7px 10px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: left;
+    white-space: nowrap;
+  }
+  .data-table td {
+    border: 1px solid var(--rule-light);
+    padding: 3px 5px;
+    vertical-align: middle;
+  }
+  .data-table tr:nth-child(even) td { background: rgba(255,255,255,0.45); }
+
+  /* inline cell inputs */
+  .data-table td input[type="text"],
+  .data-table td select {
+    font-family: var(--font);
+    font-size: 12px;
+    width: 100%;
+    border: none;
+    background: transparent;
+    outline: none;
+    padding: 5px 4px;
+    color: var(--ink);
+    border-radius: 0;
+    -webkit-appearance: none;
+  }
+  .data-table td input:focus,
+  .data-table td select:focus {
+    background: #fff;
+    outline: 1px solid var(--accent);
+  }
+  .data-table td.row-num {
+    color: var(--mid);
+    font-size: 10px;
+    text-align: center;
+    width: 30px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .data-table td.row-num:hover { color: #c00; }
+
+  /* vendor response cells — placeholder styling */
+  .data-table td.vendor-cell input::placeholder { color: #c8b8a2; font-style: italic; }
+
+  /* ── Part panels ── */
+  .part-panel { display: none; }
+  .part-panel.active { display: block; }
+
+  /* ── Comparison notes ── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .compare-note {
+    border: 1px solid var(--rule);
+  }
+  .compare-note-header {
+    background: #f0e8df;
+    border-bottom: 1px solid var(--rule);
+    padding: 7px 12px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .compare-note textarea {
+    font-family: var(--font);
+    font-size: 12px;
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 10px 12px;
+    outline: none;
+    resize: vertical;
+    min-height: 100px;
+    color: var(--ink);
+  }
+  .compare-note textarea:focus { background: #fff; }
+
+  /* ── Row controls ── */
+  .row-controls { display: flex; gap: 10px; margin-top: 10px; }
+  .btn {
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 0;
+    transition: background 0.14s;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #8e420a; }
+  .btn-ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  .btn-ghost:hover { background: #f5e0d0; }
+  .btn-small { font-size: 10px; padding: 5px 10px; }
+  .btn-ink { background: var(--ink); color: var(--pale); }
+  .btn-ink:hover { background: #333; }
+
+  /* ── Legend strip ── */
+  .legend-strip {
+    display: flex;
+    gap: 20px;
+    font-size: 10px;
+    color: var(--mid);
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .legend-strip span { display: flex; align-items: center; gap: 5px; }
+  .legend-dot {
+    width: 8px; height: 8px;
+    border: 1px solid var(--rule);
+    flex-shrink: 0;
+  }
+  .dot-yes { background: #d4edda; }
+  .dot-no { background: #f8d7da; }
+  .dot-partial { background: #fff3cd; }
+
+  /* ── Export panel ── */
+  .export-panel {
+    border: 2px solid var(--accent);
+    padding: 24px;
+    margin-top: 40px;
+  }
+  .export-panel h3 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .export-note { font-size: 11px; color: var(--mid); margin-bottom: 16px; line-height: 1.5; }
+  .export-email-row { display: flex; gap: 0; margin-bottom: 12px; }
+  .export-email-row input {
+    font-family: var(--font);
+    font-size: 13px;
+    flex: 1;
+    border: 1px solid var(--rule);
+    border-right: none;
+    padding: 9px 12px;
+    outline: none;
+    border-radius: 0;
+    background: #fff;
+  }
+  .export-email-row input:focus { border-color: var(--accent); }
+  .export-btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+  .export-status {
+    margin-top: 12px;
+    font-size: 11px;
+    min-height: 18px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .export-status.error { color: #c00; }
+  .export-status.ok { color: #2a7a2a; }
+
+  .hint { font-size: 10px; color: var(--mid); margin-top: 3px; font-style: italic; }
+
+  @media (max-width: 680px) {
+    .container { padding: 20px 14px 60px; }
+    .site-header { padding: 14px 16px; flex-wrap: wrap; }
+    .breadcrumb { display: none; }
+    .field-grid { grid-template-columns: 1fr; }
+    .compare-grid { grid-template-columns: 1fr; }
+    .part-tab .tab-sub { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="kit-label">OT Security RFP Evaluation Kit</span>
+  <span class="doc-title"><span class="doc-num">03 /</span> Protocol &amp; Asset Questionnaire</span>
+  <span class="breadcrumb">otcybersecuritysoftware.com</span>
+</header>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar"></div>
+</div>
+
+<main class="container">
+
+  <!-- Preamble -->
+  <div class="section">
+    <div class="section-header">
+      <span class="sec-num">—</span> Engagement Header
+    </div>
+    <div class="section-body">
+      <div class="field-grid">
+        <div class="field">
+          <label>Organization</label>
+          <input type="text" id="org-name" placeholder="Your organization name">
+        </div>
+        <div class="field">
+          <label>Prepared By</label>
+          <input type="text" id="prepared-by" placeholder="Name, title">
+        </div>
+        <div class="field">
+          <label>Date</label>
+          <input type="date" id="doc-date">
+        </div>
+        <div class="field">
+          <label>Evaluation Phase</label>
+          <input type="text" id="eval-phase" placeholder="e.g., RFP Phase 1 — Shortlist">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Part tabs -->
+  <div class="part-tabs">
+    <div class="part-tab active" onclick="switchPart('a')">
+      Part A
+      <span class="tab-sub">Internal Asset Audit</span>
+    </div>
+    <div class="part-tab" onclick="switchPart('b')">
+      Part B
+      <span class="tab-sub">Vendor Response</span>
+    </div>
+    <div class="part-tab" onclick="switchPart('c')">
+      Part C
+      <span class="tab-sub">Comparison Notes</span>
+    </div>
+  </div>
+
+  <!-- ── PART A ── -->
+  <div class="part-panel active" id="panel-a">
+    <div class="section">
+      <div class="section-header">
+        <span class="sec-num">A</span> Internal Protocol &amp; Asset Inventory
+        <span class="sec-note">Completed by your team before vendor engagement. Not shared with vendors.</span>
+      </div>
+      <div class="section-body">
+        <p class="hint" style="margin-bottom:12px;">Document every protocol and asset class present in your OT environment. Mark legacy systems honestly — this is for internal use only. Click a row number to remove it.</p>
+        <div class="data-table-wrap">
+          <table class="data-table" id="part-a-table">
+            <thead>
+              <tr>
+                <th style="width:30px">#</th>
+                <th style="min-width:130px">Protocol</th>
+                <th style="min-width:140px">Equipment Type</th>
+                <th style="min-width:150px">Vendor / Model (examples)</th>
+                <th style="min-width:130px">Network Segment</th>
+                <th style="width:80px">Approx. Count</th>
+                <th style="width:80px">Legacy? (Y/N)</th>
+              </tr>
+            </thead>
+            <tbody id="part-a-tbody"></tbody>
+          </table>
+        </div>
+        <div class="row-controls">
+          <button class="btn btn-ghost btn-small" onclick="addRowA()">+ Add Row</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PART B ── -->
+  <div class="part-panel" id="panel-b">
+    <div class="section">
+      <div class="section-header">
+        <span class="sec-num">B</span> Vendor Protocol Support — Response Table
+        <span class="sec-note">Sent to vendors with Part A protocols listed. Vendor response fields start blank.</span>
+      </div>
+      <div class="section-body">
+        <div class="field-grid" style="margin-bottom:18px;">
+          <div class="field">
+            <label>Vendor Name</label>
+            <input type="text" id="vendor-b-name" placeholder="e.g., Nozomi Networks">
+          </div>
+          <div class="field">
+            <label>Product / Version</label>
+            <input type="text" id="vendor-b-product" placeholder="e.g., Guardian 23.x">
+          </div>
+        </div>
+
+        <div class="legend-strip">
+          <span><span class="legend-dot dot-yes"></span> Full support (native)</span>
+          <span><span class="legend-dot dot-partial"></span> Partial / plugin required</span>
+          <span><span class="legend-dot dot-no"></span> Not supported</span>
+        </div>
+
+        <div class="data-table-wrap">
+          <table class="data-table" id="part-b-table">
+            <thead>
+              <tr>
+                <th style="width:30px">#</th>
+                <th style="min-width:130px">Protocol</th>
+                <th style="width:130px">Support Level</th>
+                <th style="min-width:140px">Detection Method</th>
+                <th style="min-width:80px">Version Depth</th>
+                <th style="min-width:160px">Vendor Notes / Caveats</th>
+              </tr>
+            </thead>
+            <tbody id="part-b-tbody"></tbody>
+          </table>
+        </div>
+        <div class="row-controls">
+          <button class="btn btn-ghost btn-small" onclick="syncBfromA()">↑ Sync protocols from Part A</button>
+          <button class="btn btn-ghost btn-small" onclick="addRowB()">+ Add Row</button>
+        </div>
+        <p class="hint" style="margin-top:8px;">Sync pulls protocol names from Part A into Part B, preserving any existing vendor responses.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PART C ── -->
+  <div class="part-panel" id="panel-c">
+    <div class="section">
+      <div class="section-header">
+        <span class="sec-num">C</span> Comparison Notes
+        <span class="sec-note">Internal use only. Not included in the vendor-facing export.</span>
+      </div>
+      <div class="section-body">
+        <p class="hint" style="margin-bottom:16px;">Use these fields to record observations after reviewing vendor responses against your Part A inventory.</p>
+        <div class="compare-grid">
+          <div class="compare-note">
+            <div class="compare-note-header">Coverage Gaps Identified</div>
+            <textarea id="c-gaps" placeholder="List protocols or asset types where no vendor response indicates full support…"></textarea>
+          </div>
+          <div class="compare-note">
+            <div class="compare-note-header">Conflicting or Unclear Responses</div>
+            <textarea id="c-conflicts" placeholder="Note any vendor responses that contradict known protocol specs or require clarification…"></textarea>
+          </div>
+          <div class="compare-note">
+            <div class="compare-note-header">Legacy Asset Handling Assessment</div>
+            <textarea id="c-legacy" placeholder="Evaluate how the vendor addressed legacy Y/N flags from Part A. Any passive-only constraints noted?…"></textarea>
+          </div>
+          <div class="compare-note">
+            <div class="compare-note-header">Follow-up Questions for Vendor</div>
+            <textarea id="c-followup" placeholder="List specific questions to raise in the next vendor call or during PoC scoping…"></textarea>
+          </div>
+          <div class="compare-note" style="grid-column: 1 / -1;">
+            <div class="compare-note-header">Overall Fit Assessment</div>
+            <textarea id="c-overall" style="min-height:80px;" placeholder="Summarize how well this vendor's protocol support maps to your environment. Note any deal-breaker gaps…"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export panel -->
+  <div class="export-panel">
+    <h3>Export Document</h3>
+    <p class="export-note">
+      Enter your work email to receive the OT cybersecurity newsletter and download your completed questionnaire. You'll receive two files: an internal version (all three parts) and a vendor version (Parts A &amp; B, vendor response fields blank).
+    </p>
+    <div class="export-email-row">
+      <input type="email" id="export-email" placeholder="your@email.com">
+    </div>
+    <div class="export-btn-group">
+      <button class="btn btn-primary" onclick="handleExport()">Download Both Versions (ZIP)</button>
+    </div>
+    <div class="export-status" id="export-status"></div>
+  </div>
+
+</main>
+
+<script>
+  // ── State ──────────────────────────────────────────────────────────────────
+  let rowIdA = 0, rowIdB = 0;
+  let rowsA = [], rowsB = [];
+
+  const DEFAULT_PROTOCOLS_A = [
+    { protocol: 'Modbus TCP', equip: 'PLC, RTU', model: 'Schneider M340, GE RX3i', segment: 'Zone 2 — Process Control', count: '', legacy: 'N' },
+    { protocol: 'EtherNet/IP', equip: 'PLC, HMI', model: 'Rockwell ControlLogix', segment: 'Zone 2 — Process Control', count: '', legacy: 'N' },
+    { protocol: 'DNP3', equip: 'RTU, IED', model: 'SEL-3530, ABB REC670', segment: 'Zone 3 — Field', count: '', legacy: 'Y' },
+    { protocol: 'IEC 61850 (MMS/GOOSE)', equip: 'Protection relay, Bay controller', model: 'Siemens SIPROTEC', segment: 'Zone 3 — Substation', count: '', legacy: 'N' },
+    { protocol: 'OPC-UA', equip: 'Historian, DCS gateway', model: 'OSIsoft PI, Aspentech', segment: 'Zone 1 — DMZ', count: '', legacy: 'N' },
+    { protocol: 'Profinet', equip: 'PLC, Drives', model: 'Siemens S7-1500', segment: 'Zone 2 — Process Control', count: '', legacy: 'N' },
+    { protocol: 'BACnet/IP', equip: 'BMS controller', model: 'Johnson Controls FX', segment: 'Facilities / BMS', count: '', legacy: 'N' },
+    { protocol: 'ICCP (IEC 60870-6)', equip: 'Control center gateway', model: 'GE PowerOn Advantage', segment: 'Zone 0 — Control Center', count: '', legacy: 'Y' },
+  ];
+
+  // ── Part A ─────────────────────────────────────────────────────────────────
+  function initA() { DEFAULT_PROTOCOLS_A.forEach(r => addRowA(r)); }
+
+  function addRowA(data) {
+    const id = ++rowIdA;
+    rowsA.push(id);
+    renderA();
+    if (data) {
+      const row = document.getElementById('ra-' + id);
+      if (!row) return;
+      row.querySelector('.a-protocol').value = data.protocol || '';
+      row.querySelector('.a-equip').value = data.equip || '';
+      row.querySelector('.a-model').value = data.model || '';
+      row.querySelector('.a-segment').value = data.segment || '';
+      row.querySelector('.a-count').value = data.count || '';
+      row.querySelector('.a-legacy').value = data.legacy || '';
+    }
+  }
+
+  function renderA() {
+    const tbody = document.getElementById('part-a-tbody');
+    tbody.innerHTML = '';
+    rowsA.forEach((id, idx) => {
+      const tr = document.createElement('tr');
+      tr.id = 'ra-' + id;
+      tr.innerHTML = `
+        <td class="row-num" title="Remove row" onclick="removeRowA(${id})">${idx + 1}</td>
+        <td><input type="text" class="a-protocol" placeholder="e.g., Modbus TCP"></td>
+        <td><input type="text" class="a-equip" placeholder="e.g., PLC, RTU"></td>
+        <td><input type="text" class="a-model" placeholder="e.g., Schneider M340"></td>
+        <td><input type="text" class="a-segment" placeholder="e.g., Zone 2"></td>
+        <td><input type="text" class="a-count" placeholder="~qty"></td>
+        <td>
+          <select class="a-legacy">
+            <option value="">—</option>
+            <option value="N">N</option>
+            <option value="Y">Y</option>
+          </select>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function removeRowA(id) {
+    if (rowsA.length <= 1) return;
+    rowsA = rowsA.filter(r => r !== id);
+    renderA();
+  }
+
+  function getAProtocols() {
+    return rowsA.map(id => {
+      const row = document.getElementById('ra-' + id);
+      return row ? row.querySelector('.a-protocol').value.trim() : '';
+    }).filter(Boolean);
+  }
+
+  // ── Part B ─────────────────────────────────────────────────────────────────
+  function addRowB(data) {
+    const id = ++rowIdB;
+    rowsB.push(id);
+    renderB();
+    if (data) {
+      const row = document.getElementById('rb-' + id);
+      if (!row) return;
+      row.querySelector('.b-protocol').value = data.protocol || '';
+      // vendor fields stay blank on sync
+    }
+  }
+
+  function renderB() {
+    const tbody = document.getElementById('part-b-tbody');
+    const existingData = {};
+    // preserve existing vendor responses before re-render
+    rowsB.forEach(id => {
+      const row = document.getElementById('rb-' + id);
+      if (!row) return;
+      existingData[id] = {
+        protocol: row.querySelector('.b-protocol').value,
+        support: row.querySelector('.b-support').value,
+        method: row.querySelector('.b-method').value,
+        version: row.querySelector('.b-version').value,
+        notes: row.querySelector('.b-notes').value,
+      };
+    });
+    tbody.innerHTML = '';
+    rowsB.forEach((id, idx) => {
+      const saved = existingData[id] || {};
+      const tr = document.createElement('tr');
+      tr.id = 'rb-' + id;
+      tr.innerHTML = `
+        <td class="row-num" title="Remove row" onclick="removeRowB(${id})">${idx + 1}</td>
+        <td><input type="text" class="b-protocol" placeholder="Protocol name" value="${esc(saved.protocol || '')}"></td>
+        <td>
+          <select class="b-support" onchange="colorSupportCell(this)">
+            <option value="">— vendor to complete —</option>
+            <option value="full">Full (native)</option>
+            <option value="partial">Partial / plugin</option>
+            <option value="none">Not supported</option>
+          </select>
+        </td>
+        <td><input type="text" class="b-method vendor-cell" placeholder="e.g., Passive DPI" value="${esc(saved.method || '')}"></td>
+        <td><input type="text" class="b-version vendor-cell" placeholder="e.g., v1, v2, v3" value="${esc(saved.version || '')}"></td>
+        <td><input type="text" class="b-notes vendor-cell" placeholder="Optional caveats" value="${esc(saved.notes || '')}"></td>`;
+      tbody.appendChild(tr);
+      // restore support select and color
+      if (saved.support) {
+        const sel = tr.querySelector('.b-support');
+        sel.value = saved.support;
+        colorSupportCell(sel);
+      }
+    });
+  }
+
+  function colorSupportCell(sel) {
+    const td = sel.closest('td');
+    td.style.background = '';
+    if (sel.value === 'full') td.style.background = '#d4edda';
+    else if (sel.value === 'partial') td.style.background = '#fff3cd';
+    else if (sel.value === 'none') td.style.background = '#f8d7da';
+  }
+
+  function removeRowB(id) {
+    if (rowsB.length <= 1) return;
+    rowsB = rowsB.filter(r => r !== id);
+    renderB();
+  }
+
+  function syncBfromA() {
+    const protocols = getAProtocols();
+    if (!protocols.length) { alert('No protocols found in Part A. Add rows to Part A first.'); return; }
+    // get existing B protocols to avoid duplication
+    const existingProtos = rowsB.map(id => {
+      const row = document.getElementById('rb-' + id);
+      return row ? row.querySelector('.b-protocol').value.trim().toLowerCase() : '';
+    });
+    protocols.forEach(p => {
+      if (!existingProtos.includes(p.toLowerCase())) {
+        addRowB({ protocol: p });
+      }
+    });
+  }
+
+  // ── Part tabs ──────────────────────────────────────────────────────────────
+  function switchPart(part) {
+    document.querySelectorAll('.part-tab').forEach((t, i) => {
+      t.classList.toggle('active', ['a','b','c'][i] === part);
+    });
+    document.querySelectorAll('.part-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + part).classList.add('active');
+  }
+
+  // ── Data collection ────────────────────────────────────────────────────────
+  function collectData() {
+    const partA = rowsA.map(id => {
+      const row = document.getElementById('ra-' + id);
+      if (!row) return null;
+      return {
+        protocol: row.querySelector('.a-protocol').value,
+        equip: row.querySelector('.a-equip').value,
+        model: row.querySelector('.a-model').value,
+        segment: row.querySelector('.a-segment').value,
+        count: row.querySelector('.a-count').value,
+        legacy: row.querySelector('.a-legacy').value,
+      };
+    }).filter(Boolean);
+
+    const vendorName = document.getElementById('vendor-b-name').value;
+    const vendorProduct = document.getElementById('vendor-b-product').value;
+
+    const partB = rowsB.map(id => {
+      const row = document.getElementById('rb-' + id);
+      if (!row) return null;
+      return {
+        protocol: row.querySelector('.b-protocol').value,
+        support: row.querySelector('.b-support').value,
+        method: row.querySelector('.b-method').value,
+        version: row.querySelector('.b-version').value,
+        notes: row.querySelector('.b-notes').value,
+      };
+    }).filter(Boolean);
+
+    return {
+      org: document.getElementById('org-name').value,
+      preparedBy: document.getElementById('prepared-by').value,
+      date: document.getElementById('doc-date').value,
+      evalPhase: document.getElementById('eval-phase').value,
+      vendorName,
+      vendorProduct,
+      partA,
+      partB,
+      cGaps: document.getElementById('c-gaps').value,
+      cConflicts: document.getElementById('c-conflicts').value,
+      cLegacy: document.getElementById('c-legacy').value,
+      cFollowup: document.getElementById('c-followup').value,
+      cOverall: document.getElementById('c-overall').value,
+    };
+  }
+
+  // ── HTML generators ────────────────────────────────────────────────────────
+  function esc(str) {
+    if (!str) return '';
+    return str.toString()
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  const SHARED_CSS = `
+    body { font-family: 'Space Mono', monospace; background: #faf0e6; color: #1a1a1a; font-size: 13px; line-height: 1.6; max-width: 960px; margin: 0 auto; padding: 40px 32px 80px; }
+    table { border-collapse: collapse; width: 100%; }
+    th { background: #f0e8df; border: 1px solid #c8b8a2; padding: 7px 10px; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; text-align: left; white-space: nowrap; }
+    td { border: 1px solid #e0d0bc; padding: 7px 10px; vertical-align: top; }
+    tr:nth-child(even) td { background: rgba(255,255,255,0.4); }
+    h2 { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; background: #1a1a1a; color: #faf0e6; padding: 8px 16px; margin: 28px 0 0; }
+    .block { border: 1px solid #c8b8a2; border-top: none; padding: 0; margin-bottom: 4px; }
+    .block table { margin: 0; }
+    @media print { body { background: #fff; } }
+  `;
+
+  function docHeader(data, version) {
+    return `
+<div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #1a1a1a;padding-bottom:14px;margin-bottom:28px;">
+  <div>
+    <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#B5570A;font-weight:700;margin-bottom:4px;">OT Security RFP Evaluation Kit — ${version}</div>
+    <div style="font-size:20px;font-weight:700;letter-spacing:-0.02em;"><span style="color:#B5570A;">03 /</span> Protocol &amp; Asset Questionnaire</div>
+  </div>
+  <div style="font-size:10px;color:#666;text-align:right;">
+    ${esc(data.org) || 'Organization'}<br>
+    ${esc(data.preparedBy) || ''}<br>
+    ${esc(data.date) || new Date().toISOString().slice(0,10)}<br>
+    ${esc(data.evalPhase) || ''}
+  </div>
+</div>`;
+  }
+
+  function partAHTML(data) {
+    const rows = data.partA.map((r, i) => `
+      <tr>
+        <td style="color:#999;font-size:10px;text-align:center;width:30px;">${i+1}</td>
+        <td>${esc(r.protocol)}</td>
+        <td>${esc(r.equip)}</td>
+        <td>${esc(r.model)}</td>
+        <td>${esc(r.segment)}</td>
+        <td style="text-align:center;">${esc(r.count)}</td>
+        <td style="text-align:center;font-weight:700;color:${r.legacy === 'Y' ? '#B5570A' : '#2a7a2a'};">${esc(r.legacy) || '—'}</td>
+      </tr>`).join('');
+    return `
+<h2>Part A — Internal Protocol &amp; Asset Inventory</h2>
+<div class="block">
+  <table>
+    <thead><tr>
+      <th style="width:30px">#</th>
+      <th>Protocol</th><th>Equipment Type</th><th>Vendor / Model</th>
+      <th>Network Segment</th><th style="width:80px">Count</th><th style="width:80px">Legacy?</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>
+</div>`;
+  }
+
+  function partBHTML(data, vendorFacing) {
+    const supportLabel = v => v === 'full' ? 'Full (native)' : v === 'partial' ? 'Partial / plugin' : v === 'none' ? 'Not supported' : '—';
+    const supportColor = v => v === 'full' ? '#2a7a2a' : v === 'partial' ? '#8a6000' : v === 'none' ? '#c00' : '#999';
+    const supportBg   = v => v === 'full' ? '#d4edda' : v === 'partial' ? '#fff3cd' : v === 'none' ? '#f8d7da' : '';
+
+    const rows = data.partB.map((r, i) => {
+      const isBlank = vendorFacing;
+      return `
+      <tr>
+        <td style="color:#999;font-size:10px;text-align:center;width:30px;">${i+1}</td>
+        <td><strong>${esc(r.protocol)}</strong></td>
+        <td style="background:${isBlank ? '' : supportBg(r.support)};font-weight:700;color:${isBlank ? '#c8b8a2' : supportColor(r.support)};">${isBlank ? '— vendor to complete —' : supportLabel(r.support)}</td>
+        <td style="color:${isBlank ? '#c8b8a2' : ''};">${isBlank ? '' : esc(r.method)}</td>
+        <td style="color:${isBlank ? '#c8b8a2' : ''};">${isBlank ? '' : esc(r.version)}</td>
+        <td style="color:${isBlank ? '#c8b8a2' : ''};">${isBlank ? '' : esc(r.notes)}</td>
+      </tr>`;
+    }).join('');
+
+    const vendorBlock = `
+<div style="border:1px solid #c8b8a2;border-top:none;padding:12px 16px;margin-bottom:4px;">
+  <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#666;">Vendor</span>
+  <strong style="margin-left:8px;">${esc(data.vendorName) || '—'}</strong>
+  &nbsp;&nbsp;
+  <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#666;">Product</span>
+  <strong style="margin-left:8px;">${esc(data.vendorProduct) || '—'}</strong>
+</div>`;
+
+    const instructions = vendorFacing ? `
+<div style="border:1px solid #c8b8a2;border-top:none;background:#fffbf0;padding:12px 16px;margin-bottom:4px;font-size:11px;line-height:1.6;">
+  <strong>Instructions for vendor:</strong> For each protocol listed below, complete the Support Level, Detection Method, Version Depth, and Notes columns.
+  Use: <em>Full (native)</em> / <em>Partial / plugin required</em> / <em>Not supported</em>.
+  Return completed document to the evaluation team by the date specified in the RFP.
+</div>` : '';
+
+    return `
+<h2>Part B — Vendor Protocol Support${vendorFacing ? ' (Vendor Response Form)' : ''}</h2>
+${vendorBlock}
+${instructions}
+<div class="block">
+  <table>
+    <thead><tr>
+      <th style="width:30px">#</th>
+      <th>Protocol</th>
+      <th style="width:130px">Support Level</th>
+      <th>Detection Method</th>
+      <th style="width:90px">Version Depth</th>
+      <th>Notes / Caveats</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>
+</div>`;
+  }
+
+  function partCHTML(data) {
+    const note = (label, val) => val ? `
+      <div style="margin-bottom:16px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#666;margin-bottom:4px;">${label}</div>
+        <p style="white-space:pre-wrap;line-height:1.65;">${esc(val)}</p>
+      </div>` : '';
+    return `
+<h2>Part C — Comparison Notes (Internal)</h2>
+<div class="block" style="padding:16px 18px;">
+  ${note('Coverage Gaps Identified', data.cGaps)}
+  ${note('Conflicting or Unclear Responses', data.cConflicts)}
+  ${note('Legacy Asset Handling Assessment', data.cLegacy)}
+  ${note('Follow-up Questions for Vendor', data.cFollowup)}
+  ${note('Overall Fit Assessment', data.cOverall)}
+</div>`;
+  }
+
+  function footer(version) {
+    return `<div style="border-top:1px solid #c8b8a2;padding-top:12px;font-size:10px;color:#999;margin-top:28px;">
+  OT Security RFP Evaluation Kit · otcybersecuritysoftware.com · Document 03 of 04 · ${version}
+</div>`;
+  }
+
+  function buildInternalHTML(data) {
+    return `<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<title>Protocol &amp; Asset Questionnaire — Internal — ${esc(data.org)}</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>${SHARED_CSS}</style></head><body>
+${docHeader(data, 'Internal Version — All Parts')}
+${partAHTML(data)}
+${partBHTML(data, false)}
+${partCHTML(data)}
+${footer('Internal Version')}
+</body></html>`;
+  }
+
+  function buildVendorHTML(data) {
+    return `<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<title>Protocol &amp; Asset Questionnaire — Vendor Copy — ${esc(data.vendorName)}</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>${SHARED_CSS}</style></head><body>
+${docHeader(data, 'Vendor Copy — Parts A &amp; B')}
+${partAHTML(data)}
+${partBHTML(data, true)}
+${footer('Vendor Copy')}
+</body></html>`;
+  }
+
+  // ── Email gate + export ────────────────────────────────────────────────────
+  async function subscribeEmail(email) {
+    const res = await fetch('https://newsletter.otcybersecuritysoftware.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, group_id: '189858333791880417' }),
+    });
+    const d = await res.json();
+    return d.message === 'Subscribed';
+  }
+
+  async function handleExport() {
+    const statusEl = document.getElementById('export-status');
+    const email = document.getElementById('export-email').value.trim();
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      statusEl.textContent = 'Please enter a valid work email address.';
+      statusEl.className = 'export-status error';
+      return;
+    }
+
+    statusEl.textContent = 'Subscribing…';
+    statusEl.className = 'export-status';
+
+    try { await subscribeEmail(email); } catch(e) { /* non-blocking */ }
+
+    statusEl.textContent = 'Building documents…';
+
+    const data = collectData();
+    const orgSlug = (data.org || 'org').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const vendorSlug = (data.vendorName || 'vendor').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+    try {
+      const zip = new JSZip();
+      zip.file(`ot-rfp-doc03-protocol-questionnaire-internal-${orgSlug}.html`, buildInternalHTML(data));
+      zip.file(`ot-rfp-doc03-protocol-questionnaire-vendor-${vendorSlug}.html`, buildVendorHTML(data));
+      const blob = await zip.generateAsync({ type: 'blob' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ot-rfp-doc03-protocol-questionnaire-${orgSlug}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      statusEl.textContent = 'Download started — two HTML files in the ZIP.';
+      statusEl.className = 'export-status ok';
+    } catch(e) {
+      statusEl.textContent = 'Export failed. Please try again.';
+      statusEl.className = 'export-status error';
+    }
+  }
+
+  // ── Init ───────────────────────────────────────────────────────────────────
+  document.getElementById('doc-date').value = new Date().toISOString().slice(0,10);
+  initA();
+</script>
+</body>
+</html>

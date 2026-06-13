@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OT Security RFP Evaluation Kit — Doc 04: Evaluation Decision Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --accent: #B5570A;
+    --pale: #faf0e6;
+    --ink: #1a1a1a;
+    --mid: #666;
+    --rule: #c8b8a2;
+    --rule-light: #e0d0bc;
+    --font: 'Space Mono', monospace;
+    --v1: #2563a8;
+    --v2: #2a7a2a;
+    --v3: #7a2a7a;
+    --v4: #8a6000;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--pale);
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .site-header {
+    border-bottom: 2px solid var(--ink);
+    padding: 18px 40px;
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+  }
+  .kit-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+  .doc-title { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+  .doc-num { color: var(--accent); }
+  .breadcrumb { margin-left: auto; font-size: 10px; color: var(--mid); letter-spacing: 0.08em; text-transform: uppercase; }
+
+  .progress-bar-wrap { height: 3px; background: var(--rule-light); }
+  .progress-bar { height: 3px; background: var(--accent); width: 100%; }
+
+  .container { max-width: 1060px; margin: 0 auto; padding: 40px 40px 80px; }
+
+  /* ── Section ── */
+  .section { border: 1px solid var(--rule); margin-bottom: 28px; }
+  .section-header {
+    background: var(--ink); color: var(--pale);
+    padding: 8px 16px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-header .sec-num { color: var(--accent); font-size: 13px; }
+  .section-header .sec-note { margin-left: auto; font-size: 10px; font-weight: 400; letter-spacing: 0; text-transform: none; color: #c8b8a2; }
+  .section-body { padding: 16px; }
+
+  /* ── Vendor setup strip ── */
+  .vendor-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border: 1px solid var(--rule);
+    margin-bottom: 28px;
+  }
+  .vendor-cell {
+    border-right: 1px solid var(--rule);
+    padding: 12px 14px;
+  }
+  .vendor-cell:last-child { border-right: none; }
+  .vendor-cell-label {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+  }
+  .vendor-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .vendor-cell input {
+    font-family: var(--font); font-size: 12px;
+    width: 100%; border: 1px solid var(--rule-light);
+    background: #fff; padding: 5px 8px; outline: none; border-radius: 0;
+  }
+  .vendor-cell input:focus { border-color: var(--accent); }
+  .vendor-cell input.vendor-name-input { font-weight: 700; margin-bottom: 6px; }
+  .vendor-cell input.vendor-product-input { font-size: 11px; color: var(--mid); }
+
+  /* ── Scoring matrix ── */
+  .matrix-wrap { overflow-x: auto; }
+  .matrix-table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 680px; }
+  .matrix-table th {
+    background: #f0e8df; border: 1px solid var(--rule);
+    padding: 7px 10px; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-align: left;
+  }
+  .matrix-table th.vendor-col { text-align: center; }
+  .matrix-table td { border: 1px solid var(--rule-light); padding: 3px 5px; vertical-align: middle; }
+  .matrix-table tr:nth-child(even) td { background: rgba(255,255,255,0.45); }
+
+  .matrix-table td input[type="text"],
+  .matrix-table td input[type="number"],
+  .matrix-table td select {
+    font-family: var(--font); font-size: 12px;
+    width: 100%; border: none; background: transparent;
+    outline: none; padding: 5px 4px; color: var(--ink); border-radius: 0;
+    -webkit-appearance: none;
+  }
+  .matrix-table td input:focus,
+  .matrix-table td select:focus { background: #fff; outline: 1px solid var(--accent); }
+
+  .score-cell { text-align: center; }
+  .score-cell input[type="number"] {
+    text-align: center; width: 48px; font-weight: 700;
+  }
+  .weight-cell input[type="number"] { width: 48px; text-align: center; color: var(--mid); }
+
+  .matrix-table td.row-num {
+    color: var(--mid); font-size: 10px; text-align: center; width: 28px;
+    cursor: pointer; user-select: none;
+  }
+  .matrix-table td.row-num:hover { color: #c00; }
+
+  /* total row */
+  .matrix-table tr.total-row td {
+    background: #f0e8df !important; font-weight: 700; border-top: 2px solid var(--rule);
+  }
+  .total-score { font-size: 14px; color: var(--accent); }
+
+  /* ── Red flags ── */
+  .flags-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 1px solid var(--rule); }
+  .flags-col { border-right: 1px solid var(--rule); }
+  .flags-col:last-child { border-right: none; }
+  .flags-col-header {
+    padding: 8px 12px; background: #f0e8df;
+    border-bottom: 1px solid var(--rule);
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .flags-col-body { padding: 10px 12px; }
+
+  .flag-item {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 5px 0; border-bottom: 1px solid var(--rule-light);
+    font-size: 11px; line-height: 1.4;
+  }
+  .flag-item:last-of-type { border-bottom: none; }
+  .flag-item input[type="checkbox"] {
+    margin-top: 2px; flex-shrink: 0;
+    accent-color: var(--accent);
+    width: 13px; height: 13px; cursor: pointer;
+  }
+  .flag-item label { cursor: pointer; color: var(--ink); }
+  .flag-item.checked label { color: #c00; text-decoration: line-through; }
+
+  .custom-flag {
+    display: flex; align-items: center; gap: 6px; margin-top: 8px;
+  }
+  .custom-flag input[type="text"] {
+    font-family: var(--font); font-size: 11px;
+    flex: 1; border: none; border-bottom: 1px solid var(--rule);
+    background: transparent; outline: none; padding: 3px 2px;
+  }
+  .custom-flag input:focus { border-color: var(--accent); }
+  .add-flag-btn {
+    font-family: var(--font); font-size: 10px; font-weight: 700;
+    background: transparent; border: none; color: var(--accent);
+    cursor: pointer; padding: 2px 0; white-space: nowrap; letter-spacing: 0.06em;
+  }
+
+  .flag-count {
+    display: inline-block; background: var(--accent); color: #fff;
+    font-size: 9px; font-weight: 700; padding: 1px 5px;
+    margin-left: 4px; min-width: 16px; text-align: center;
+  }
+  .flag-count.zero { background: #ccc; }
+
+  /* ── Tiebreaker ── */
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); }
+  .field textarea {
+    font-family: var(--font); font-size: 13px; background: #fff;
+    border: 1px solid var(--rule); padding: 8px 10px;
+    outline: none; border-radius: 0; resize: vertical; min-height: 80px;
+  }
+  .field textarea:focus { border-color: var(--accent); }
+  .field input[type="text"] {
+    font-family: var(--font); font-size: 13px; background: #fff;
+    border: 1px solid var(--rule); padding: 7px 10px;
+    outline: none; border-radius: 0; width: 100%;
+  }
+  .field input:focus { border-color: var(--accent); }
+  .field-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; }
+  .field-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px 24px; }
+
+  /* ── Recommendation ── */
+  .rec-vendor-options { display: flex; gap: 0; border: 1px solid var(--rule); margin-bottom: 18px; }
+  .rec-vendor-opt {
+    flex: 1; padding: 14px 8px; text-align: center;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; border-right: 1px solid var(--rule);
+    background: #fff; color: var(--mid); transition: background 0.12s;
+  }
+  .rec-vendor-opt:last-child { border-right: none; }
+  .rec-vendor-opt:hover { background: #f5e8da; }
+  .rec-vendor-opt.selected { background: var(--ink); color: var(--pale); }
+  .rec-vendor-opt .opt-product { display: block; font-size: 9px; font-weight: 400; letter-spacing: 0; text-transform: none; margin-top: 3px; opacity: 0.7; }
+
+  /* ── Sign-off ── */
+  .signoff-table { width: 100%; border-collapse: collapse; }
+  .signoff-table th { background: #f0e8df; border: 1px solid var(--rule); padding: 7px 12px; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-align: left; }
+  .signoff-table td { border: 1px solid var(--rule-light); padding: 5px 8px; vertical-align: middle; }
+  .signoff-table td input {
+    font-family: var(--font); font-size: 13px; width: 100%;
+    border: none; background: transparent; outline: none; padding: 4px;
+  }
+  .signoff-table td input:focus { background: #fff; outline: 1px solid var(--accent); }
+
+  /* ── Buttons ── */
+  .btn { font-family: var(--font); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; border: none; cursor: pointer; padding: 8px 16px; border-radius: 0; transition: background 0.14s; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #8e420a; }
+  .btn-ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  .btn-ghost:hover { background: #f5e0d0; }
+  .btn-small { font-size: 10px; padding: 5px 10px; }
+  .row-controls { display: flex; gap: 10px; margin-top: 10px; }
+
+  /* ── Score bar ── */
+  .score-bar-wrap { height: 4px; background: var(--rule-light); margin-top: 2px; }
+  .score-bar { height: 4px; transition: width 0.3s; }
+
+  /* ── Export ── */
+  .export-panel { border: 2px solid var(--accent); padding: 24px; margin-top: 40px; }
+  .export-panel h3 { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+  .export-note { font-size: 11px; color: var(--mid); margin-bottom: 16px; line-height: 1.5; }
+  .export-email-row { display: flex; margin-bottom: 12px; }
+  .export-email-row input { font-family: var(--font); font-size: 13px; flex: 1; border: 1px solid var(--rule); border-right: none; padding: 9px 12px; outline: none; border-radius: 0; background: #fff; }
+  .export-email-row input:focus { border-color: var(--accent); }
+  .export-btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+  .export-status { margin-top: 12px; font-size: 11px; min-height: 18px; color: var(--accent); font-weight: 700; }
+  .export-status.error { color: #c00; }
+  .export-status.ok { color: #2a7a2a; }
+
+  .hint { font-size: 10px; color: var(--mid); margin-top: 3px; font-style: italic; }
+
+  @media (max-width: 720px) {
+    .container { padding: 20px 14px 60px; }
+    .site-header { padding: 14px 16px; flex-wrap: wrap; }
+    .breadcrumb { display: none; }
+    .vendor-strip { grid-template-columns: 1fr 1fr; }
+    .flags-grid { grid-template-columns: 1fr 1fr; }
+    .field-grid-2, .field-grid-3 { grid-template-columns: 1fr; }
+    .rec-vendor-options { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="kit-label">OT Security RFP Evaluation Kit</span>
+  <span class="doc-title"><span class="doc-num">04 /</span> Evaluation Decision Tracker</span>
+  <span class="breadcrumb">otcybersecuritysoftware.com</span>
+</header>
+<div class="progress-bar-wrap"><div class="progress-bar"></div></div>
+
+<main class="container">
+
+  <!-- Section 1: Evaluation header -->
+  <div class="section">
+    <div class="section-header"><span class="sec-num">01</span> Evaluation Header</div>
+    <div class="section-body">
+      <div class="field-grid-3" style="gap:14px 24px;">
+        <div class="field"><label>Organization</label><input type="text" id="hdr-org" placeholder="Your organization"></div>
+        <div class="field"><label>Evaluation Lead</label><input type="text" id="hdr-lead" placeholder="Name, title"></div>
+        <div class="field"><label>Decision Date</label><input type="date" id="hdr-date"></div>
+        <div class="field" style="grid-column:1/-1;"><label>Evaluation Scope / Use Case</label><input type="text" id="hdr-scope" placeholder="e.g., OT network visibility and anomaly detection — Zones 2–3, refinery environment"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vendor setup -->
+  <div class="section">
+    <div class="section-header">
+      <span class="sec-num">02</span> Vendors Under Evaluation
+      <span class="sec-note">Up to 4 vendors. Leave unused columns blank.</span>
+    </div>
+    <div class="section-body" style="padding:0;">
+      <div class="vendor-strip" style="border:none;margin-bottom:0;">
+        <div class="vendor-cell">
+          <div class="vendor-cell-label"><span class="vendor-dot" style="background:var(--v1);"></span>Vendor 1</div>
+          <input type="text" class="vendor-name-input" id="v1-name" placeholder="Vendor name" oninput="updateVendorHeaders()">
+          <input type="text" class="vendor-product-input" id="v1-product" placeholder="Product / version">
+        </div>
+        <div class="vendor-cell">
+          <div class="vendor-cell-label"><span class="vendor-dot" style="background:var(--v2);"></span>Vendor 2</div>
+          <input type="text" class="vendor-name-input" id="v2-name" placeholder="Vendor name" oninput="updateVendorHeaders()">
+          <input type="text" class="vendor-product-input" id="v2-product" placeholder="Product / version">
+        </div>
+        <div class="vendor-cell">
+          <div class="vendor-cell-label"><span class="vendor-dot" style="background:var(--v3);"></span>Vendor 3</div>
+          <input type="text" class="vendor-name-input" id="v3-name" placeholder="Vendor name" oninput="updateVendorHeaders()">
+          <input type="text" class="vendor-product-input" id="v3-product" placeholder="Product / version">
+        </div>
+        <div class="vendor-cell">
+          <div class="vendor-cell-label"><span class="vendor-dot" style="background:var(--v4);"></span>Vendor 4</div>
+          <input type="text" class="vendor-name-input" id="v4-name" placeholder="Vendor name" oninput="updateVendorHeaders()">
+          <input type="text" class="vendor-product-input" id="v4-product" placeholder="Product / version">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Scoring matrix -->
+  <div class="section">
+    <div class="section-header">
+      <span class="sec-num">03</span> Scoring Matrix
+      <span class="sec-note">Score 1–5 per vendor. Weight is optional (1–3). Weighted total = Σ(score × weight).</span>
+    </div>
+    <div class="section-body">
+      <div class="matrix-wrap">
+        <table class="matrix-table" id="score-table">
+          <thead>
+            <tr id="matrix-header-row">
+              <th style="width:28px">#</th>
+              <th style="min-width:200px">Evaluation Criterion</th>
+              <th style="width:56px;text-align:center;">Weight</th>
+              <th class="vendor-col" id="th-v1" style="min-width:90px;">Vendor 1</th>
+              <th class="vendor-col" id="th-v2" style="min-width:90px;">Vendor 2</th>
+              <th class="vendor-col" id="th-v3" style="min-width:90px;">Vendor 3</th>
+              <th class="vendor-col" id="th-v4" style="min-width:90px;">Vendor 4</th>
+            </tr>
+          </thead>
+          <tbody id="score-tbody"></tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="2" style="padding:8px 12px;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;">Weighted Total</td>
+              <td></td>
+              <td class="score-cell" id="total-v1"><span class="total-score">—</span></td>
+              <td class="score-cell" id="total-v2"><span class="total-score">—</span></td>
+              <td class="score-cell" id="total-v3"><span class="total-score">—</span></td>
+              <td class="score-cell" id="total-v4"><span class="total-score">—</span></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="row-controls">
+        <button class="btn btn-ghost btn-small" onclick="addScoreRow()">+ Add Criterion</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: Red flags -->
+  <div class="section">
+    <div class="section-header">
+      <span class="sec-num">04</span> Red Flags Checklist
+      <span class="sec-note">Check any flag raised during evaluation. Checked items appear in the export.</span>
+    </div>
+    <div class="section-body" style="padding:0;">
+      <div class="flags-grid" id="flags-grid"></div>
+    </div>
+  </div>
+
+  <!-- Section 5: Tiebreaker -->
+  <div class="section">
+    <div class="section-header"><span class="sec-num">05</span> Tiebreaker Notes</div>
+    <div class="section-body">
+      <p class="hint" style="margin-bottom:14px;">Record qualitative factors not captured by the scoring matrix that may distinguish finalists.</p>
+      <div class="field-grid-2" style="gap:16px;">
+        <div class="field"><label>Vendor Relationship &amp; Support Model</label><textarea id="tb-support" placeholder="Note differences in CSM quality, support tiers, escalation responsiveness observed during PoC…"></textarea></div>
+        <div class="field"><label>Roadmap &amp; Category Trajectory</label><textarea id="tb-roadmap" placeholder="Evaluate each vendor's public roadmap against your 3–5 year OT security maturity plan…"></textarea></div>
+        <div class="field"><label>Deployment Complexity &amp; Internal Lift</label><textarea id="tb-deploy" placeholder="Note installation friction, integration prerequisites, professional services dependency…"></textarea></div>
+        <div class="field"><label>Commercial &amp; Contractual Considerations</label><textarea id="tb-commercial" placeholder="Pricing structure, multi-year terms, audit rights, data residency, exit clauses…"></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 6: Recommendation -->
+  <div class="section">
+    <div class="section-header"><span class="sec-num">06</span> Final Recommendation</div>
+    <div class="section-body">
+      <p class="hint" style="margin-bottom:14px;">Select the recommended vendor. This selection appears prominently in the exported document.</p>
+      <div class="rec-vendor-options" id="rec-options">
+        <div class="rec-vendor-opt" data-v="1" onclick="selectRec(this)">
+          Vendor 1 <span class="opt-product" id="rec-label-1">&nbsp;</span>
+        </div>
+        <div class="rec-vendor-opt" data-v="2" onclick="selectRec(this)">
+          Vendor 2 <span class="opt-product" id="rec-label-2">&nbsp;</span>
+        </div>
+        <div class="rec-vendor-opt" data-v="3" onclick="selectRec(this)">
+          Vendor 3 <span class="opt-product" id="rec-label-3">&nbsp;</span>
+        </div>
+        <div class="rec-vendor-opt" data-v="4" onclick="selectRec(this)">
+          Vendor 4 <span class="opt-product" id="rec-label-4">&nbsp;</span>
+        </div>
+        <div class="rec-vendor-opt" data-v="none" onclick="selectRec(this)" style="flex:0.6;">
+          No Award
+        </div>
+      </div>
+      <div class="field">
+        <label>Recommendation Rationale</label>
+        <textarea id="rec-rationale" style="min-height:100px;" placeholder="Summarize the decision basis — scoring outcome, red flags cleared, tiebreakers applied, and any conditions attached to the award…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 7: Sign-off -->
+  <div class="section">
+    <div class="section-header"><span class="sec-num">07</span> Sign-off</div>
+    <div class="section-body">
+      <table class="signoff-table">
+        <thead>
+          <tr><th>Role</th><th>Name</th><th>Signature / Initials</th><th>Date</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color:var(--mid);font-size:11px;white-space:nowrap;padding:8px 10px;">CISO / Security Director</td>
+            <td><input type="text"></td>
+            <td><input type="text" placeholder="Initials or typed signature"></td>
+            <td><input type="text" placeholder="YYYY-MM-DD"></td>
+          </tr>
+          <tr>
+            <td style="color:var(--mid);font-size:11px;white-space:nowrap;padding:8px 10px;">Plant / OT Manager</td>
+            <td><input type="text"></td>
+            <td><input type="text" placeholder="Initials or typed signature"></td>
+            <td><input type="text" placeholder="YYYY-MM-DD"></td>
+          </tr>
+          <tr>
+            <td style="color:var(--mid);font-size:11px;white-space:nowrap;padding:8px 10px;">Compliance / Risk Officer</td>
+            <td><input type="text"></td>
+            <td><input type="text" placeholder="Initials or typed signature"></td>
+            <td><input type="text" placeholder="YYYY-MM-DD"></td>
+          </tr>
+          <tr>
+            <td style="color:var(--mid);font-size:11px;white-space:nowrap;padding:8px 10px;">Procurement</td>
+            <td><input type="text"></td>
+            <td><input type="text" placeholder="Initials or typed signature"></td>
+            <td><input type="text" placeholder="YYYY-MM-DD"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Export -->
+  <div class="export-panel">
+    <h3>Export Document</h3>
+    <p class="export-note">
+      Enter your work email to receive the OT cybersecurity newsletter and download the completed Evaluation Decision Tracker as a print-ready HTML document.
+    </p>
+    <div class="export-email-row">
+      <input type="email" id="export-email" placeholder="your@email.com">
+    </div>
+    <div class="export-btn-group">
+      <button class="btn btn-primary" onclick="handleExport()">Download Decision Tracker</button>
+    </div>
+    <div class="export-status" id="export-status"></div>
+  </div>
+
+</main>
+
+<script>
+// ── Constants ────────────────────────────────────────────────────────────────
+const V_COLORS = ['', '#2563a8', '#2a7a2a', '#7a2a7a', '#8a6000'];
+
+const DEFAULT_CRITERIA = [
+  { criterion: 'OT protocol coverage breadth',        weight: 3 },
+  { criterion: 'Asset discovery accuracy',             weight: 3 },
+  { criterion: 'Anomaly detection fidelity',           weight: 3 },
+  { criterion: 'False positive rate',                  weight: 2 },
+  { criterion: 'SIEM / SOAR integration depth',        weight: 2 },
+  { criterion: 'Passive-only deployment capability',   weight: 3 },
+  { criterion: 'Time-to-value / deployment complexity',weight: 2 },
+  { criterion: 'Vendor support quality',               weight: 2 },
+  { criterion: 'Pricing structure / TCO',              weight: 2 },
+  { criterion: 'Roadmap alignment',                    weight: 1 },
+];
+
+const RED_FLAG_DEFAULTS = [
+  'No passive-only mode — active scanning required',
+  'Incomplete support for required protocols',
+  'No documented ICS-CERT / CVE disclosure process',
+  'Cannot demonstrate air-gap or offline mode',
+  'Professional services required for basic deployment',
+  'No reference customers in comparable OT environments',
+  'Vendor cannot provide data residency guarantees',
+  'Pricing opacity — no published licensing model',
+  'Contract includes unilateral data-sharing clauses',
+  'Unresolved findings from PoC criteria doc',
+];
+
+// ── State ────────────────────────────────────────────────────────────────────
+let rowIdS = 0, scoreRows = [];
+let selectedRec = null;
+
+// flags: { v1: [{text, checked}], v2: [...], v3: [...], v4: [...] }
+let flagState = { v1: [], v2: [], v3: [], v4: [] };
+
+// ── Vendor headers ───────────────────────────────────────────────────────────
+function updateVendorHeaders() {
+  [1,2,3,4].forEach(i => {
+    const name = document.getElementById(`v${i}-name`).value.trim() || `Vendor ${i}`;
+    document.getElementById(`th-v${i}`).textContent = name;
+    const recLabel = document.getElementById(`rec-label-${i}`);
+    if (recLabel) recLabel.textContent = document.getElementById(`v${i}-product`).value.trim() || '';
+    const recOpt = document.querySelector(`.rec-vendor-opt[data-v="${i}"]`);
+    if (recOpt) {
+      recOpt.childNodes[0].textContent = name + ' ';
+    }
+    // update flags col headers
+    const fh = document.getElementById(`flags-header-v${i}`);
+    if (fh) fh.textContent = name;
+  });
+  recalcTotals();
+}
+
+// ── Score matrix ─────────────────────────────────────────────────────────────
+function initScoreMatrix() {
+  DEFAULT_CRITERIA.forEach(r => addScoreRow(r));
+}
+
+function addScoreRow(data) {
+  const id = ++rowIdS;
+  scoreRows.push(id);
+  renderScoreMatrix();
+  if (data) {
+    const row = document.getElementById(`sr-${id}`);
+    if (!row) return;
+    row.querySelector('.s-criterion').value = data.criterion || '';
+    row.querySelector('.s-weight').value = data.weight || 1;
+  }
+}
+
+function renderScoreMatrix() {
+  const tbody = document.getElementById('score-tbody');
+  // preserve scores before re-render
+  const saved = {};
+  scoreRows.forEach(id => {
+    const row = document.getElementById(`sr-${id}`);
+    if (!row) return;
+    saved[id] = {
+      criterion: row.querySelector('.s-criterion').value,
+      weight: row.querySelector('.s-weight').value,
+      s1: row.querySelector('.s-v1').value,
+      s2: row.querySelector('.s-v2').value,
+      s3: row.querySelector('.s-v3').value,
+      s4: row.querySelector('.s-v4').value,
+    };
+  });
+  tbody.innerHTML = '';
+  scoreRows.forEach((id, idx) => {
+    const s = saved[id] || {};
+    const tr = document.createElement('tr');
+    tr.id = `sr-${id}`;
+    tr.innerHTML = `
+      <td class="row-num" title="Remove" onclick="removeScoreRow(${id})">${idx+1}</td>
+      <td><input type="text" class="s-criterion" placeholder="Evaluation criterion" value="${esc(s.criterion||'')}"></td>
+      <td class="weight-cell"><input type="number" class="s-weight" min="1" max="3" value="${esc(s.weight||'1')}" oninput="recalcTotals()"></td>
+      ${[1,2,3,4].map(v => `<td class="score-cell">
+        <input type="number" class="s-v${v}" min="1" max="5" placeholder="—" value="${esc(s[`s${v}`]||'')}" oninput="recalcTotals()" style="color:${V_COLORS[v]};">
+      </td>`).join('')}`;
+    tbody.appendChild(tr);
+  });
+  recalcTotals();
+}
+
+function removeScoreRow(id) {
+  if (scoreRows.length <= 1) return;
+  scoreRows = scoreRows.filter(r => r !== id);
+  renderScoreMatrix();
+}
+
+function recalcTotals() {
+  [1,2,3,4].forEach(v => {
+    let total = 0, hasAny = false;
+    scoreRows.forEach(id => {
+      const row = document.getElementById(`sr-${id}`);
+      if (!row) return;
+      const score = parseFloat(row.querySelector(`.s-v${v}`).value) || 0;
+      const weight = parseFloat(row.querySelector('.s-weight').value) || 1;
+      if (score > 0) hasAny = true;
+      total += score * weight;
+    });
+    const el = document.getElementById(`total-v${v}`);
+    el.innerHTML = hasAny
+      ? `<span class="total-score" style="color:${V_COLORS[v]};">${total.toFixed(1)}</span>`
+      : `<span class="total-score" style="color:#ccc;">—</span>`;
+  });
+}
+
+// ── Red flags ────────────────────────────────────────────────────────────────
+function initFlags() {
+  [1,2,3,4].forEach(v => {
+    flagState[`v${v}`] = RED_FLAG_DEFAULTS.map(t => ({ text: t, checked: false }));
+  });
+  renderFlags();
+}
+
+function renderFlags() {
+  const grid = document.getElementById('flags-grid');
+  grid.innerHTML = '';
+  [1,2,3,4].forEach(v => {
+    const vname = document.getElementById(`v${v}-name`)?.value.trim() || `Vendor ${v}`;
+    const col = document.createElement('div');
+    col.className = 'flags-col';
+    const checkedCount = flagState[`v${v}`].filter(f => f.checked).length;
+    col.innerHTML = `
+      <div class="flags-col-header">
+        <span class="vendor-dot" style="background:${V_COLORS[v]};border-radius:50%;"></span>
+        <span id="flags-header-v${v}">${esc(vname)}</span>
+        <span class="flag-count ${checkedCount === 0 ? 'zero' : ''}">${checkedCount}</span>
+      </div>
+      <div class="flags-col-body" id="flags-body-v${v}"></div>`;
+    grid.appendChild(col);
+    renderFlagItems(v);
+  });
+}
+
+function renderFlagItems(v) {
+  const body = document.getElementById(`flags-body-v${v}`);
+  if (!body) return;
+  body.innerHTML = '';
+  flagState[`v${v}`].forEach((flag, idx) => {
+    const item = document.createElement('div');
+    item.className = 'flag-item' + (flag.checked ? ' checked' : '');
+    item.id = `flag-v${v}-${idx}`;
+    item.innerHTML = `
+      <input type="checkbox" id="cb-v${v}-${idx}" ${flag.checked ? 'checked' : ''}
+        onchange="toggleFlag(${v}, ${idx}, this.checked)">
+      <label for="cb-v${v}-${idx}">${esc(flag.text)}</label>`;
+    body.appendChild(item);
+  });
+  // custom flag input
+  const addRow = document.createElement('div');
+  addRow.className = 'custom-flag';
+  addRow.innerHTML = `
+    <input type="text" id="custom-flag-input-v${v}" placeholder="Add a flag…">
+    <button class="add-flag-btn" onclick="addCustomFlag(${v})">+ Add</button>`;
+  body.appendChild(addRow);
+}
+
+function toggleFlag(v, idx, checked) {
+  flagState[`v${v}`][idx].checked = checked;
+  const item = document.getElementById(`flag-v${v}-${idx}`);
+  if (item) item.className = 'flag-item' + (checked ? ' checked' : '');
+  // update count badge
+  const checkedCount = flagState[`v${v}`].filter(f => f.checked).length;
+  const badge = document.querySelector(`#flags-header-v${v}`).nextSibling;
+  if (badge) {
+    badge.textContent = checkedCount;
+    badge.className = 'flag-count' + (checkedCount === 0 ? ' zero' : '');
+  }
+}
+
+function addCustomFlag(v) {
+  const input = document.getElementById(`custom-flag-input-v${v}`);
+  const text = input.value.trim();
+  if (!text) return;
+  flagState[`v${v}`].push({ text, checked: true });
+  input.value = '';
+  renderFlagItems(v);
+  toggleFlag(v, flagState[`v${v}`].length - 1, true);
+}
+
+// ── Recommendation ───────────────────────────────────────────────────────────
+function selectRec(el) {
+  document.querySelectorAll('.rec-vendor-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedRec = el.dataset.v;
+}
+
+// ── Data collection ──────────────────────────────────────────────────────────
+function collectData() {
+  const vendors = [1,2,3,4].map(i => ({
+    name: document.getElementById(`v${i}-name`).value,
+    product: document.getElementById(`v${i}-product`).value,
+  }));
+
+  const criteria = scoreRows.map(id => {
+    const row = document.getElementById(`sr-${id}`);
+    if (!row) return null;
+    return {
+      criterion: row.querySelector('.s-criterion').value,
+      weight: row.querySelector('.s-weight').value,
+      scores: [1,2,3,4].map(v => row.querySelector(`.s-v${v}`).value),
+    };
+  }).filter(Boolean);
+
+  const totals = [1,2,3,4].map(v => {
+    let t = 0;
+    criteria.forEach(r => { t += (parseFloat(r.scores[v-1]) || 0) * (parseFloat(r.weight) || 1); });
+    return t;
+  });
+
+  const flags = [1,2,3,4].map(v => flagState[`v${v}`].filter(f => f.checked).map(f => f.text));
+
+  const signoffs = [];
+  document.querySelectorAll('.signoff-table tbody tr').forEach(tr => {
+    const cells = tr.querySelectorAll('td');
+    if (cells.length < 4) return;
+    signoffs.push({
+      role: cells[0].textContent.trim(),
+      name: cells[1].querySelector('input').value,
+      sig: cells[2].querySelector('input').value,
+      date: cells[3].querySelector('input').value,
+    });
+  });
+
+  const recVendorIdx = selectedRec && selectedRec !== 'none' ? parseInt(selectedRec) : null;
+
+  return {
+    org: document.getElementById('hdr-org').value,
+    lead: document.getElementById('hdr-lead').value,
+    date: document.getElementById('hdr-date').value,
+    scope: document.getElementById('hdr-scope').value,
+    vendors,
+    criteria,
+    totals,
+    flags,
+    tbSupport: document.getElementById('tb-support').value,
+    tbRoadmap: document.getElementById('tb-roadmap').value,
+    tbDeploy: document.getElementById('tb-deploy').value,
+    tbCommercial: document.getElementById('tb-commercial').value,
+    selectedRec,
+    recVendorIdx,
+    recRationale: document.getElementById('rec-rationale').value,
+    signoffs,
+  };
+}
+
+// ── HTML export ──────────────────────────────────────────────────────────────
+function esc(str) {
+  if (!str) return '';
+  return str.toString()
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function buildExportHTML(data) {
+  const activeVendors = data.vendors.filter(v => v.name.trim());
+  const vCount = Math.max(activeVendors.length, 1);
+
+  // Recommendation label
+  let recLabel = 'No Award';
+  let recColor = '#666';
+  if (data.recVendorIdx) {
+    const rv = data.vendors[data.recVendorIdx - 1];
+    recLabel = rv.name || `Vendor ${data.recVendorIdx}`;
+    recColor = V_COLORS[data.recVendorIdx];
+  }
+
+  // Scoring rows
+  const scoreRowsHTML = data.criteria.map((r, i) => {
+    const weightedScores = [0,1,2,3].map(vi => {
+      const s = parseFloat(r.scores[vi]) || 0;
+      const w = parseFloat(r.weight) || 1;
+      return s ? (s * w).toFixed(1) : '—';
+    });
+    return `<tr>
+      <td style="color:#999;font-size:10px;text-align:center;width:28px;">${i+1}</td>
+      <td>${esc(r.criterion)}</td>
+      <td style="text-align:center;color:#666;">${esc(r.weight)}</td>
+      ${[0,1,2,3].map(vi => `<td style="text-align:center;font-weight:700;color:${V_COLORS[vi+1]};">${esc(r.scores[vi]) || '—'}<br><span style="font-size:9px;font-weight:400;color:#999;">${weightedScores[vi]}</span></td>`).join('')}
+    </tr>`;
+  }).join('');
+
+  const totalRowHTML = `<tr style="background:#f0e8df;">
+    <td colspan="2" style="padding:8px 10px;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;font-weight:700;">Weighted Total</td>
+    <td></td>
+    ${[0,1,2,3].map(vi => {
+      const t = data.totals[vi];
+      return `<td style="text-align:center;font-size:16px;font-weight:700;color:${V_COLORS[vi+1]};">${t > 0 ? t.toFixed(1) : '—'}</td>`;
+    }).join('')}
+  </tr>`;
+
+  // Vendor header row for matrix
+  const vendorHeadersHTML = [0,1,2,3].map(vi => {
+    const v = data.vendors[vi];
+    return `<th style="min-width:90px;text-align:center;color:${V_COLORS[vi+1]};">${esc(v.name) || `Vendor ${vi+1}`}${v.product ? `<br><span style="font-size:9px;font-weight:400;">${esc(v.product)}</span>` : ''}</th>`;
+  }).join('');
+
+  // Red flags
+  const flagsHTML = `<div style="display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #c8b8a2;">
+    ${[0,1,2,3].map(vi => {
+      const v = data.vendors[vi];
+      const flags = data.flags[vi];
+      if (!flags.length && !v.name) return `<div style="border-right:1px solid #c8b8a2;padding:12px;color:#ccc;font-size:11px;">—</div>`;
+      return `<div style="border-right:1px solid #c8b8a2;${vi===3?'border-right:none;':''}">
+        <div style="background:#f0e8df;border-bottom:1px solid #c8b8a2;padding:7px 12px;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${V_COLORS[vi+1]};">
+          ${esc(v.name) || `Vendor ${vi+1}`}
+          <span style="background:${flags.length?'#B5570A':'#ccc'};color:#fff;font-size:9px;padding:1px 5px;margin-left:6px;">${flags.length}</span>
+        </div>
+        <div style="padding:10px 12px;">
+          ${flags.length ? flags.map(f => `<div style="padding:4px 0;border-bottom:1px solid #f0e8df;font-size:11px;color:#c00;">⚑ ${esc(f)}</div>`).join('') : '<div style="font-size:11px;color:#2a7a2a;">No flags raised</div>'}
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+
+  // Tiebreaker
+  const tbNote = (label, val) => val ? `<div style="margin-bottom:14px;"><div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#666;margin-bottom:4px;">${label}</div><p style="white-space:pre-wrap;line-height:1.65;">${esc(val)}</p></div>` : '';
+
+  // Signoffs
+  const signoffRowsHTML = data.signoffs.map(s => `<tr>
+    <td style="color:#666;font-size:11px;padding:8px 10px;white-space:nowrap;">${esc(s.role)}</td>
+    <td style="padding:8px 10px;">${esc(s.name)}</td>
+    <td style="padding:8px 10px;">${esc(s.sig)}</td>
+    <td style="padding:8px 10px;">${esc(s.date)}</td>
+  </tr>`).join('');
+
+  return `<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<title>OT Security RFP Evaluation Decision Tracker — ${esc(data.org)}</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Space Mono', monospace; background: #faf0e6; color: #1a1a1a; font-size: 13px; line-height: 1.6; max-width: 960px; margin: 0 auto; padding: 40px 32px 80px; }
+  table { border-collapse: collapse; width: 100%; }
+  th { background: #f0e8df; border: 1px solid #c8b8a2; padding: 7px 10px; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; text-align: left; }
+  td { border: 1px solid #e0d0bc; padding: 7px 10px; vertical-align: middle; }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.4); }
+  h2 { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; background: #1a1a1a; color: #faf0e6; padding: 8px 16px; margin: 28px 0 0; }
+  .block { border: 1px solid #c8b8a2; border-top: none; margin-bottom: 4px; }
+  @media print { body { background: #fff; } }
+</style>
+</head><body>
+
+<div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #1a1a1a;padding-bottom:14px;margin-bottom:28px;">
+  <div>
+    <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#B5570A;font-weight:700;margin-bottom:4px;">OT Security RFP Evaluation Kit</div>
+    <div style="font-size:20px;font-weight:700;letter-spacing:-0.02em;"><span style="color:#B5570A;">04 /</span> Evaluation Decision Tracker</div>
+  </div>
+  <div style="font-size:10px;color:#666;text-align:right;">
+    ${esc(data.org) || ''}<br>${esc(data.lead) || ''}<br>${esc(data.date) || new Date().toISOString().slice(0,10)}
+  </div>
+</div>
+
+${data.scope ? `<div style="border:1px solid #c8b8a2;padding:10px 16px;margin-bottom:20px;font-size:11px;color:#666;"><strong>Scope:</strong> ${esc(data.scope)}</div>` : ''}
+
+<h2>Vendors Under Evaluation</h2>
+<div class="block">
+  <table><thead><tr><th>Vendor</th><th>Name</th><th>Product / Version</th></tr></thead><tbody>
+  ${data.vendors.map((v,i) => v.name ? `<tr>
+    <td style="font-size:10px;font-weight:700;color:${V_COLORS[i+1]};width:80px;">VENDOR ${i+1}</td>
+    <td><strong>${esc(v.name)}</strong></td>
+    <td>${esc(v.product)}</td>
+  </tr>` : '').join('')}
+  </tbody></table>
+</div>
+
+<h2>Scoring Matrix</h2>
+<div class="block">
+  <table>
+    <thead><tr>
+      <th style="width:28px">#</th><th>Criterion</th><th style="width:56px;text-align:center;">Weight</th>
+      ${vendorHeadersHTML}
+    </tr></thead>
+    <tbody>${scoreRowsHTML}</tbody>
+    <tfoot>${totalRowHTML}</tfoot>
+  </table>
+  <div style="padding:8px 12px;font-size:10px;color:#999;">Score 1–5 per vendor. Weighted total = Σ(score × weight). Subscript shows weighted contribution per row.</div>
+</div>
+
+<h2>Red Flags</h2>
+<div class="block">${flagsHTML}</div>
+
+<h2>Tiebreaker Notes</h2>
+<div class="block" style="padding:16px 18px;">
+  ${tbNote('Vendor Relationship &amp; Support Model', data.tbSupport)}
+  ${tbNote('Roadmap &amp; Category Trajectory', data.tbRoadmap)}
+  ${tbNote('Deployment Complexity &amp; Internal Lift', data.tbDeploy)}
+  ${tbNote('Commercial &amp; Contractual Considerations', data.tbCommercial)}
+</div>
+
+<h2>Final Recommendation</h2>
+<div class="block" style="padding:20px 18px;">
+  <div style="font-size:24px;font-weight:700;color:${recColor};margin-bottom:12px;letter-spacing:-0.02em;">
+    ${esc(recLabel)}
+    ${data.recVendorIdx && data.vendors[data.recVendorIdx-1].product ? `<span style="font-size:13px;font-weight:400;color:#666;margin-left:10px;">${esc(data.vendors[data.recVendorIdx-1].product)}</span>` : ''}
+  </div>
+  ${data.recRationale ? `<p style="white-space:pre-wrap;line-height:1.65;">${esc(data.recRationale)}</p>` : ''}
+</div>
+
+<h2>Sign-off</h2>
+<div class="block">
+  <table><thead><tr><th>Role</th><th>Name</th><th>Signature / Initials</th><th>Date</th></tr></thead>
+  <tbody>${signoffRowsHTML}</tbody></table>
+</div>
+
+<div style="border-top:1px solid #c8b8a2;padding-top:12px;font-size:10px;color:#999;margin-top:28px;">
+  OT Security RFP Evaluation Kit · otcybersecuritysoftware.com · Document 04 of 04
+</div>
+</body></html>`;
+}
+
+// ── Email gate + export ──────────────────────────────────────────────────────
+async function subscribeEmail(email) {
+  const res = await fetch('https://newsletter.otcybersecuritysoftware.com', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, group_id: '189858333791880417' }),
+  });
+  const d = await res.json();
+  return d.message === 'Subscribed';
+}
+
+async function handleExport() {
+  const statusEl = document.getElementById('export-status');
+  const email = document.getElementById('export-email').value.trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    statusEl.textContent = 'Please enter a valid work email address.';
+    statusEl.className = 'export-status error';
+    return;
+  }
+  statusEl.textContent = 'Subscribing…';
+  statusEl.className = 'export-status';
+  try { await subscribeEmail(email); } catch(e) { /* non-blocking */ }
+  statusEl.textContent = 'Building document…';
+  const data = collectData();
+  const orgSlug = (data.org || 'org').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  try {
+    const zip = new JSZip();
+    zip.file(`ot-rfp-doc04-decision-tracker-${orgSlug}.html`, buildExportHTML(data));
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `ot-rfp-doc04-decision-tracker-${orgSlug}.zip`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+    statusEl.textContent = 'Download started.';
+    statusEl.className = 'export-status ok';
+  } catch(e) {
+    statusEl.textContent = 'Export failed. Please try again.';
+    statusEl.className = 'export-status error';
+  }
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+document.getElementById('hdr-date').value = new Date().toISOString().slice(0,10);
+initScoreMatrix();
+initFlags();
+</script>
+</body>
+</html>
