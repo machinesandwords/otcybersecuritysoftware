@@ -639,7 +639,7 @@
       y+=8;
 
       // Criteria
-      sectionHeader('05','Top Three Evaluation Criteria','Vendors must address explicitly');
+      sectionHeader('05', isVendor ? 'Top Evaluation Criteria' : 'Top Three Evaluation Criteria', isVendor ? '' : 'Vendors must address explicitly');
       [[1,gv('criteria-1')],[2,gv('criteria-2')],[3,gv('criteria-3')]].forEach(function(item){
         checkPage(28);
         doc.setFillColor(250,240,230); doc.rect(margin,y-12,20,20,'F');
@@ -652,14 +652,19 @@
       y+=8;
 
       // Key questions
-      sectionHeader('06','Key Questions to Ask Vendors','Use in briefings and demos');
-      KEY_QUESTIONS.forEach(function(q){
-        checkPage(48);
+      sectionHeader('06', isVendor ? 'Key Questions' : 'Key Questions to Ask Vendors', isVendor ? '' : 'Use in briefings and demos');
+KEY_QUESTIONS.forEach(function(q){
+        checkPage(60);
         doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(181,87,10);
         doc.text(q.label.toUpperCase(), margin, y); y+=12;
         doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(30,30,28);
         var lines = doc.splitTextToSize(q.text, col);
-        doc.text(lines, margin, y); y+=lines.length*13+10;
+        doc.text(lines, margin, y); y+=lines.length*13+8;
+        if (isVendor) {
+          doc.setFont('helvetica','italic'); doc.setFontSize(8); doc.setTextColor(160,160,156);
+          doc.text('Vendor response:', margin, y); y+=10;
+          doc.setDrawColor(220,220,216); doc.rect(margin, y, col, 36); y+=46;
+        }
       });
 
       // Vendor response (vendor version only)

@@ -10,7 +10,7 @@
 endobj
 4 0 obj
 <<
-/Length 6394
+/Length 5554
 >>
 stream
 0.200025 w
@@ -58,7 +58,7 @@ BT
 10.3499999999999996 TL
 0.392 0.392 0.376 rg
 48. 660. Td
-(Internal Record — your working copy  ·  Generated June 12, 2026) Tj
+(Vendor Briefing — send to shortlisted vendors before any demo  ·  Generated June 12, 2026) Tj
 ET
 0.86 0.86 0.85 RG
 0.5 w
@@ -73,14 +73,14 @@ BT
 9.1999999999999993 TL
 1. g
 56. 606. Td
-(01  ORGANIZATION & ENVIRONMENT) Tj
+(01  ENVIRONMENT SUMMARY) Tj
 ET
 BT
 /F1 8 Tf
 9.1999999999999993 TL
 1. 0.863 0.706 rg
-512.7200000000000273 606. Td
-(Internal only) Tj
+481.839999999999975 606. Td
+(For vendor reference) Tj
 ET
 0.97 0.97 0.96 rg
 48. 596. 254. -28. re
@@ -90,14 +90,14 @@ BT
 9.1999999999999993 TL
 0.549 0.549 0.533 rg
 56. 585. Td
-(ORGANIZATION) Tj
+(INDUSTRY / SECTOR) Tj
 ET
 BT
 /F1 9 Tf
 10.3499999999999996 TL
 0.118 0.118 0.11 rg
 56. 572. Td
-(Acme) Tj
+(Chemical / Petrochemical) Tj
 ET
 0.97 0.97 0.96 rg
 310. 596. 254. -28. re
@@ -107,357 +107,276 @@ BT
 9.1999999999999993 TL
 0.549 0.549 0.533 rg
 318. 585. Td
-(DATE PREPARED) Tj
-ET
-BT
-/F1 9 Tf
-10.3499999999999996 TL
-0.118 0.118 0.11 rg
-318. 572. Td
-(April) Tj
-ET
-0.97 0.97 0.96 rg
-48. 560. 254. -28. re
-f
-BT
-/F2 8 Tf
-9.1999999999999993 TL
-0.549 0.549 0.533 rg
-56. 549. Td
-(PREPARED BY) Tj
-ET
-BT
-/F1 9 Tf
-10.3499999999999996 TL
-0.118 0.118 0.11 rg
-56. 536. Td
-(DJ) Tj
-ET
-0.97 0.97 0.96 rg
-310. 560. 254. -28. re
-f
-BT
-/F2 8 Tf
-9.1999999999999993 TL
-0.549 0.549 0.533 rg
-318. 549. Td
 (EVALUATION TIMELINE) Tj
 ET
 BT
 /F1 9 Tf
 10.3499999999999996 TL
 0.118 0.118 0.11 rg
-318. 536. Td
-(May) Tj
+318. 572. Td
+(sdf) Tj
 ET
 0.97 0.97 0.96 rg
-48. 524. 516. -20. re
+48. 560. 516. -20. re
 f
 BT
 /F2 8 Tf
 9.1999999999999993 TL
 0.549 0.549 0.533 rg
-56. 513. Td
-(PRIMARY CONTACT FOR VENDOR QUESTIONS) Tj
+56. 549. Td
+(BRIEF DESCRIPTION OF OT ENVIRONMENT) Tj
 ET
 BT
 /F1 9 Tf
 10.3499999999999996 TL
 0.118 0.118 0.11 rg
-56. 502. Td
-(Dan Jeb, 404-313-6809) Tj
-ET
-0.97 0.97 0.96 rg
-48. 500. 254. -28. re
-f
-BT
-/F2 8 Tf
-9.1999999999999993 TL
-0.549 0.549 0.533 rg
-56. 489. Td
-(INDUSTRY / SECTOR) Tj
-ET
-BT
-/F1 9 Tf
-10.3499999999999996 TL
-0.118 0.118 0.11 rg
-56. 476. Td
-(Chemical / Petrochemical) Tj
-ET
-0.97 0.97 0.96 rg
-310. 500. 254. -28. re
-f
-BT
-/F2 8 Tf
-9.1999999999999993 TL
-0.549 0.549 0.533 rg
-318. 489. Td
-(OT NETWORK SEGMENTS) Tj
-ET
-BT
-/F1 9 Tf
-10.3499999999999996 TL
-0.118 0.118 0.11 rg
-318. 476. Td
-(8) Tj
-ET
-0.97 0.97 0.96 rg
-48. 464. 254. -28. re
-f
-BT
-/F2 8 Tf
-9.1999999999999993 TL
-0.549 0.549 0.533 rg
-56. 453. Td
-(APPROXIMATE ASSET COUNT) Tj
-ET
-BT
-/F1 9 Tf
-10.3499999999999996 TL
-0.118 0.118 0.11 rg
-56. 440. Td
-(37855) Tj
-ET
-0.97 0.97 0.96 rg
-310. 464. 254. -28. re
-f
-BT
-/F2 8 Tf
-9.1999999999999993 TL
-0.549 0.549 0.533 rg
-318. 453. Td
-(AIR-GAPPED SEGMENTS) Tj
-ET
-BT
-/F1 9 Tf
-10.3499999999999996 TL
-0.118 0.118 0.11 rg
-318. 440. Td
-(partial) Tj
-ET
-0.97 0.97 0.96 rg
-48. 428. 516. -20. re
-f
-BT
-/F2 8 Tf
-9.1999999999999993 TL
-0.549 0.549 0.533 rg
-56. 417. Td
-(ENVIRONMENT DESCRIPTION) Tj
-ET
-BT
-/F1 9 Tf
-10.3499999999999996 TL
-0.118 0.118 0.11 rg
-56. 406. Td
-(three sites) Tj
+56. 538. Td
+(ffefewr  wefe ew e q) Tj
 ET
 0.71 0.34 0.04 rg
-48. 396. 516. -22. re
+48. 528. 516. -22. re
 f
 BT
 /F2 8 Tf
 9.1999999999999993 TL
 1. g
-56. 382. Td
+56. 514. Td
 (02  PROTOCOL STACK) Tj
 ET
 BT
 /F1 8 Tf
 9.1999999999999993 TL
 1. 0.863 0.706 rg
-412.7999999999999545 382. Td
+412.7999999999999545 514. Td
 (Vendors must confirm coverage for each) Tj
 ET
 0.92 0.92 0.91 rg
-48. 372. 516. -18. re
+48. 504. 516. -18. re
 f
 BT
 /F2 8 Tf
 9.1999999999999993 TL
 0.392 0.392 0.376 rg
-56. 361. Td
+56. 493. Td
 (PROTOCOL) Tj
 ET
 BT
 /F2 8 Tf
 9.1999999999999993 TL
 0.392 0.392 0.376 rg
-314. 361. Td
+314. 493. Td
 (EQUIPMENT / SEGMENT) Tj
 ET
-BT
-/F2 8 Tf
-9.1999999999999993 TL
-0.392 0.392 0.376 rg
-468.8000000000000114 361. Td
-(VENDOR COVERAGE) Tj
-ET
 0.97 g
-48. 358. 516. -20. re
+48. 490. 516. -20. re
 f
 BT
 /F1 9 Tf
 10.3499999999999996 TL
 0.118 0.118 0.11 rg
-56. 346. Td
-(modbus tcp) Tj
+56. 478. Td
+(sfdfadsf) Tj
 ET
 BT
 /F1 9 Tf
 10.3499999999999996 TL
 0.118 0.118 0.11 rg
-314. 346. Td
-(line5) Tj
-ET
-BT
-/F1 9 Tf
-10.3499999999999996 TL
-0.627 0.627 0.612 rg
-468.8000000000000114 346. Td
-(—) Tj
+314. 478. Td
+(wdf) Tj
 ET
 0.71 0.34 0.04 rg
-48. 328. 516. -22. re
+48. 460. 516. -22. re
 f
 BT
 /F2 8 Tf
 9.1999999999999993 TL
 1. g
-56. 314. Td
+56. 446. Td
 (03  DEPLOYMENT CONSTRAINTS) Tj
 ET
 BT
 /F1 8 Tf
 9.1999999999999993 TL
 1. 0.863 0.706 rg
-436.2399999999999523 314. Td
+436.2399999999999523 446. Td
 (Vendors must confirm compliance) Tj
 ET
 0.98 0.94 0.9 rg
-48. 302. 4. -16. re
+48. 434. 4. -16. re
 f
 BT
 /F1 9 Tf
 10.3499999999999996 TL
 0.118 0.118 0.11 rg
-60. 292. Td
+60. 424. Td
 (Active scanning NOT acceptable — passive monitoring only required) Tj
 ET
 0.98 0.94 0.9 rg
-48. 283. 4. -16. re
+48. 415. 4. -16. re
 f
 BT
 /F1 9 Tf
 10.3499999999999996 TL
 0.118 0.118 0.11 rg
-60. 273. Td
+60. 405. Td
 (Agent installation on legacy assets NOT acceptable) Tj
 ET
+0.98 0.94 0.9 rg
+48. 396. 4. -16. re
+f
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.118 0.11 rg
+60. 386. Td
+(Cloud connectivity from OT network NOT permitted) Tj
+ET
+0.98 0.94 0.9 rg
+48. 377. 4. -16. re
+f
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.118 0.11 rg
+60. 367. Td
+(ddsfdsfdsa) Tj
+ET
 0.71 0.34 0.04 rg
-48. 258. 516. -22. re
+48. 352. 516. -22. re
 f
 BT
 /F2 8 Tf
 9.1999999999999993 TL
 1. g
-56. 244. Td
+56. 338. Td
 (04  COMPLIANCE OBLIGATIONS) Tj
 ET
 BT
 /F1 8 Tf
 9.1999999999999993 TL
 1. 0.863 0.706 rg
-409.2799999999999727 244. Td
+409.2799999999999727 338. Td
 (Vendors must confirm evidence capability) Tj
 ET
 0.97 g
-48. 232. 516. -20. re
+48. 326. 516. -20. re
 f
 BT
 /F2 9 Tf
 10.3499999999999996 TL
 0.71 0.341 0.039 rg
-56. 222. Td
+56. 316. Td
 (NERC CIP) Tj
 ET
 0.97 g
-48. 210. 516. -20. re
+48. 304. 516. -20. re
 f
 BT
 /F2 9 Tf
 10.3499999999999996 TL
 0.71 0.341 0.039 rg
-56. 200. Td
+56. 294. Td
 (NERC CIP-015 \(INSM\)) Tj
 ET
 0.71 0.34 0.04 rg
-48. 182. 516. -22. re
+48. 276. 516. -22. re
 f
 BT
 /F2 8 Tf
 9.1999999999999993 TL
 1. g
-56. 168. Td
+56. 262. Td
 (05  TOP THREE EVALUATION CRITERIA) Tj
 ET
 BT
 /F1 8 Tf
 9.1999999999999993 TL
 1. 0.863 0.706 rg
-444.1599999999999682 168. Td
+444.1599999999999682 262. Td
 (Vendors must address explicitly) Tj
 ET
 0.98 0.94 0.9 rg
-48. 158. 20. -20. re
+48. 252. 20. -20. re
 f
 BT
 /F2 10 Tf
 11.5 TL
 0.71 0.341 0.039 rg
-55. 146. Td
+55. 240. Td
 (1) Tj
 ET
 BT
 /F1 9 Tf
 10.3499999999999996 TL
 0.118 0.118 0.11 rg
-76. 146. Td
-(fasddsfCriterion 1) Tj
+76. 240. Td
+(dfsdf) Tj
 ET
 0.98 0.94 0.9 rg
-48. 132. 20. -20. re
+48. 226. 20. -20. re
 f
 BT
 /F2 10 Tf
 11.5 TL
 0.71 0.341 0.039 rg
-55. 120. Td
+55. 214. Td
 (2) Tj
 ET
 BT
 /F1 9 Tf
 10.3499999999999996 TL
 0.118 0.118 0.11 rg
-76. 120. Td
-(sfdsfCriterion 2) Tj
+76. 214. Td
+(sdfs) Tj
 ET
 0.98 0.94 0.9 rg
-48. 106. 20. -20. re
+48. 200. 20. -20. re
 f
 BT
 /F2 10 Tf
 11.5 TL
 0.71 0.341 0.039 rg
-55. 94. Td
+55. 188. Td
 (3) Tj
 ET
 BT
 /F1 9 Tf
 10.3499999999999996 TL
 0.118 0.118 0.11 rg
-76. 94. Td
-(dssdfCriterion 3) Tj
+76. 188. Td
+(ggfrr) Tj
+ET
+0.71 0.34 0.04 rg
+48. 166. 516. -22. re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+56. 152. Td
+(06  KEY QUESTIONS TO ASK VENDORS) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+1. 0.863 0.706 rg
+459.67999999999995 152. Td
+(Use in briefings and demos) Tj
+ET
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+0.71 0.341 0.039 rg
+48. 130. Td
+(PROTOCOL COVERAGE) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.118 0.11 rg
+48. 118. Td
+(Walk through exactly how your platform handles [specific protocol from our environment]. What function codes do you decode,) Tj
+T* (and how was that coverage validated in a production environment?) Tj
 ET
 0.71 0.34 0.04 RG
 1. w
@@ -476,7 +395,7 @@ BT
 9.1999999999999993 TL
 0.549 0.549 0.533 rg
 523.3600000000000136 24. Td
-(Page 1 of 2) Tj
+(Page 1 of 3) Tj
 ET
 endstream
 endobj
@@ -490,83 +409,51 @@ endobj
 endobj
 6 0 obj
 <<
-/Length 2522
+/Length 1910
 >>
 stream
 0.5 w
 0.86 0.86 0.85 RG
-0.71 0.34 0.04 rg
-48. 756. 516. -22. re
-f
-BT
-/F2 8 Tf
-9.1999999999999993 TL
-1. g
-56. 742. Td
-(06  KEY QUESTIONS TO ASK VENDORS) Tj
-ET
-BT
-/F1 8 Tf
-9.1999999999999993 TL
-1. 0.863 0.706 rg
-459.67999999999995 742. Td
-(Use in briefings and demos) Tj
-ET
 BT
 /F2 8 Tf
 9.1999999999999993 TL
 0.71 0.341 0.039 rg
-48. 720. Td
-(PROTOCOL COVERAGE) Tj
-ET
-BT
-/F1 9 Tf
-10.3499999999999996 TL
-0.118 0.118 0.11 rg
-48. 708. Td
-(Walk through exactly how your platform handles [specific protocol from our environment]. What function codes do you decode,) Tj
-T* (and how was that coverage validated in a production environment?) Tj
-ET
-BT
-/F2 8 Tf
-9.1999999999999993 TL
-0.71 0.341 0.039 rg
-48. 672. Td
+48. 744. Td
 (PASSIVE DEPLOYMENT) Tj
 ET
 BT
 /F1 9 Tf
 10.3499999999999996 TL
 0.118 0.118 0.11 rg
-48. 660. Td
+48. 732. Td
 (If your sensor is deployed in passive-only mode with no active queries permitted, what capabilities are unavailable or degraded?) Tj
 ET
 BT
 /F2 8 Tf
 9.1999999999999993 TL
 0.71 0.341 0.039 rg
-48. 637. Td
+48. 709. Td
 (LEGACY ASSETS) Tj
 ET
 BT
 /F1 9 Tf
 10.3499999999999996 TL
 0.118 0.118 0.11 rg
-48. 625. Td
+48. 697. Td
 (What does your platform do when it encounters an asset it cannot identify or decode?) Tj
 ET
 BT
 /F2 8 Tf
 9.1999999999999993 TL
 0.71 0.341 0.039 rg
-48. 602. Td
+48. 674. Td
 (COMPLIANCE EVIDENCE) Tj
 ET
 BT
 /F1 9 Tf
 10.3499999999999996 TL
 0.118 0.118 0.11 rg
-48. 590. Td
+48. 662. Td
 (Show the exact evidence package your platform generates for a NERC CIP-015 audit. What format is it in, and has it been) Tj
 T* (accepted by a NERC auditor?) Tj
 ET
@@ -574,14 +461,14 @@ BT
 /F2 8 Tf
 9.1999999999999993 TL
 0.71 0.341 0.039 rg
-48. 554. Td
+48. 626. Td
 (PROFESSIONAL SERVICES) Tj
 ET
 BT
 /F1 9 Tf
 10.3499999999999996 TL
 0.118 0.118 0.11 rg
-48. 542. Td
+48. 614. Td
 (What is the minimum professional services engagement required to deploy and tune this platform in an environment like ours?) Tj
 T* (What is the typical timeline?) Tj
 ET
@@ -589,14 +476,14 @@ BT
 /F2 8 Tf
 9.1999999999999993 TL
 0.71 0.341 0.039 rg
-48. 506. Td
+48. 578. Td
 (REFERENCE CUSTOMERS) Tj
 ET
 BT
 /F1 9 Tf
 10.3499999999999996 TL
 0.118 0.118 0.11 rg
-48. 494. Td
+48. 566. Td
 (Provide two reference customers in our industry who have been audited under our compliance framework and are willing to speak) Tj
 T* (about their experience with your evidence package.) Tj
 ET
@@ -617,17 +504,189 @@ BT
 9.1999999999999993 TL
 0.549 0.549 0.533 rg
 523.3600000000000136 24. Td
-(Page 2 of 2) Tj
+(Page 2 of 3) Tj
+ET
+endstream
+endobj
+7 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 612. 792.]
+/Contents 8 0 R
+>>
+endobj
+8 0 obj
+<<
+/Length 2531
+>>
+stream
+0.5 w
+0.86 0.86 0.85 RG
+0.71 0.34 0.04 rg
+48. 756. 516. -22. re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+1. g
+56. 742. Td
+(07  VENDOR RESPONSE) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+1. 0.863 0.706 rg
+480.4799999999999613 742. Td
+(Completed by vendor) Tj
+ET
+0.97 0.97 0.96 rg
+48. 732. 254. -28. re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+0.549 0.549 0.533 rg
+56. 721. Td
+(VENDOR NAME AND PRODUCT) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.118 0.11 rg
+56. 708. Td
+(—) Tj
+ET
+0.97 0.97 0.96 rg
+310. 732. 254. -28. re
+f
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+0.549 0.549 0.533 rg
+318. 721. Td
+(DATE SUBMITTED) Tj
+ET
+BT
+/F1 9 Tf
+10.3499999999999996 TL
+0.118 0.118 0.11 rg
+318. 708. Td
+(—) Tj
+ET
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+0.549 0.549 0.533 rg
+48. 676. Td
+(PROTOCOL COVERAGE RESPONSE) Tj
+ET
+BT
+/F3 8 Tf
+9.1999999999999993 TL
+0.627 0.627 0.612 rg
+48. 664. Td
+(Confirm coverage for each protocol listed in Section 02. Note any limitations.) Tj
+ET
+0.86 0.86 0.85 RG
+48. 652. 516. -60. re
+S
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+0.549 0.549 0.533 rg
+48. 580. Td
+(DEPLOYMENT CONSTRAINTS RESPONSE) Tj
+ET
+BT
+/F3 8 Tf
+9.1999999999999993 TL
+0.627 0.627 0.612 rg
+48. 568. Td
+(Confirm compliance with each constraint checked in Section 03. Note any exceptions.) Tj
+ET
+0.86 0.86 0.85 RG
+48. 556. 516. -60. re
+S
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+0.549 0.549 0.533 rg
+48. 484. Td
+(COMPLIANCE OBLIGATIONS RESPONSE) Tj
+ET
+BT
+/F3 8 Tf
+9.1999999999999993 TL
+0.627 0.627 0.612 rg
+48. 472. Td
+(Describe the evidence package your platform generates for each framework in Section 04.) Tj
+ET
+0.86 0.86 0.85 RG
+48. 460. 516. -60. re
+S
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+0.549 0.549 0.533 rg
+48. 388. Td
+(RESPONSE TO EVALUATION CRITERIA) Tj
+ET
+BT
+/F3 8 Tf
+9.1999999999999993 TL
+0.627 0.627 0.612 rg
+48. 376. Td
+(Address each of the three criteria listed in Section 05 directly.) Tj
+ET
+0.86 0.86 0.85 RG
+48. 364. 516. -60. re
+S
+BT
+/F2 8 Tf
+9.1999999999999993 TL
+0.549 0.549 0.533 rg
+48. 292. Td
+(PROFESSIONAL SERVICES REQUIREMENTS) Tj
+ET
+BT
+/F3 8 Tf
+9.1999999999999993 TL
+0.627 0.627 0.612 rg
+48. 280. Td
+(Describe the minimum PS engagement required to deploy in an environment like ours.) Tj
+ET
+0.86 0.86 0.85 RG
+48. 268. 516. -60. re
+S
+0.71 0.34 0.04 RG
+1. w
+48. 40. m
+564. 40. l
+S
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.549 0.549 0.533 rg
+48. 24. Td
+(OT Cybersecurity Software  ·  otcybersecuritysoftware.com  ·  Independent. Not affiliated with any vendor.) Tj
+ET
+BT
+/F1 8 Tf
+9.1999999999999993 TL
+0.549 0.549 0.533 rg
+523.3600000000000136 24. Td
+(Page 3 of 3) Tj
 ET
 endstream
 endobj
 1 0 obj
 <</Type /Pages
-/Kids [3 0 R 5 0 R ]
-/Count 2
+/Kids [3 0 R 5 0 R 7 0 R ]
+/Count 3
 >>
 endobj
-7 0 obj
+9 0 obj
 <<
 /Type /Font
 /BaseFont /Helvetica
@@ -637,7 +696,7 @@ endobj
 /LastChar 255
 >>
 endobj
-8 0 obj
+10 0 obj
 <<
 /Type /Font
 /BaseFont /Helvetica-Bold
@@ -647,7 +706,7 @@ endobj
 /LastChar 255
 >>
 endobj
-9 0 obj
+11 0 obj
 <<
 /Type /Font
 /BaseFont /Helvetica-Oblique
@@ -657,7 +716,7 @@ endobj
 /LastChar 255
 >>
 endobj
-10 0 obj
+12 0 obj
 <<
 /Type /Font
 /BaseFont /Helvetica-BoldOblique
@@ -667,7 +726,7 @@ endobj
 /LastChar 255
 >>
 endobj
-11 0 obj
+13 0 obj
 <<
 /Type /Font
 /BaseFont /Courier
@@ -677,7 +736,7 @@ endobj
 /LastChar 255
 >>
 endobj
-12 0 obj
+14 0 obj
 <<
 /Type /Font
 /BaseFont /Courier-Bold
@@ -687,7 +746,7 @@ endobj
 /LastChar 255
 >>
 endobj
-13 0 obj
+15 0 obj
 <<
 /Type /Font
 /BaseFont /Courier-Oblique
@@ -697,7 +756,7 @@ endobj
 /LastChar 255
 >>
 endobj
-14 0 obj
+16 0 obj
 <<
 /Type /Font
 /BaseFont /Courier-BoldOblique
@@ -707,7 +766,7 @@ endobj
 /LastChar 255
 >>
 endobj
-15 0 obj
+17 0 obj
 <<
 /Type /Font
 /BaseFont /Times-Roman
@@ -717,7 +776,7 @@ endobj
 /LastChar 255
 >>
 endobj
-16 0 obj
+18 0 obj
 <<
 /Type /Font
 /BaseFont /Times-Bold
@@ -727,7 +786,7 @@ endobj
 /LastChar 255
 >>
 endobj
-17 0 obj
+19 0 obj
 <<
 /Type /Font
 /BaseFont /Times-Italic
@@ -737,7 +796,7 @@ endobj
 /LastChar 255
 >>
 endobj
-18 0 obj
+20 0 obj
 <<
 /Type /Font
 /BaseFont /Times-BoldItalic
@@ -747,7 +806,7 @@ endobj
 /LastChar 255
 >>
 endobj
-19 0 obj
+21 0 obj
 <<
 /Type /Font
 /BaseFont /ZapfDingbats
@@ -756,7 +815,7 @@ endobj
 /LastChar 255
 >>
 endobj
-20 0 obj
+22 0 obj
 <<
 /Type /Font
 /BaseFont /Symbol
@@ -769,32 +828,32 @@ endobj
 <<
 /ProcSet [/PDF /Text /ImageB /ImageC /ImageI]
 /Font <<
-/F1 7 0 R
-/F2 8 0 R
-/F3 9 0 R
-/F4 10 0 R
-/F5 11 0 R
-/F6 12 0 R
-/F7 13 0 R
-/F8 14 0 R
-/F9 15 0 R
-/F10 16 0 R
-/F11 17 0 R
-/F12 18 0 R
-/F13 19 0 R
-/F14 20 0 R
+/F1 9 0 R
+/F2 10 0 R
+/F3 11 0 R
+/F4 12 0 R
+/F5 13 0 R
+/F6 14 0 R
+/F7 15 0 R
+/F8 16 0 R
+/F9 17 0 R
+/F10 18 0 R
+/F11 19 0 R
+/F12 20 0 R
+/F13 21 0 R
+/F14 22 0 R
 >>
 /XObject <<
 >>
 >>
 endobj
-21 0 obj
+23 0 obj
 <<
 /Producer (jsPDF 2.5.1)
-/CreationDate (D:20260612205404-04'00')
+/CreationDate (D:20260612212554-04'00')
 >>
 endobj
-22 0 obj
+24 0 obj
 <<
 /Type /Catalog
 /Pages 1 0 R
@@ -803,37 +862,39 @@ endobj
 >>
 endobj
 xref
-0 23
+0 25
 0000000000 65535 f 
-0000009245 00000 n 
-0000011070 00000 n 
+0000010481 00000 n 
+0000012314 00000 n 
 0000000015 00000 n 
 0000000120 00000 n 
-0000006566 00000 n 
-0000006671 00000 n 
-0000009308 00000 n 
-0000009433 00000 n 
-0000009563 00000 n 
-0000009696 00000 n 
-0000009834 00000 n 
-0000009958 00000 n 
-0000010087 00000 n 
-0000010219 00000 n 
-0000010355 00000 n 
-0000010483 00000 n 
-0000010610 00000 n 
-0000010739 00000 n 
-0000010872 00000 n 
-0000010974 00000 n 
-0000011320 00000 n 
-0000011406 00000 n 
+0000005726 00000 n 
+0000005831 00000 n 
+0000007793 00000 n 
+0000007898 00000 n 
+0000010550 00000 n 
+0000010675 00000 n 
+0000010806 00000 n 
+0000010940 00000 n 
+0000011078 00000 n 
+0000011202 00000 n 
+0000011331 00000 n 
+0000011463 00000 n 
+0000011599 00000 n 
+0000011727 00000 n 
+0000011854 00000 n 
+0000011983 00000 n 
+0000012116 00000 n 
+0000012218 00000 n 
+0000012566 00000 n 
+0000012652 00000 n 
 trailer
 <<
-/Size 23
-/Root 22 0 R
-/Info 21 0 R
-/ID [ <568ABC91271CFC90DBAAFF94A6FC6D49> <568ABC91271CFC90DBAAFF94A6FC6D49> ]
+/Size 25
+/Root 24 0 R
+/Info 23 0 R
+/ID [ <D32F09B9CB7651D1BDA633ABA9535A61> <D32F09B9CB7651D1BDA633ABA9535A61> ]
 >>
 startxref
-11510
+12756
 %%EOF
