@@ -34,6 +34,7 @@
   <style>:root{--accent:#B5570A;--accent-dim:#944608;--accent-pale:#faf0e6}</style>
   <link rel="stylesheet" href="/styles.css">
   <script src="/config.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
   <style>
     .metric-card {
@@ -146,15 +147,71 @@
     }
     .priority-label { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #a03020; margin-bottom: 10px; display: block; }
 
-    .print-bar { display: flex; justify-content: flex-end; margin-bottom: 16px; }
+    /* ── Print bar with export gate ─────────────────────────── */
+    .print-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
     .print-btn {
       font-family: 'Space Mono', monospace;
       font-size: 11px; font-weight: 700;
       letter-spacing: 0.05em; text-transform: uppercase;
       padding: 6px 16px; background: var(--accent);
       color: #fff; border: none; cursor: pointer;
+      flex-shrink: 0;
     }
     .print-btn:hover { background: var(--accent-dim); }
+
+    .export-gate {
+      display: flex;
+      gap: 0;
+      align-items: stretch;
+      flex: 1;
+      min-width: 220px;
+      max-width: 420px;
+    }
+    .export-gate-input {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      flex: 1;
+      border: var(--hairline);
+      border-right: none;
+      padding: 6px 10px;
+      background: var(--bg);
+      color: var(--charcoal);
+      outline: none;
+      min-width: 0;
+    }
+    .export-gate-input:focus { border-color: var(--accent); }
+    .export-gate-btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      padding: 6px 12px;
+      background: var(--charcoal);
+      color: #fff;
+      border: none; cursor: pointer;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .export-gate-btn:hover { background: var(--accent); }
+    .export-gate-status {
+      font-size: 11px; min-height: 16px;
+      color: var(--accent); font-weight: 700;
+      width: 100%; margin-top: 4px;
+    }
+    .export-gate-status.ok { color: #2e7d32; }
+    .export-gate-status.err { color: #a03020; }
+    .export-gate-wrap {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 220px;
+      max-width: 420px;
+    }
 
     .restart-link {
       font-size: 11px; color: var(--mid);
@@ -175,6 +232,8 @@
       .metric-input-row { grid-template-columns: 1fr; }
       .metric-result { grid-template-columns: 1fr; }
       .score-hero { flex-direction: column; }
+      .print-bar { flex-direction: column; align-items: stretch; }
+      .export-gate-wrap { max-width: 100%; }
     }
   </style>
 </head>
@@ -215,7 +274,7 @@
 
         <div id="scorecard-form">
 
-          <!-- Metric 1: Detection coverage -->
+          <!-- Metric 1 -->
           <div class="metric-card">
             <div class="metric-card-header">
               <span class="metric-card-title">Detection coverage</span>
@@ -235,7 +294,7 @@
             <div class="metric-benchmark">Benchmark: 80%+ is operational. Below 60% means significant blind spots.</div>
           </div>
 
-          <!-- Metric 2: False positive rate -->
+          <!-- Metric 2 -->
           <div class="metric-card">
             <div class="metric-card-header">
               <span class="metric-card-title">False positive rate (highest-volume alert category)</span>
@@ -255,7 +314,7 @@
             <div class="metric-benchmark">Benchmark: below 30% is acceptable. Above 50% means analysts are ignoring that category.</div>
           </div>
 
-          <!-- Metric 3: Mean time to detect -->
+          <!-- Metric 3 -->
           <div class="metric-card">
             <div class="metric-card-header">
               <span class="metric-card-title">Mean time to detect (confirmed OT incidents)</span>
@@ -275,7 +334,7 @@
             <div class="metric-benchmark">Benchmark: under 4 hours is strong. 4–24 hours is acceptable. Over 24 hours indicates a systemic integration failure.</div>
           </div>
 
-          <!-- Metric 4: Mean time to triage -->
+          <!-- Metric 4 -->
           <div class="metric-card">
             <div class="metric-card-header">
               <span class="metric-card-title">Mean time to triage (OT alerts)</span>
@@ -295,7 +354,7 @@
             <div class="metric-benchmark">Benchmark: under 15 min is strong. 15–30 min is acceptable. Over 30 min indicates enrichment or playbook gaps.</div>
           </div>
 
-          <!-- Metric 5: Escalation accuracy -->
+          <!-- Metric 5 -->
           <div class="metric-card">
             <div class="metric-card-header">
               <span class="metric-card-title">Escalation accuracy</span>
@@ -315,7 +374,7 @@
             <div class="metric-benchmark">Benchmark: 50–80% is the target range. Below 30% means over-escalation. Above 90% means under-escalation.</div>
           </div>
 
-          <!-- Metric 6: Maintenance window alignment -->
+          <!-- Metric 6 -->
           <div class="metric-card">
             <div class="metric-card-header">
               <span class="metric-card-title">Maintenance window alignment</span>
@@ -343,8 +402,17 @@
         <div class="results-shell" id="results-shell">
           <div id="print-output">
 
+            <!-- Print bar: export gate left, print button right -->
             <div class="print-bar">
-              <button class="print-btn" onclick="window.print()">Print scorecard</button>
+              <div class="export-gate-wrap">
+                <div class="export-gate">
+                  <input type="email" class="export-gate-input" id="export-email"
+                    placeholder="your@email.com to print or download">
+                  <button class="export-gate-btn" onclick="gatedAction(handleExportDownload)">Download</button>
+                </div>
+                <div class="export-gate-status" id="export-status"></div>
+              </div>
+              <button class="print-btn" onclick="gatedAction(function(){ window.print(); })">Print scorecard</button>
             </div>
 
             <div class="score-hero" id="score-hero">
@@ -408,6 +476,7 @@
   <script src="/newsletter.js"></script>
 
   <script>
+    // ── Metric definitions (unchanged) ────────────────────────
     var metrics = [
       {
         id: 1, name: 'Detection coverage', unit: '% of assets',
@@ -510,8 +579,13 @@
       }
     ];
 
+    // ── Last scored result snapshot for export ────────────────
+    var lastScores = null;
+    var lastSummary = null;
+
+    // ── Helpers ───────────────────────────────────────────────
     function toggleUnknown(n) {
-      var cb = document.getElementById('m' + n + '-unknown');
+      var cb  = document.getElementById('m' + n + '-unknown');
       var inp = document.getElementById('m' + n + '-val');
       inp.disabled = cb.checked;
       if (cb.checked) inp.value = '';
@@ -536,6 +610,7 @@
       }
     }
 
+    // ── Scorecard ─────────────────────────────────────────────
     function scorecard() {
       var scores = [], totalPoints = 0, maxPoints = 0, priorities = [];
 
@@ -568,18 +643,35 @@
         summary = 'Your integration has critical gaps affecting analyst effectiveness and detection capability. The priority actions below need immediate attention.';
       }
 
-      document.getElementById('score-num').textContent = totalPoints;
-      document.getElementById('score-denom').textContent = '/ ' + maxPoints;
+      // Save snapshot for export
+      lastScores = scores;
+      lastSummary = {
+        totalPoints: totalPoints,
+        maxPoints: maxPoints,
+        rating: rating,
+        ratingColor: ratingColor,
+        summary: summary,
+        priorities: priorities,
+        date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+      };
+
+      // Reset gate on each new score
+      _subscribed = false;
+      document.getElementById('export-status').textContent = '';
+      document.getElementById('export-status').className = 'export-gate-status';
+
+      document.getElementById('score-num').textContent    = totalPoints;
+      document.getElementById('score-denom').textContent  = '/ ' + maxPoints;
       var ratingEl = document.getElementById('score-rating');
-      ratingEl.textContent = rating;
-      ratingEl.style.color = ratingColor;
+      ratingEl.textContent  = rating;
+      ratingEl.style.color  = ratingColor;
       document.getElementById('score-summary').textContent = summary;
       document.getElementById('score-hero').style.borderTopColor = ratingColor;
-      document.getElementById('score-date').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      document.getElementById('score-date').textContent = lastSummary.date;
       document.querySelector('.score-circle').style.borderColor = ratingColor;
 
       var prioritySection = document.getElementById('priority-section');
-      var priorityList = document.getElementById('priority-list');
+      var priorityList    = document.getElementById('priority-list');
       priorityList.innerHTML = '';
       if (priorities.length > 0) {
         prioritySection.style.display = 'block';
@@ -596,11 +688,11 @@
       var resultsEl = document.getElementById('metric-results');
       resultsEl.innerHTML = '';
       scores.forEach(function(s) {
-        var grade = s.result.grade;
+        var grade      = s.result.grade;
         var badgeClass = grade === 'good' ? 'badge-good' : (grade === 'poor' || grade === 'over' || grade === 'under') ? 'badge-poor' : grade === 'fair' ? 'badge-fair' : 'badge-unknown';
-        var badgeText = { good: 'Good', fair: 'Fair', poor: 'Needs work', over: 'Over-escalating', under: 'Under-escalating', unknown: 'Not measured' }[grade] || 'Not measured';
-        var finding = s.metric.findings[grade] || s.metric.findings['poor'];
-        var action  = s.metric.actions[grade]  || s.metric.actions['poor'];
+        var badgeText  = { good: 'Good', fair: 'Fair', poor: 'Needs work', over: 'Over-escalating', under: 'Under-escalating', unknown: 'Not measured' }[grade] || 'Not measured';
+        var finding    = s.metric.findings[grade] || s.metric.findings['poor'];
+        var action     = s.metric.actions[grade]  || s.metric.actions['poor'];
         var valDisplay = (s.unknown || s.val === null) ? 'No data' : s.val + ' ' + s.metric.unit;
         var div = document.createElement('div');
         div.className = 'metric-result';
@@ -622,12 +714,164 @@
 
     function restart() {
       metrics.forEach(function(m) {
-        document.getElementById('m' + m.id + '-val').value = '';
+        document.getElementById('m' + m.id + '-val').value    = '';
         document.getElementById('m' + m.id + '-val').disabled = false;
         document.getElementById('m' + m.id + '-unknown').checked = false;
       });
+      lastScores  = null;
+      lastSummary = null;
+      _subscribed = false;
       document.getElementById('results-shell').classList.remove('visible');
       window.scrollTo(0, 0);
+    }
+
+    // ── Email gate ─────────────────────────────────────────────
+    var _subscribed = false;
+
+    async function gatedAction(callback) {
+      var statusEl = document.getElementById('export-status');
+      var emailEl  = document.getElementById('export-email');
+      var email    = emailEl ? emailEl.value.trim() : '';
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        statusEl.textContent = 'Enter your email first.';
+        statusEl.className   = 'export-gate-status err';
+        if (emailEl) emailEl.focus();
+        return;
+      }
+
+      if (!_subscribed) {
+        statusEl.textContent = 'Subscribing\u2026';
+        statusEl.className   = 'export-gate-status';
+        try {
+          await fetch('https://newsletter.otcybersecuritysoftware.com', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, group_id: '189858333791880417' })
+          });
+        } catch(e) { /* non-blocking */ }
+        _subscribed = true;
+      }
+
+      statusEl.textContent = '';
+      statusEl.className   = 'export-gate-status';
+      callback();
+    }
+
+    // ── Export: build standalone HTML ─────────────────────────
+    function buildExportHTML() {
+      if (!lastScores || !lastSummary) return '';
+      var s = lastSummary;
+
+      function esc(v) {
+        if (v === null || v === undefined) return '';
+        return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      }
+
+      var badgeColors = {
+        good:  { border: '#2e7d32', color: '#2e7d32' },
+        fair:  { border: '#b45309', color: '#b45309' },
+        poor:  { border: '#a03020', color: '#a03020' },
+        over:  { border: '#a03020', color: '#a03020' },
+        under: { border: '#a03020', color: '#a03020' },
+        unknown: { border: '#999', color: '#999' }
+      };
+      var badgeLabels = { good: 'Good', fair: 'Fair', poor: 'Needs work', over: 'Over-escalating', under: 'Under-escalating', unknown: 'Not measured' };
+
+      var metricRowsHTML = lastScores.map(function(sc) {
+        var grade      = sc.result.grade;
+        var bc         = badgeColors[grade] || badgeColors.unknown;
+        var bl         = badgeLabels[grade] || 'Not measured';
+        var finding    = sc.metric.findings[grade] || sc.metric.findings['poor'];
+        var action     = sc.metric.actions[grade]  || sc.metric.actions['poor'];
+        var valDisplay = (sc.unknown || sc.val === null) ? 'No data' : sc.val + ' ' + sc.metric.unit;
+        return '<div style="border:1px solid #e0d0bc;background:#fff;padding:14px 16px;margin-bottom:8px;display:grid;grid-template-columns:1fr auto;gap:12px 20px;">' +
+          '<div>' +
+            '<div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:3px;">' + esc(sc.metric.name) + ' <span style="font-weight:400;color:#666;font-size:11px;">(' + esc(valDisplay) + ')</span></div>' +
+            '<div style="font-size:12px;color:#666;line-height:1.6;margin-bottom:5px;">' + esc(finding) + '</div>' +
+            '<div style="font-size:11px;color:#1a1a1a;font-style:italic;border-top:1px solid #f0e8df;padding-top:5px;">Action: ' + esc(action) + '</div>' +
+          '</div>' +
+          '<span style="display:inline-block;font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:4px 8px;border:1px solid ' + bc.border + ';color:' + bc.color + ';white-space:nowrap;flex-shrink:0;align-self:start;">' + esc(bl) + '</span>' +
+        '</div>';
+      }).join('');
+
+      var prioritiesHTML = '';
+      if (s.priorities.length > 0) {
+        prioritiesHTML = '<div style="border:1px solid #c8b8a2;border-left:3px solid #a03020;background:#fff;padding:14px 16px;margin-bottom:20px;">' +
+          '<div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#a03020;margin-bottom:10px;">Priority Actions</div>';
+        s.priorities.slice(0, 3).forEach(function(p, i) {
+          prioritiesHTML += '<div style="font-size:12px;padding:7px 0;border-bottom:1px solid #f0e8df;display:flex;gap:10px;">' +
+            '<span style="font-size:11px;font-weight:700;color:#a03020;flex-shrink:0;min-width:20px;">' + String(i+1).padStart(2,'0') + '</span>' +
+            '<span><strong>' + esc(p.name) + ':</strong> ' + esc(p.action) + '</span>' +
+          '</div>';
+        });
+        prioritiesHTML += '</div>';
+      }
+
+      return '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="UTF-8">\n' +
+        '<title>OT SOC Integration Scorecard \u2014 ' + esc(s.date) + '</title>\n' +
+        '<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">\n' +
+        '<style>\n  body { font-family: \'Space Mono\', monospace; background: #faf0e6; color: #1a1a1a; font-size: 13px; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 40px 32px 80px; }\n  @media print { body { background: #fff; } }\n</style>\n</head>\n<body>\n' +
+
+        '<div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #1a1a1a;padding-bottom:14px;margin-bottom:28px;">' +
+          '<div>' +
+            '<div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#B5570A;font-weight:700;margin-bottom:4px;">OT Cybersecurity Software</div>' +
+            '<div style="font-size:20px;font-weight:700;letter-spacing:-0.02em;">OT SOC Integration Health Scorecard</div>' +
+          '</div>' +
+          '<div style="font-size:10px;color:#666;text-align:right;">otcybersecuritysoftware.com<br>' + esc(s.date) + '</div>' +
+        '</div>' +
+
+        '<div style="border:1px solid #c8b8a2;border-top:3px solid ' + esc(s.ratingColor) + ';background:#fff;padding:24px 28px;margin-bottom:20px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;">' +
+          '<div style="text-align:center;flex-shrink:0;">' +
+            '<div style="width:88px;height:88px;border:3px solid ' + esc(s.ratingColor) + ';display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 8px;">' +
+              '<span style="font-size:30px;font-weight:700;color:#1a1a1a;line-height:1;">' + esc(s.totalPoints) + '</span>' +
+              '<span style="font-size:11px;color:#666;">/ ' + esc(s.maxPoints) + '</span>' +
+            '</div>' +
+            '<div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:' + esc(s.ratingColor) + ';">' + esc(s.rating) + '</div>' +
+          '</div>' +
+          '<div style="flex:1;min-width:180px;">' +
+            '<div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#B5570A;margin-bottom:6px;">Integration health</div>' +
+            '<div style="font-size:13px;color:#666;line-height:1.7;">' + esc(s.summary) + '</div>' +
+          '</div>' +
+        '</div>' +
+
+        prioritiesHTML +
+        metricRowsHTML +
+
+        '<div style="border-top:1px solid #c8b8a2;padding-top:12px;font-size:10px;color:#999;margin-top:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;">' +
+          '<span>OT SOC Integration Health Scorecard \u2014 otcybersecuritysoftware.com</span>' +
+          '<span>' + esc(s.date) + '</span>' +
+        '</div>' +
+
+        '\n</body>\n</html>';
+    }
+
+    // ── Export: download action ────────────────────────────────
+    async function handleExportDownload() {
+      var statusEl = document.getElementById('export-status');
+      statusEl.textContent = 'Building file\u2026';
+      statusEl.className   = 'export-gate-status';
+      try {
+        var html     = buildExportHTML();
+        var dateSlug = (lastSummary ? lastSummary.date : new Date().toISOString().slice(0,10))
+                         .replace(/[^a-z0-9]+/gi, '-').toLowerCase().replace(/^-|-$/g, '');
+        var zip = new JSZip();
+        zip.file('ot-soc-scorecard-' + dateSlug + '.html', html);
+        var blob = await zip.generateAsync({ type: 'blob' });
+        var url  = URL.createObjectURL(blob);
+        var a    = document.createElement('a');
+        a.href     = url;
+        a.download = 'ot-soc-scorecard-' + dateSlug + '.zip';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function() { URL.revokeObjectURL(url); }, 10000);
+        statusEl.textContent = 'Download started.';
+        statusEl.className   = 'export-gate-status ok';
+      } catch(e) {
+        statusEl.textContent = 'Export failed \u2014 please try again.';
+        statusEl.className   = 'export-gate-status err';
+      }
     }
   </script>
 

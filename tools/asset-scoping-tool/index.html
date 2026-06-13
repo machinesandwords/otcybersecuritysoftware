@@ -19,6 +19,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
+  <!-- JSZip for download export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -329,10 +332,69 @@
       flex-shrink: 0;
     }
 
+    /* ── Print actions + export row ─────────────────────────── */
     .print-actions {
       display: flex;
       gap: 8px;
       margin-top: 16px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    /* Export email gate — sits below print/copy buttons */
+    .export-gate {
+      width: 100%;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: var(--hairline);
+      display: flex;
+      gap: 0;
+      align-items: stretch;
+    }
+    .export-gate-input {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      flex: 1;
+      border: var(--hairline);
+      border-right: none;
+      padding: 9px 12px;
+      background: var(--bg);
+      color: var(--charcoal);
+      outline: none;
+      min-width: 0;
+    }
+    .export-gate-input:focus { border-color: var(--accent); }
+    .export-gate-btn {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 9px 16px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .export-gate-btn:hover { background: var(--accent-dim); }
+    .export-gate-status {
+      width: 100%;
+      font-size: 11px;
+      min-height: 16px;
+      margin-top: 6px;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .export-gate-status.ok { color: #2e7d32; }
+    .export-gate-status.err { color: #a03020; }
+    .export-gate-label {
+      width: 100%;
+      font-size: 11px;
+      color: var(--faint);
+      margin-top: 8px;
+      font-style: italic;
     }
 
     /* ── Print styles ───────────────────────────────────────── */
@@ -366,6 +428,9 @@
       .answer-row { grid-template-columns: 1fr; }
       .print-row { grid-template-columns: 1fr; }
       .print-row-label { margin-bottom: 2px; }
+      .export-gate { flex-wrap: wrap; }
+      .export-gate-input { border-right: var(--hairline); border-bottom: none; }
+      .export-gate-btn { width: 100%; }
     }
   </style>
 </head>
@@ -504,7 +569,7 @@
       assetName: '',
       assetDesc: '',
       framework: null,
-      answers: {},   // key: question id, value: answer
+      answers: {},
       nercResult: null,
       nis2Result: null
     };
@@ -798,13 +863,10 @@
 
     function recordAnswer(qid, answer) {
       state.answers[qid] = answer;
-
-      // Update button styles
       var yBtn = document.getElementById('ans-' + qid + '-yes');
       var nBtn = document.getElementById('ans-' + qid + '-no');
       if (yBtn) yBtn.classList.toggle('selected', answer === 'yes');
       if (nBtn) nBtn.classList.toggle('selected', answer === 'no');
-
       checkQuestionsComplete();
     }
 
@@ -822,7 +884,6 @@
 
     // ── Compute results ───────────────────────────────────────
     function computeResults() {
-      // NERC CIP
       if (state.framework === 'nerc' || state.framework === 'both') {
         var a = state.answers;
         if (a['nerc_q1'] === 'no' || a['nerc_q2'] === 'no') {
@@ -835,8 +896,6 @@
           state.nercResult = nercResults['nerc_low'];
         }
       }
-
-      // NIS2
       if (state.framework === 'nis2' || state.framework === 'both') {
         var a = state.answers;
         if (a['nis2_q1'] === 'no') {
@@ -861,35 +920,27 @@
       var shell = document.createElement('div');
       shell.className = 'result-shell';
 
-      // Print block
       var pb = document.createElement('div');
       pb.className = 'print-block';
       pb.id = 'print-output';
 
-      // Print header
       var ph = document.createElement('div');
       ph.className = 'print-block-header';
       ph.innerHTML = '<div class="print-block-title">Asset Classification Record</div><div class="print-block-meta">OT Cybersecurity Software — otcybersecuritysoftware.com</div>';
       pb.appendChild(ph);
 
-      // Asset row
       pb.appendChild(makeRow('Asset', state.assetName));
-      if (state.assetDesc) {
-        pb.appendChild(makeRow('Description', state.assetDesc));
-      }
+      if (state.assetDesc) pb.appendChild(makeRow('Description', state.assetDesc));
       pb.appendChild(makeRow('Classification date', dateStr));
       pb.appendChild(makeRow('Framework(s)', { nerc: 'NERC CIP', nis2: 'NIS2', both: 'NERC CIP + NIS2' }[state.framework]));
 
-      // NERC result
       if (state.nercResult) {
         var nercDiv = document.createElement('div');
         nercDiv.style.cssText = 'margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);';
-
         var nercLabel = document.createElement('div');
         nercLabel.style.cssText = 'font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--mid);margin-bottom:10px;';
         nercLabel.textContent = '🇺🇸 NERC CIP Classification';
         nercDiv.appendChild(nercLabel);
-
         var badge = document.createElement('div');
         badge.style.cssText = 'margin-bottom: 12px;';
         var cls = document.createElement('span');
@@ -897,22 +948,18 @@
         cls.textContent = state.nercResult.label;
         badge.appendChild(cls);
         nercDiv.appendChild(badge);
-
         nercDiv.appendChild(makeRow('Summary', state.nercResult.summary));
         nercDiv.appendChild(makeCriteriaRow('Classification basis', state.nercResult.criteria));
         pb.appendChild(nercDiv);
       }
 
-      // NIS2 result
       if (state.nis2Result) {
         var nis2Div = document.createElement('div');
         nis2Div.style.cssText = 'margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);';
-
         var nis2Label = document.createElement('div');
         nis2Label.style.cssText = 'font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--mid);margin-bottom:10px;';
         nis2Label.textContent = '🇪🇺 NIS2 Classification';
         nis2Div.appendChild(nis2Label);
-
         var badge2 = document.createElement('div');
         badge2.style.cssText = 'margin-bottom: 12px;';
         var cls2 = document.createElement('span');
@@ -920,13 +967,11 @@
         cls2.textContent = state.nis2Result.label;
         badge2.appendChild(cls2);
         nis2Div.appendChild(badge2);
-
         nis2Div.appendChild(makeRow('Summary', state.nis2Result.summary));
         nis2Div.appendChild(makeCriteriaRow('Classification basis', state.nis2Result.criteria));
         pb.appendChild(nis2Div);
       }
 
-      // Disclaimer row
       var disc = document.createElement('div');
       disc.style.cssText = 'margin-top:16px; padding-top:12px; border-top: var(--hairline); font-size:11px; color:var(--faint); line-height:1.6;';
       disc.textContent = 'This classification record was produced by the Asset Scoping Decision Tool at otcybersecuritysoftware.com. It is intended as a documentation aid and does not substitute for legal or compliance review.';
@@ -934,26 +979,214 @@
 
       shell.appendChild(pb);
 
-      // Print actions
+      // ── Actions row ───────────────────────────────────────
       var actions = document.createElement('div');
       actions.className = 'print-actions';
 
+      // Print button
       var printBtn = document.createElement('button');
       printBtn.className = 'btn-primary';
       printBtn.textContent = 'Print / Save as PDF';
-      printBtn.onclick = function() { window.print(); };
+      printBtn.onclick = function() { gatedAction(function() { window.print(); }); };
       actions.appendChild(printBtn);
 
+      // Copy button
       var copyBtn = document.createElement('button');
       copyBtn.className = 'btn-secondary';
       copyBtn.textContent = 'Copy to clipboard';
-      copyBtn.onclick = function() { copyResult(copyBtn); };
+      copyBtn.onclick = function() { gatedAction(function() { copyResult(copyBtn); }); };
       actions.appendChild(copyBtn);
 
+      // ── Download export gate ──────────────────────────────
+      var gateWrap = document.createElement('div');
+      gateWrap.className = 'export-gate';
+
+      var gateInput = document.createElement('input');
+      gateInput.type = 'email';
+      gateInput.className = 'export-gate-input';
+      gateInput.id = 'export-email';
+      gateInput.placeholder = 'your@email.com to print, copy, or download';
+      gateInput.autocomplete = 'email';
+      gateWrap.appendChild(gateInput);
+
+      var gateBtn = document.createElement('button');
+      gateBtn.className = 'export-gate-btn';
+      gateBtn.textContent = 'Download Record';
+      gateBtn.onclick = function() { gatedAction(handleExportDownload); };
+      gateWrap.appendChild(gateBtn);
+
+      var gateStatus = document.createElement('div');
+      gateStatus.className = 'export-gate-status';
+      gateStatus.id = 'export-status';
+      gateWrap.appendChild(gateStatus);
+
+      actions.appendChild(gateWrap);
       shell.appendChild(actions);
       container.appendChild(shell);
     }
 
+    // ── Export: build standalone HTML ─────────────────────────
+    function buildExportHTML() {
+      var now = new Date();
+      var dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      var fwLabel = { nerc: 'NERC CIP', nis2: 'NIS2', both: 'NERC CIP + NIS2' }[state.framework];
+
+      function esc(s) {
+        if (!s) return '';
+        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      }
+
+      function resultBlock(flagLabel, result) {
+        if (!result) return '';
+        var classColors = {
+          'high':              { border: '#a03020', color: '#a03020' },
+          'medium':            { border: '#b45309', color: '#b45309' },
+          'low':               { border: '#2e7d32', color: '#2e7d32' },
+          'in-scope':          { border: '#B5570A', color: '#B5570A' },
+          'in-scope-priority': { border: '#a03020', color: '#a03020' },
+          'out-of-scope':      { border: '#666',    color: '#666'    }
+        };
+        var cc = classColors[result.cssClass] || { border: '#666', color: '#666' };
+        var criteriaHTML = result.criteria.map(function(c) {
+          return '<li style="display:flex;gap:8px;padding:3px 0;font-size:13px;color:#1a1a1a;">' +
+                 '<span style="color:#B5570A;font-weight:700;flex-shrink:0;">+</span>' +
+                 esc(c) + '</li>';
+        }).join('');
+        return '<div style="margin-top:16px;padding-top:16px;border-top:1px solid #c8b8a2;">' +
+          '<div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#666;margin-bottom:10px;">' + flagLabel + '</div>' +
+          '<div style="margin-bottom:12px;"><span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:4px 12px;border:2px solid ' + cc.border + ';color:' + cc.color + ';">' + esc(result.label) + '</span></div>' +
+          '<div style="display:grid;grid-template-columns:160px 1fr;gap:8px 16px;padding:8px 0;border-bottom:1px solid #e8e0d5;">' +
+            '<div style="font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#666;">Summary</div>' +
+            '<div style="font-size:13px;color:#1a1a1a;line-height:1.6;">' + esc(result.summary) + '</div>' +
+          '</div>' +
+          '<div style="display:grid;grid-template-columns:160px 1fr;gap:8px 16px;padding:8px 0;">' +
+            '<div style="font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#666;">Classification basis</div>' +
+            '<div><ul style="list-style:none;padding:0;margin:0;">' + criteriaHTML + '</ul></div>' +
+          '</div>' +
+        '</div>';
+      }
+
+      var assetSlug = state.assetName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'asset';
+
+      return '<!DOCTYPE html>\n<html lang="en">\n<head>\n' +
+        '<meta charset="UTF-8">\n' +
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+        '<title>Asset Classification Record — ' + esc(state.assetName) + '</title>\n' +
+        '<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">\n' +
+        '<style>\n' +
+        '  body { font-family: \'Space Mono\', monospace; background: #faf0e6; color: #1a1a1a; font-size: 13px; line-height: 1.6; max-width: 760px; margin: 0 auto; padding: 40px 32px 80px; }\n' +
+        '  @media print { body { background: #fff; } }\n' +
+        '</style>\n</head>\n<body>\n' +
+
+        '<div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #1a1a1a;padding-bottom:14px;margin-bottom:28px;">' +
+          '<div>' +
+            '<div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#B5570A;font-weight:700;margin-bottom:4px;">OT Cybersecurity Software</div>' +
+            '<div style="font-size:20px;font-weight:700;letter-spacing:-0.02em;">Asset Classification Record</div>' +
+          '</div>' +
+          '<div style="font-size:10px;color:#666;text-align:right;">otcybersecuritysoftware.com<br>' + esc(dateStr) + '</div>' +
+        '</div>' +
+
+        '<div style="border:1px solid #c8b8a2;background:#fff;padding:24px;">' +
+
+          '<div style="display:grid;grid-template-columns:160px 1fr;gap:8px 16px;padding:8px 0;border-bottom:1px solid #e8e0d5;">' +
+            '<div style="font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#666;">Asset</div>' +
+            '<div style="font-size:13px;color:#1a1a1a;font-weight:700;">' + esc(state.assetName) + '</div>' +
+          '</div>' +
+          (state.assetDesc
+            ? '<div style="display:grid;grid-template-columns:160px 1fr;gap:8px 16px;padding:8px 0;border-bottom:1px solid #e8e0d5;">' +
+                '<div style="font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#666;">Description</div>' +
+                '<div style="font-size:13px;color:#1a1a1a;">' + esc(state.assetDesc) + '</div>' +
+              '</div>'
+            : '') +
+          '<div style="display:grid;grid-template-columns:160px 1fr;gap:8px 16px;padding:8px 0;border-bottom:1px solid #e8e0d5;">' +
+            '<div style="font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#666;">Classification date</div>' +
+            '<div style="font-size:13px;color:#1a1a1a;">' + esc(dateStr) + '</div>' +
+          '</div>' +
+          '<div style="display:grid;grid-template-columns:160px 1fr;gap:8px 16px;padding:8px 0;border-bottom:1px solid #e8e0d5;">' +
+            '<div style="font-size:11px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:#666;">Framework(s)</div>' +
+            '<div style="font-size:13px;color:#1a1a1a;">' + esc(fwLabel) + '</div>' +
+          '</div>' +
+
+          resultBlock('🇺🇸 NERC CIP Classification', state.nercResult) +
+          resultBlock('🇪🇺 NIS2 Classification', state.nis2Result) +
+
+          '<div style="margin-top:16px;padding-top:12px;border-top:1px solid #e8e0d5;font-size:11px;color:#999;line-height:1.6;">' +
+            'This classification record was produced by the Asset Scoping Decision Tool at otcybersecuritysoftware.com. ' +
+            'It is intended as a documentation aid and does not substitute for legal or compliance review.' +
+          '</div>' +
+        '</div>' +
+
+        '<div style="border-top:1px solid #c8b8a2;padding-top:12px;font-size:10px;color:#999;margin-top:28px;">' +
+          'OT Cybersecurity Software · otcybersecuritysoftware.com · Asset Scoping Decision Tool' +
+        '</div>' +
+        '\n</body>\n</html>';
+    }
+
+    // ── Email gate shared by all three actions ────────────────
+    // Validates email, subscribes once, then runs the callback.
+    var _subscribed = false;
+
+    async function gatedAction(callback) {
+      var statusEl = document.getElementById('export-status');
+      var emailEl = document.getElementById('export-email');
+      var email = emailEl ? emailEl.value.trim() : '';
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        statusEl.textContent = 'Enter your email first.';
+        statusEl.className = 'export-gate-status err';
+        if (emailEl) emailEl.focus();
+        return;
+      }
+
+      if (!_subscribed) {
+        statusEl.textContent = 'Subscribing…';
+        statusEl.className = 'export-gate-status';
+        try {
+          await fetch('https://newsletter.otcybersecuritysoftware.com', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, group_id: '189858333791880417' })
+          });
+        } catch(e) { /* non-blocking */ }
+        _subscribed = true;
+      }
+
+      statusEl.textContent = '';
+      statusEl.className = 'export-gate-status';
+      callback();
+    }
+
+    // ── Export: download action ───────────────────────────
+    async function handleExportDownload() {
+      var statusEl = document.getElementById('export-status');
+      statusEl.textContent = 'Building file…';
+
+      try {
+        var html = buildExportHTML();
+        var assetSlug = state.assetName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'asset';
+        var filename = 'ot-asset-classification-' + assetSlug + '.html';
+
+        var zip = new JSZip();
+        zip.file(filename, html);
+        var blob = await zip.generateAsync({ type: 'blob' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'ot-asset-classification-' + assetSlug + '.zip';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function() { URL.revokeObjectURL(url); }, 10000);
+
+        statusEl.textContent = 'Download started.';
+        statusEl.className = 'export-gate-status ok';
+      } catch(e) {
+        statusEl.textContent = 'Export failed — please try again.';
+        statusEl.className = 'export-gate-status err';
+      }
+    }
+
+    // ── Helpers ───────────────────────────────────────────────
     function makeRow(label, value) {
       var row = document.createElement('div');
       row.className = 'print-row';
@@ -988,7 +1221,6 @@
       lines.push('ASSET CLASSIFICATION RECORD');
       lines.push('OT Cybersecurity Software — otcybersecuritysoftware.com');
       lines.push('');
-
       var rows = el.querySelectorAll('.print-row');
       rows.forEach(function(row) {
         var lbl = row.querySelector('.print-row-label');
@@ -997,7 +1229,6 @@
           lines.push(lbl.textContent.toUpperCase() + ': ' + val.textContent.trim().replace(/\s+/g, ' '));
         }
       });
-
       var text = lines.join('\n');
       if (navigator.clipboard) {
         navigator.clipboard.writeText(text).then(function() {
@@ -1009,6 +1240,7 @@
 
     function restart() {
       state = { assetName: '', assetDesc: '', framework: null, answers: {}, nercResult: null, nis2Result: null };
+      _subscribed = false;
       document.getElementById('asset-name').value = '';
       document.getElementById('asset-desc').value = '';
       document.getElementById('asset-name').style.borderColor = '';
