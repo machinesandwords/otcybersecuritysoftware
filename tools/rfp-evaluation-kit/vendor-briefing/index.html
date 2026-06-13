@@ -706,7 +706,7 @@
 
     function generateBoth() {
       generatePDF('internal');
-      setTimeout(function() { generatePDF('vendor'); }, 500);
+      setTimeout(function() { generatePDF('vendor'); }, 1500);
     }
 
     function submitEmail() {
@@ -1003,8 +1003,8 @@
         }
 
         var filename = isVendor ? 'OT-Security-Vendor-Briefing.pdf' : 'OT-Security-Vendor-Briefing-Internal.pdf';
-        var pdfBlob = doc.output('blob');
-        window.open(URL.createObjectURL(pdfBlob), '_blank');
+var filename = isVendor ? 'OT-Security-Vendor-Briefing.pdf' : 'OT-Security-Vendor-Briefing-Internal.pdf';
+        doc.save(filename);
       };
       document.head.appendChild(script);
     }
