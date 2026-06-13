@@ -35,7 +35,6 @@
   <link rel="stylesheet" href="/styles.css">
   <script src="/config.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
   <style>
     /* ── Phase sections ─────────────────────────────────────── */
@@ -1194,13 +1193,11 @@
       try {
         var html = buildExportHTML();
         var dateSlug = (lastResult ? lastResult.date : new Date().toISOString().slice(0,10)).replace(/[^a-z0-9]+/gi, '-').toLowerCase();
-        var zip = new JSZip();
-        zip.file('ot-firewall-vs-diode-tco-' + dateSlug + '.html', html);
-        var blob = await zip.generateAsync({ type: 'blob' });
+        var blob = new Blob([html], { type: 'text/html' });
         var url = URL.createObjectURL(blob);
         var a = document.createElement('a');
         a.href = url;
-        a.download = 'ot-firewall-vs-diode-tco-' + dateSlug + '.zip';
+        a.download = 'ot-firewall-vs-diode-tco-' + dateSlug + '.html';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);

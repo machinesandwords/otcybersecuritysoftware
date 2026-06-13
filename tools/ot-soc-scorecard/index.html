@@ -34,7 +34,6 @@
   <style>:root{--accent:#B5570A;--accent-dim:#944608;--accent-pale:#faf0e6}</style>
   <link rel="stylesheet" href="/styles.css">
   <script src="/config.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
   <style>
     .metric-card {
@@ -855,13 +854,11 @@
         var html     = buildExportHTML();
         var dateSlug = (lastSummary ? lastSummary.date : new Date().toISOString().slice(0,10))
                          .replace(/[^a-z0-9]+/gi, '-').toLowerCase().replace(/^-|-$/g, '');
-        var zip = new JSZip();
-        zip.file('ot-soc-scorecard-' + dateSlug + '.html', html);
-        var blob = await zip.generateAsync({ type: 'blob' });
+        var blob = new Blob([html], { type: 'text/html' });
         var url  = URL.createObjectURL(blob);
         var a    = document.createElement('a');
         a.href     = url;
-        a.download = 'ot-soc-scorecard-' + dateSlug + '.zip';
+        a.download = 'ot-soc-scorecard-' + dateSlug + '.html';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);

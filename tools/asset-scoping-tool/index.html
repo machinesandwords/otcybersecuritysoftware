@@ -19,8 +19,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-  <!-- JSZip for download export -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
   <script type="application/ld+json">
   {
@@ -1166,13 +1164,11 @@
         var assetSlug = state.assetName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'asset';
         var filename = 'ot-asset-classification-' + assetSlug + '.html';
 
-        var zip = new JSZip();
-        zip.file(filename, html);
-        var blob = await zip.generateAsync({ type: 'blob' });
+        var blob = new Blob([html], { type: 'text/html' });
         var url = URL.createObjectURL(blob);
         var a = document.createElement('a');
         a.href = url;
-        a.download = 'ot-asset-classification-' + assetSlug + '.zip';
+        a.download = 'ot-asset-classification-' + assetSlug + '.html';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
